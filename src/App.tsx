@@ -12,12 +12,12 @@ const App = () => {
   }, []);
 
   const menuItems = [
-    { name: 'Espresso', description: 'Sterk en intens', icon: '☕' },
-    { name: 'Cappuccino', description: 'Zacht en romig', icon: '🥛' },
-    { name: 'Latte', description: 'Fluweelachtige melkkoffie', icon: '🍶' },
-    { name: 'Americano', description: 'Zuiver en krachtig', icon: '💪' },
-    { name: 'Flat White', description: 'Perfect in balans', icon: '⚖️' },
-    { name: 'Cold Brew', description: 'Verfrissende keuze', icon: '❄️' },
+    { name: 'Espresso', description: 'Sterk en intens', icon: Coffee },
+    { name: 'Cappuccino', description: 'Zacht en romig', icon: Coffee },
+    { name: 'Latte', description: 'Fluweelachtige melkkoffie', icon: Coffee },
+    { name: 'Americano', description: 'Zuiver en krachtig', icon: Coffee },
+    { name: 'Flat White', description: 'Perfect in balans', icon: Coffee },
+    { name: 'Cold Brew', description: 'Verfrissende keuze', icon: Coffee },
   ];
 
   return (
@@ -26,8 +26,8 @@ const App = () => {
       <nav className="fixed top-0 w-full z-50 shadow-sm" style={{ backgroundColor: 'rgba(251, 248, 243, 0.8)', backdropFilter: 'blur(12px)', borderBottom: '1px solid #E8DCC8' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <img src="/Logo_bonenbakkie.jpeg" alt="Boonenbakkie" className="h-10 w-10 rounded-full object-cover" />
-            <span className="text-2xl font-serif font-bold" style={{ color: '#4A3728' }}>Boonenbakkie</span>
+            <img src="/Logo_bonenbakkie.jpeg" alt="'t Bonenbakkie" className="h-10 w-10 rounded-full object-cover" />
+            <span className="text-2xl font-serif font-bold" style={{ color: '#4A3728' }}>'t Bonenbakkie</span>
           </div>
           <div className="hidden md:flex gap-8 items-center">
             <a href="#menu" className="transition-colors text-sm font-medium" style={{ color: '#6B4423' }}>Menu</a>
@@ -47,29 +47,29 @@ const App = () => {
           <div className="mb-8 inline-block">
             <div className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold" style={{ backgroundColor: '#F5EFE7', color: '#4A3728' }}>
               <Sparkles size={16} />
-              Premium Specialty Koffie op Wielen
+              Mobiele koffie met karakter
             </div>
           </div>
 
           <h1 className="text-5xl sm:text-6xl md:text-7xl font-serif font-bold mb-6 leading-tight" style={{ color: '#4A3728' }}>
-            Jouw Dagelijkse <span style={{ color: '#6B4423' }}>Koffie Moment</span>
+            't Bonenbakkie brengt <span style={{ color: '#6B4423' }}>sfeer in elk kopje</span>
           </h1>
 
           <p className="text-xl sm:text-2xl mb-8 max-w-2xl mx-auto leading-relaxed" style={{ color: '#5D4037' }}>
-            Handgemaakte espresso en specialty koffie geserveerd vanuit onze prachtig ontworpen koffiewagen. Ervaar de perfecte combinatie van kwaliteit, gemak en warmte.
+            Ervaar warme, rijke koffie vanuit onze stijlvolle wagen. Iedere slok voelt als een zorgvuldig samengesteld moment vol smaak, geur en sfeer.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button className="coffee-btn text-lg flex items-center gap-2">
-              Vind Ons Nu <ArrowRight size={20} />
+              Voel de Sfeer <ArrowRight size={20} />
             </button>
-            <button className="coffee-btn-outline text-lg">Bekijk Menu</button>
+            <button className="coffee-btn-outline text-lg">Ontdek het Menu</button>
           </div>
 
           <div className="mt-16 flex justify-center">
             <img
               src="/Logo_bonenbakkie.jpeg"
-              alt="Boonenbakkie Logo"
+              alt="'t Bonenbakkie Logo"
               className="w-64 h-64 object-cover rounded-2xl shadow-2xl float"
             />
           </div>
@@ -79,7 +79,7 @@ const App = () => {
       {/* Features Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: '#FFFAF5' }}>
         <div className="max-w-6xl mx-auto">
-          <h2 className="section-title text-center mb-16">Waarom Boonenbakkie?</h2>
+          <h2 className="section-title text-center mb-16">Waarom 't Bonenbakkie?</h2>
           <div className="grid md:grid-cols-3 gap-8">
             {[
               { icon: Award, title: 'Premium Kwaliteit', desc: 'Single-origin bonen, deskundig geroosterd en vers gemalen elke dag' },
@@ -105,25 +105,28 @@ const App = () => {
         <div className="max-w-6xl mx-auto">
           <h2 className="section-title text-center mb-16">Ons Menu</h2>
           <div className="grid md:grid-cols-3 gap-6">
-            {menuItems.map((item, i) => (
-              <div
-                key={i}
-                onMouseEnter={() => setHoveredCard(i)}
-                onMouseLeave={() => setHoveredCard(null)}
-                className="p-8 rounded-xl border-2 transition-all duration-300 cursor-pointer"
-                style={{
-                  backgroundColor: hoveredCard === i ? '#6B4423' : 'white',
-                  borderColor: hoveredCard === i ? '#4A3728' : '#D4A574',
-                  color: hoveredCard === i ? 'white' : '#3D2817',
-                  transform: hoveredCard === i ? 'translateY(-8px)' : 'translateY(0)',
-                  boxShadow: hoveredCard === i ? '0 20px 25px rgba(74, 55, 40, 0.2)' : 'none',
-                }}
-              >
-                <div className="text-4xl mb-4">{item.icon}</div>
-                <h3 className="text-2xl font-serif font-bold mb-2">{item.name}</h3>
-                <p style={{ color: hoveredCard === i ? '#F5EFE7' : '#6B4423' }}>{item.description}</p>
-              </div>
-            ))}
+            {menuItems.map((item, i) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={i}
+                  onMouseEnter={() => setHoveredCard(i)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                  className="p-8 rounded-xl border-2 transition-all duration-300 cursor-pointer"
+                  style={{
+                    backgroundColor: hoveredCard === i ? '#6B4423' : 'white',
+                    borderColor: hoveredCard === i ? '#4A3728' : '#D4A574',
+                    color: hoveredCard === i ? 'white' : '#3D2817',
+                    transform: hoveredCard === i ? 'translateY(-8px)' : 'translateY(0)',
+                    boxShadow: hoveredCard === i ? '0 20px 25px rgba(74, 55, 40, 0.2)' : 'none',
+                  }}
+                >
+                  <div className="text-4xl mb-4"><Icon className="w-10 h-10" style={{ color: hoveredCard === i ? '#F5EFE7' : '#6B4423' }} /></div>
+                  <h3 className="text-2xl font-serif font-bold mb-2">{item.name}</h3>
+                  <p style={{ color: hoveredCard === i ? '#F5EFE7' : '#6B4423' }}>{item.description}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -135,7 +138,7 @@ const App = () => {
             <div>
               <h2 className="section-title mb-6">Met Hartstocht Gemaakt</h2>
               <p className="text-lg mb-6 leading-relaxed" style={{ color: '#5D4037' }}>
-                Boonenbakkie is niet zomaar een koffiewagen—het is een mobiel paradijs voor koffieliefhebbers. We zijn begonnen met een eenvoudige missie: uitzonderlijke koffie naar je buurt brengen.
+                't Bonenbakkie is niet zomaar een koffiewagen—het is een mobiel paradijs voor koffieliefhebbers. We zijn begonnen met een eenvoudige missie: uitzonderlijke koffie naar je buurt brengen.
               </p>
               <p className="text-lg mb-6 leading-relaxed" style={{ color: '#5D4037' }}>
                 Elk kopje wordt bereid door ervaren barista's met alleen de fijnste bonen, vers gemalen en perfect geëxtraheerd. We geloven in kwaliteit boven snelheid, en dat proef je in elke slok.
@@ -197,7 +200,7 @@ const App = () => {
                 </div>
                 <div>
                   <h3 className="text-xl font-serif font-bold mb-1" style={{ color: '#4A3728' }}>Contact</h3>
-                  <p className="mb-1" style={{ color: '#5D4037' }}>hallo@boonenbakkie.com</p>
+                  <p className="mb-1" style={{ color: '#5D4037' }}>hallo@tbonenbakkie.com</p>
                   <p style={{ color: '#5D4037' }}>+31 6 12345678</p>
                 </div>
               </div>
@@ -220,8 +223,8 @@ const App = () => {
           <div className="grid md:grid-cols-3 gap-8 mb-8 pb-8" style={{ borderBottom: '1px solid #6B4423' }}>
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <img src="/Logo_bonenbakkie.jpeg" alt="Boonenbakkie" className="h-8 w-8 rounded-full object-cover" />
-                <span className="text-xl font-serif font-bold">Boonenbakkie</span>
+                <img src="/Logo_bonenbakkie.jpeg" alt="'t Bonenbakkie" className="h-8 w-8 rounded-full object-cover" />
+                <span className="text-xl font-serif font-bold">'t Bonenbakkie</span>
               </div>
               <p style={{ color: '#D4A574' }}>Premium koffie naar je buurt, één kopje tegelijk.</p>
             </div>
@@ -243,7 +246,7 @@ const App = () => {
             </div>
           </div>
           <div className="text-center text-sm" style={{ color: '#D4A574' }}>
-            <p>© 2024 Boonenbakkie. Met liefde gemaakt van de fijnste koffiebonen.</p>
+            <p>© 2024 't Bonenbakkie. Met liefde gemaakt van de fijnste koffiebonen.</p>
           </div>
         </div>
       </footer>
