@@ -25,7 +25,7 @@
 
 @layer components {
   .coffee-btn {
-    @apply px-6 py-3 text-white font-medium rounded-lg transition-colors duration-300 shadow-md hover:shadow-lg;
+    @apply px-6 py-3 text-white font-medium rounded-full transition-colors duration-300 shadow-md hover:shadow-lg;
     background-color: var(--color-brown-main);
   }
 
@@ -34,7 +34,7 @@
   }
 
   .coffee-btn-outline {
-    @apply px-6 py-3 border-2 font-medium rounded-lg transition-colors duration-300;
+    @apply px-6 py-3 border-2 font-medium rounded-full transition-colors duration-300;
     border-color: var(--color-brown-main);
     color: var(--color-brown-main);
   }

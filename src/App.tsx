@@ -39,7 +39,7 @@ const App = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="min-h-screen flex items-center justify-center pt-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      <section className="min-h-screen flex items-center justify-center pt-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden" style={{ background: 'radial-gradient(circle at top, rgba(212, 165, 116, 0.16) 0%, rgba(212, 165, 116, 0.02) 30%, transparent 55%), linear-gradient(to bottom, #FBF8F3 0%, #FBF8F3 55%, #FFFAF5 100%)' }}>
         <div className="absolute top-40 right-10 w-96 h-96 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{ backgroundColor: '#D4A574' }}></div>
         <div className="absolute -bottom-8 left-20 w-96 h-96 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{ backgroundColor: '#C9956A' }}></div>
 
@@ -55,7 +55,7 @@ const App = () => {
             't Bonenbakkie brengt <span style={{ color: '#6B4423' }}>sfeer in elk kopje</span>
           </h1>
 
-          <p className="text-xl sm:text-2xl mb-8 max-w-2xl mx-auto leading-relaxed" style={{ color: '#5D4037' }}>
+          <p className="text-xl sm:text-2xl mb-8 max-w-2xl mx-auto leading-relaxed" style={{ color: '#7B6B58' }}>
             Ervaar warme, rijke koffie vanuit onze stijlvolle wagen. Iedere slok voelt als een zorgvuldig samengesteld moment vol smaak, geur en sfeer.
           </p>
 
@@ -70,14 +70,14 @@ const App = () => {
             <img
               src="/Logo_bonenbakkie.jpeg"
               alt="'t Bonenbakkie Logo"
-              className="w-64 h-64 object-cover rounded-2xl shadow-2xl float"
+              className="w-64 h-64 object-cover rounded-[3rem] shadow-2xl float"
             />
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: '#FFFAF5' }}>
+      <section className="py-20 px-4 sm:px-6 lg:px-8" style={{ background: 'linear-gradient(to bottom, #FFFAF5 0%, #FFFAF5 100%)' }}>
         <div className="max-w-6xl mx-auto">
           <h2 className="section-title text-center mb-16">Waarom 't Bonenbakkie?</h2>
           <div className="grid md:grid-cols-3 gap-8">
@@ -88,12 +88,12 @@ const App = () => {
             ].map((item, i) => (
               <div
                 key={i}
-                className="p-8 rounded-xl border-2 hover:shadow-lg transition-all duration-300"
+                className="p-8 rounded-[2rem] border-2 hover:shadow-lg transition-all duration-300"
                 style={{ backgroundColor: '#FBF8F3', borderColor: '#D4A574', color: '#3D2817' }}
               >
                 <item.icon className="w-12 h-12 mb-4" style={{ color: '#6B4423' }} />
                 <h3 className="text-xl font-serif font-bold mb-2" style={{ color: '#4A3728' }}>{item.title}</h3>
-                <p style={{ color: '#5D4037' }}>{item.desc}</p>
+                <p style={{ color: '#7B6B58' }}>{item.desc}</p>
               </div>
             ))}
           </div>
@@ -112,7 +112,7 @@ const App = () => {
                   key={i}
                   onMouseEnter={() => setHoveredCard(i)}
                   onMouseLeave={() => setHoveredCard(null)}
-                  className="p-8 rounded-xl border-2 transition-all duration-300 cursor-pointer"
+                  className="p-8 rounded-[2rem] border-2 transition-all duration-300 cursor-pointer"
                   style={{
                     backgroundColor: hoveredCard === i ? '#6B4423' : 'white',
                     borderColor: hoveredCard === i ? '#4A3728' : '#D4A574',
@@ -137,10 +137,10 @@ const App = () => {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="section-title mb-6">Met Hartstocht Gemaakt</h2>
-              <p className="text-lg mb-6 leading-relaxed" style={{ color: '#5D4037' }}>
+              <p className="text-lg mb-6 leading-relaxed" style={{ color: '#7B6B58' }}>
                 't Bonenbakkie is niet zomaar een koffiewagen—het is een mobiel paradijs voor koffieliefhebbers. We zijn begonnen met een eenvoudige missie: uitzonderlijke koffie naar je buurt brengen.
               </p>
-              <p className="text-lg mb-6 leading-relaxed" style={{ color: '#5D4037' }}>
+              <p className="text-lg mb-6 leading-relaxed" style={{ color: '#7B6B58' }}>
                 Elk kopje wordt bereid door ervaren barista's met alleen de fijnste bonen, vers gemalen en perfect geëxtraheerd. We geloven in kwaliteit boven snelheid, en dat proef je in elke slok.
               </p>
               <div className="flex gap-6">
@@ -155,9 +155,9 @@ const App = () => {
               </div>
             </div>
             <div className="relative">
-              <div className="absolute inset-0 rounded-2xl transform rotate-6" style={{ backgroundColor: '#D4A574', opacity: 0.3 }}></div>
-              <div className="relative bg-gradient-to-br from-white p-1 rounded-2xl" style={{ backgroundColor: '#F5EFE7' }}>
-                <div className="h-96 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#6B4423' }}>
+              <div className="absolute inset-0 rounded-[2.5rem] transform rotate-6" style={{ backgroundColor: '#D4A574', opacity: 0.3 }}></div>
+              <div className="relative bg-gradient-to-br from-white p-1 rounded-[3rem]" style={{ backgroundColor: '#F5EFE7' }}>
+                <div className="h-96 rounded-[2.5rem] flex items-center justify-center" style={{ backgroundColor: '#6B4423' }}>
                   <Coffee className="w-32 h-32" style={{ color: '#F5EFE7', opacity: 0.3 }} />
                 </div>
               </div>
@@ -178,8 +178,8 @@ const App = () => {
                 </div>
                 <div>
                   <h3 className="text-xl font-serif font-bold mb-1" style={{ color: '#4A3728' }}>Wekelijkse Locaties</h3>
-                  <p className="mb-2" style={{ color: '#5D4037' }}>Centrum Markt - Maandag tot Vrijdag</p>
-                  <p style={{ color: '#5D4037' }}>Centraal Park - Weekends</p>
+                  <p className="mb-2" style={{ color: '#7B6B58' }}>Centrum Markt - Maandag tot Vrijdag</p>
+                  <p style={{ color: '#7B6B58' }}>Centraal Park - Weekends</p>
                 </div>
               </div>
 
@@ -189,8 +189,8 @@ const App = () => {
                 </div>
                 <div>
                   <h3 className="text-xl font-serif font-bold mb-1" style={{ color: '#4A3728' }}>Openingstijden</h3>
-                  <p className="mb-1" style={{ color: '#5D4037' }}>Maandag - Vrijdag: 07:00 - 18:00</p>
-                  <p style={{ color: '#5D4037' }}>Zaterdag - Zondag: 09:00 - 17:00</p>
+                  <p className="mb-1" style={{ color: '#7B6B58' }}>Maandag - Vrijdag: 07:00 - 18:00</p>
+                  <p style={{ color: '#7B6B58' }}>Zaterdag - Zondag: 09:00 - 17:00</p>
                 </div>
               </div>
 
@@ -200,16 +200,16 @@ const App = () => {
                 </div>
                 <div>
                   <h3 className="text-xl font-serif font-bold mb-1" style={{ color: '#4A3728' }}>Contact</h3>
-                  <p className="mb-1" style={{ color: '#5D4037' }}>hallo@tbonenbakkie.com</p>
-                  <p style={{ color: '#5D4037' }}>+31 6 12345678</p>
+                  <p className="mb-1" style={{ color: '#7B6B58' }}>hallo@tbonenbakkie.com</p>
+                  <p style={{ color: '#7B6B58' }}>+31 6 12345678</p>
                 </div>
               </div>
             </div>
 
-            <div className="rounded-2xl p-8 text-white flex flex-col justify-center" style={{ backgroundColor: '#6B4423' }}>
+            <div className="rounded-[3rem] p-8 text-white flex flex-col justify-center" style={{ backgroundColor: '#6B4423' }}>
               <h3 className="text-2xl font-serif font-bold mb-4">Neem Contact Op</h3>
               <p className="mb-6" style={{ color: '#F5EFE7' }}>Heb je een vraag of wil je ons boeken voor een evenement? We horen graag van je!</p>
-              <button className="px-6 py-3 rounded-lg font-semibold transition-colors w-full" style={{ backgroundColor: 'white', color: '#6B4423' }}>
+              <button className="px-6 py-3 rounded-full font-semibold transition-colors w-full" style={{ backgroundColor: 'white', color: '#6B4423' }}>
                 Stuur een Bericht
               </button>
             </div>
