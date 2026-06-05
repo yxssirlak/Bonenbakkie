@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-brown-dark: #4A3728;
+    --color-brown-main: #6B4423;
+    --color-brown-light: #8B6F47;
+    --color-beige-light: #FBF8F3;
+    --color-beige-warm: #F5EFE7;
+    --color-text-dark: #3D2817;
+  }
+
+  body {
+    @apply font-sans;
+    background-color: var(--color-beige-light);
+    color: var(--color-text-dark);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
+
+@layer components {
+  .coffee-btn {
+    @apply px-6 py-3 text-white font-medium rounded-lg transition-colors duration-300 shadow-md hover:shadow-lg;
+    background-color: var(--color-brown-main);
+  }
+
+  .coffee-btn:hover {
+    background-color: var(--color-brown-dark);
+  }
+
+  .coffee-btn-outline {
+    @apply px-6 py-3 border-2 font-medium rounded-lg transition-colors duration-300;
+    border-color: var(--color-brown-main);
+    color: var(--color-brown-main);
+  }
+
+  .coffee-btn-outline:hover {
+    background-color: var(--color-beige-warm);
+  }
+
+  .section-title {
+    @apply text-3xl md:text-4xl font-serif font-bold mb-4;
+    color: var(--color-brown-dark);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.fade-in-up {
+  animation: fade-in-up 0.6s ease-out;
+}
