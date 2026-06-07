@@ -4,43 +4,229 @@
 
 @layer base {
   :root {
-    --color-brown-dark: #4A3728;
-    --color-brown-main: #6B4423;
-    --color-brown-light: #8B6F47;
-    --color-beige-light: #FBF8F3;
-    --color-beige-warm: #F5EFE7;
-    --color-text-dark: #3D2817;
+    --color-brown-dark: #140a07;
+    --color-brown-main: #2b120b;
+    --color-brown-warm: #4a2317;
+    --color-brown-soft: #7a4e36;
+    --color-beige-light: #fbf8f3;
+    --color-beige-warm: #f5efe7;
+    --color-text-dark: #341d14;
+    --shadow-glow: 0 48px 140px rgba(28, 12, 8, 0.16);
   }
 
+  html,
+  body,
+  #root,
+  .page-shell {
+    min-height: 100%;
+    background: linear-gradient(180deg, #110904 0%, #140a07 12%, #1b0b08 26%, #2a110b 42%, #38170e 60%, #4b2414 82%, #f7efe7 98%);
+  }
+
+  html,
   body {
-    @apply font-sans;
-    background-color: var(--color-beige-light);
+    @apply font-sans antialiased;
     color: var(--color-text-dark);
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-serif;
   }
+
+  a {
+    @apply transition-colors duration-300;
+  }
 }
 
 @layer components {
+  .nav-glass,
+  header {
+    background: transparent;
+    border-bottom: none !important;
+    box-shadow: none !important;
+  }
+
+  .nav-glass {
+    background: rgba(17, 9, 4, 0.14);
+    backdrop-filter: blur(18px);
+    border: none;
+  }
+
+  .hero-section {
+    @apply relative overflow-hidden;
+    background: transparent;
+  }
+
+  .hero-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.12), transparent 22%, rgba(0,0,0,0.5) 100%);
+    pointer-events: none;
+  }
+
+  .hero-glow {
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(80px);
+    opacity: 0.22;
+  }
+
+  .hero-glow-left {
+    width: 360px;
+    height: 360px;
+    top: -60px;
+    left: -40px;
+    background: rgba(212, 165, 116, 0.35);
+  }
+
+  .hero-glow-right {
+    width: 420px;
+    height: 420px;
+    top: 24%;
+    right: -80px;
+    background: rgba(255, 243, 220, 0.22);
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 10;
+  }
+
+  .hero-pill {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold;
+    color: var(--color-brown-dark);
+    background: rgba(255, 250, 245, 0.92);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+  }
+
+  .hero-title {
+    @apply text-5xl sm:text-6xl md:text-7xl font-serif font-black leading-tight;
+    color: #f8ede2;
+    text-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+  }
+
+  .hero-title span {
+    color: #f4d8b4;
+  }
+
+  .hero-copy {
+    @apply max-w-2xl mx-auto text-lg md:text-xl leading-relaxed;
+    color: #ebdad0;
+  }
+
+  .hero-logo {
+    @apply mx-auto rounded-[3rem] shadow-[0_35px_90px_rgba(0,0,0,0.24)];
+    border: 1px solid rgba(255,255,255,0.18);
+    min-width: 16rem;
+  }
+
+  /* Top navigation link styles (centered) */
+  .top-nav a {
+    @apply px-3 py-1 rounded-md font-medium;
+    color: rgba(247, 239, 231, 0.95);
+    transition: all 220ms ease;
+  }
+
+  .top-nav a:hover {
+    background: rgba(255,255,255,0.04);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.03) inset;
+  }
+
+  .top-nav a.font-semibold {
+    letter-spacing: 0.6px;
+    padding: 6px 14px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border-radius: 10px;
+  }
+
+  /* Home link prominence */
+  .top-nav .home-link {
+    @apply text-lg md:text-xl font-extrabold;
+    padding: 8px 18px;
+    background: linear-gradient(90deg, rgba(255,255,240,0.06), rgba(255,255,240,0.02));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.28);
+    transform: translateY(0);
+  }
+
+  .top-nav .home-link:hover {
+    transform: translateY(-3px) scale(1.02);
+    background: linear-gradient(90deg, rgba(255,255,240,0.09), rgba(255,255,240,0.03));
+  }
+
+  .section-cream {
+    @apply bg-gradient-to-b from-[#fff9f1] to-[#fdf4ea];
+  }
+
+  .feature-card,
+  .menu-card,
+  .glass-panel,
+  .location-card {
+    @apply rounded-[2rem] border transition-all duration-300;
+    border-color: rgba(139, 111, 71, 0.18);
+    background: rgba(255, 250, 245, 0.95);
+    box-shadow: var(--shadow-glow);
+  }
+
+  .feature-card:hover,
+  .menu-card:hover,
+  .glass-panel:hover {
+    transform: translateY(-8px) scale(1.01);
+    border-color: rgba(139, 111, 71, 0.32);
+    box-shadow: 0 30px 65px rgba(74, 55, 40, 0.18);
+  }
+
+  .feature-card {
+    @apply p-8;
+  }
+
+  .menu-card {
+    @apply p-8 cursor-pointer;
+  }
+
+  .glass-panel {
+    @apply p-10;
+    background: rgba(255, 250, 245, 0.82);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  .location-card {
+    @apply p-8;
+    background: #f9efe2;
+  }
+
+  .footer-link:hover {
+    color: white;
+  }
+
   .coffee-btn {
-    @apply px-6 py-3 text-white font-medium rounded-full transition-colors duration-300 shadow-md hover:shadow-lg;
-    background-color: var(--color-brown-main);
+    @apply px-6 py-3 text-white font-semibold rounded-full transition-all duration-300 shadow-[0_20px_45px_rgba(0,0,0,0.25)];
+    background: linear-gradient(135deg, #b47b4f, #5a361f);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    text-shadow: 0 6px 18px rgba(0,0,0,0.22);
   }
 
   .coffee-btn:hover {
-    background-color: var(--color-brown-dark);
+    background: linear-gradient(135deg, #d29568, #7a4a28);
+    transform: translateY(-2px);
   }
 
   .coffee-btn-outline {
-    @apply px-6 py-3 border-2 font-medium rounded-full transition-colors duration-300;
-    border-color: var(--color-brown-main);
-    color: var(--color-brown-main);
+    @apply px-6 py-3 border font-semibold rounded-full transition-all duration-300;
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #f7efe7;
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
   }
 
   .coffee-btn-outline:hover {
-    background-color: var(--color-beige-warm);
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.35);
+    transform: translateY(-2px);
   }
 
   .section-title {

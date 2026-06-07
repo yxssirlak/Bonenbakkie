@@ -1,224 +1,100 @@
-import { Coffee, MapPin, Clock, MessageCircle, Award, Sparkles, ArrowRight } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { Routes, Route, NavLink, Link, useLocation } from 'react-router-dom';
+import Home from './pages/Home';
+import Menu from './pages/Menu';
+import About from './pages/About';
+import Contact from './pages/Contact';
 
 const App = () => {
-  const [scrollY, setScrollY] = useState(0);
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const location = useLocation();
+  const [navTheme, setNavTheme] = useState<'light' | 'dark'>('dark');
+  const [navOffset, setNavOffset] = useState(0);
 
   useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
+    const sections = Array.from(document.querySelectorAll<HTMLElement>('section[data-nav-theme]'));
+    if (!sections.length) return;
+
+    const headerHeight = 92;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visibleEntries = entries.filter((entry) => entry.isIntersecting);
+        if (!visibleEntries.length) return;
+        const best = visibleEntries.reduce((previous, current) =>
+          previous.intersectionRatio > current.intersectionRatio ? previous : current
+        );
+        const theme = best.target.getAttribute('data-nav-theme');
+        setNavTheme(theme === 'light' ? 'light' : 'dark');
+      },
+      {
+        rootMargin: `-${headerHeight}px 0px 0px 0px`,
+        threshold: [0, 0.25, 0.5, 0.75, 1],
+      }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      setNavOffset(Math.min(currentY, 120));
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const menuItems = [
-    { name: 'Espresso', description: 'Sterk en intens', icon: Coffee },
-    { name: 'Cappuccino', description: 'Zacht en romig', icon: Coffee },
-    { name: 'Latte', description: 'Fluweelachtige melkkoffie', icon: Coffee },
-    { name: 'Americano', description: 'Zuiver en krachtig', icon: Coffee },
-    { name: 'Flat White', description: 'Perfect in balans', icon: Coffee },
-    { name: 'Cold Brew', description: 'Verfrissende keuze', icon: Coffee },
-  ];
+  const activeThemeClass = navTheme === 'light' ? 'font-semibold text-[#4f2f17]' : 'font-semibold text-white';
+  const baseThemeClass = navTheme === 'light' ? 'text-[#6B4423]' : 'text-[#f7efe7]';
+  const hoverThemeClass = navTheme === 'light' ? 'hover:text-[#4f2f17]' : 'hover:text-white';
 
   return (
-    <div style={{ background: 'linear-gradient(to bottom, #FBF8F3, white, #FBF8F3)' }}>
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 shadow-sm" style={{ backgroundColor: 'rgba(251, 248, 243, 0.8)', backdropFilter: 'blur(12px)', borderBottom: '1px solid #E8DCC8' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <img src="/Logo_bonenbakkie.jpeg" alt="'t Bonenbakkie" className="h-10 w-10 rounded-full object-cover" />
-            <span className="text-2xl font-serif font-bold" style={{ color: '#4A3728' }}>'t Bonenbakkie</span>
-          </div>
-          <div className="hidden md:flex gap-8 items-center">
-            <a href="#menu" className="transition-colors text-sm font-medium" style={{ color: '#6B4423' }}>Menu</a>
-            <a href="#about" className="transition-colors text-sm font-medium" style={{ color: '#6B4423' }}>Over Ons</a>
-            <a href="#location" className="transition-colors text-sm font-medium" style={{ color: '#6B4423' }}>Locatie</a>
-            <button className="coffee-btn text-sm">Contact</button>
-          </div>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <section className="min-h-screen flex items-center justify-center pt-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden" style={{ background: 'radial-gradient(circle at top, rgba(212, 165, 116, 0.16) 0%, rgba(212, 165, 116, 0.02) 30%, transparent 55%), linear-gradient(to bottom, #FBF8F3 0%, #FBF8F3 55%, #FFFAF5 100%)' }}>
-        <div className="absolute top-40 right-10 w-96 h-96 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{ backgroundColor: '#D4A574' }}></div>
-        <div className="absolute -bottom-8 left-20 w-96 h-96 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{ backgroundColor: '#C9956A' }}></div>
-
-        <div className="max-w-5xl mx-auto text-center relative z-10">
-          <div className="mb-8 inline-block">
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold" style={{ backgroundColor: '#F5EFE7', color: '#4A3728' }}>
-              <Sparkles size={16} />
-              Mobiele koffie met karakter
-            </div>
-          </div>
-
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-serif font-bold mb-6 leading-tight" style={{ color: '#4A3728' }}>
-            't Bonenbakkie brengt <span style={{ color: '#6B4423' }}>sfeer in elk kopje</span>
-          </h1>
-
-          <p className="text-xl sm:text-2xl mb-8 max-w-2xl mx-auto leading-relaxed" style={{ color: '#7B6B58' }}>
-            Ervaar warme, rijke koffie vanuit onze stijlvolle wagen. Iedere slok voelt als een zorgvuldig samengesteld moment vol smaak, geur en sfeer.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button className="coffee-btn text-lg flex items-center gap-2">
-              Voel de Sfeer <ArrowRight size={20} />
-            </button>
-            <button className="coffee-btn-outline text-lg">Ontdek het Menu</button>
-          </div>
-
-          <div className="mt-16 flex justify-center">
-            <img
-              src="/Logo_bonenbakkie.jpeg"
-              alt="'t Bonenbakkie Logo"
-              className="w-64 h-64 object-cover rounded-[3rem] shadow-2xl float"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8" style={{ background: 'linear-gradient(to bottom, #FFFAF5 0%, #FFFAF5 100%)' }}>
-        <div className="max-w-6xl mx-auto">
-          <h2 className="section-title text-center mb-16">Waarom 't Bonenbakkie?</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { icon: Award, title: 'Premium Kwaliteit', desc: 'Single-origin bonen, deskundig geroosterd en vers gemalen elke dag' },
-              { icon: Coffee, title: 'Met Liefde Gemaakt', desc: 'Elke shot getrokken met precisie op professionele apparatuur' },
-              { icon: Sparkles, title: 'Altijd Vers', desc: 'Vers gezet op bestelling. Geen koffie uit een kan. Puur genot in elk kopje' },
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="p-8 rounded-[2rem] border-2 hover:shadow-lg transition-all duration-300"
-                style={{ backgroundColor: '#FBF8F3', borderColor: '#D4A574', color: '#3D2817' }}
-              >
-                <item.icon className="w-12 h-12 mb-4" style={{ color: '#6B4423' }} />
-                <h3 className="text-xl font-serif font-bold mb-2" style={{ color: '#4A3728' }}>{item.title}</h3>
-                <p style={{ color: '#7B6B58' }}>{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Menu Section */}
-      <section id="menu" className="py-20 px-4 sm:px-6 lg:px-8" style={{ background: 'linear-gradient(to bottom, #FBF8F3, white)' }}>
-        <div className="max-w-6xl mx-auto">
-          <h2 className="section-title text-center mb-16">Ons Menu</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {menuItems.map((item, i) => {
-              const Icon = item.icon;
-              return (
-                <div
-                  key={i}
-                  onMouseEnter={() => setHoveredCard(i)}
-                  onMouseLeave={() => setHoveredCard(null)}
-                  className="p-8 rounded-[2rem] border-2 transition-all duration-300 cursor-pointer"
-                  style={{
-                    backgroundColor: hoveredCard === i ? '#6B4423' : 'white',
-                    borderColor: hoveredCard === i ? '#4A3728' : '#D4A574',
-                    color: hoveredCard === i ? 'white' : '#3D2817',
-                    transform: hoveredCard === i ? 'translateY(-8px)' : 'translateY(0)',
-                    boxShadow: hoveredCard === i ? '0 20px 25px rgba(74, 55, 40, 0.2)' : 'none',
-                  }}
-                >
-                  <div className="text-4xl mb-4"><Icon className="w-10 h-10" style={{ color: hoveredCard === i ? '#F5EFE7' : '#6B4423' }} /></div>
-                  <h3 className="text-2xl font-serif font-bold mb-2">{item.name}</h3>
-                  <p style={{ color: hoveredCard === i ? '#F5EFE7' : '#6B4423' }}>{item.description}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* About Section */}
-      <section id="about" className="py-20 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: '#FFFAF5' }}>
-        <div className="max-w-4xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="section-title mb-6">Met Hartstocht Gemaakt</h2>
-              <p className="text-lg mb-6 leading-relaxed" style={{ color: '#7B6B58' }}>
-                't Bonenbakkie is niet zomaar een koffiewagen—het is een mobiel paradijs voor koffieliefhebbers. We zijn begonnen met een eenvoudige missie: uitzonderlijke koffie naar je buurt brengen.
-              </p>
-              <p className="text-lg mb-6 leading-relaxed" style={{ color: '#7B6B58' }}>
-                Elk kopje wordt bereid door ervaren barista's met alleen de fijnste bonen, vers gemalen en perfect geëxtraheerd. We geloven in kwaliteit boven snelheid, en dat proef je in elke slok.
-              </p>
-              <div className="flex gap-6">
-                <div>
-                  <div className="text-3xl font-serif font-bold" style={{ color: '#6B4423' }}>500+</div>
-                  <p style={{ color: '#6B4423' }}>Tevreden Klanten Dagelijks</p>
-                </div>
-                <div>
-                  <div className="text-3xl font-serif font-bold" style={{ color: '#6B4423' }}>100%</div>
-                  <p style={{ color: '#6B4423' }}>Vers Gezet</p>
-                </div>
-              </div>
-            </div>
-            <div className="relative">
-              <div className="absolute inset-0 rounded-[2.5rem] transform rotate-6" style={{ backgroundColor: '#D4A574', opacity: 0.3 }}></div>
-              <div className="relative bg-gradient-to-br from-white p-1 rounded-[3rem]" style={{ backgroundColor: '#F5EFE7' }}>
-                <div className="h-96 rounded-[2.5rem] flex items-center justify-center" style={{ backgroundColor: '#6B4423' }}>
-                  <Coffee className="w-32 h-32" style={{ color: '#F5EFE7', opacity: 0.3 }} />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Location Section */}
-      <section id="location" className="py-20 px-4 sm:px-6 lg:px-8" style={{ background: 'linear-gradient(to bottom, #FBF8F3, white)' }}>
-        <div className="max-w-4xl mx-auto">
-          <h2 className="section-title text-center mb-16">Vind Ons Vandaag</h2>
-          <div className="grid md:grid-cols-2 gap-12">
-            <div className="space-y-8">
-              <div className="flex gap-4">
-                <div className="flex-shrink-0">
-                  <MapPin className="w-8 h-8 mt-1" style={{ color: '#6B4423' }} />
-                </div>
-                <div>
-                  <h3 className="text-xl font-serif font-bold mb-1" style={{ color: '#4A3728' }}>Wekelijkse Locaties</h3>
-                  <p className="mb-2" style={{ color: '#7B6B58' }}>Centrum Markt - Maandag tot Vrijdag</p>
-                  <p style={{ color: '#7B6B58' }}>Centraal Park - Weekends</p>
-                </div>
-              </div>
-
-              <div className="flex gap-4">
-                <div className="flex-shrink-0">
-                  <Clock className="w-8 h-8 mt-1" style={{ color: '#6B4423' }} />
-                </div>
-                <div>
-                  <h3 className="text-xl font-serif font-bold mb-1" style={{ color: '#4A3728' }}>Openingstijden</h3>
-                  <p className="mb-1" style={{ color: '#7B6B58' }}>Maandag - Vrijdag: 07:00 - 18:00</p>
-                  <p style={{ color: '#7B6B58' }}>Zaterdag - Zondag: 09:00 - 17:00</p>
-                </div>
-              </div>
-
-              <div className="flex gap-4">
-                <div className="flex-shrink-0">
-                  <MessageCircle className="w-8 h-8 mt-1" style={{ color: '#6B4423' }} />
-                </div>
-                <div>
-                  <h3 className="text-xl font-serif font-bold mb-1" style={{ color: '#4A3728' }}>Contact</h3>
-                  <p className="mb-1" style={{ color: '#7B6B58' }}>hallo@tbonenbakkie.com</p>
-                  <p style={{ color: '#7B6B58' }}>+31 6 12345678</p>
-                </div>
-              </div>
+      <div className="page-shell">
+        <header
+          className="fixed w-full z-30 top-0 left-0 transition-all duration-300 ease-[cubic-bezier(0.215,0.61,0.355,1)]"
+          style={{
+            transform: `translateY(-${navOffset}px)`,
+            opacity: `${Math.max(0, 1 - navOffset / 120)}`,
+          }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 grid grid-cols-[auto_1fr_auto] items-center gap-6 nav-glass">
+            <div className="flex items-center gap-4">
+              <img src="/Logo_bonenbakkie.jpeg" alt="'t Bonenbakkie" className="h-14 w-14 rounded-full object-cover" />
+              <span className="text-2xl font-serif font-bold text-white tracking-wide">'t Bonenbakkie</span>
             </div>
 
-            <div className="rounded-[3rem] p-8 text-white flex flex-col justify-center" style={{ backgroundColor: '#6B4423' }}>
-              <h3 className="text-2xl font-serif font-bold mb-4">Neem Contact Op</h3>
-              <p className="mb-6" style={{ color: '#F5EFE7' }}>Heb je een vraag of wil je ons boeken voor een evenement? We horen graag van je!</p>
-              <button className="px-6 py-3 rounded-full font-semibold transition-colors w-full" style={{ backgroundColor: 'white', color: '#6B4423' }}>
-                Stuur een Bericht
-              </button>
+            <nav className="top-nav flex items-center gap-8 text-sm justify-self-center">
+              <NavLink to="/menu" className={({ isActive }) =>
+                isActive ? activeThemeClass : hoverThemeClass
+              }>Menu</NavLink>
+              <NavLink to="/" end className={({ isActive }) =>
+                isActive ? `home-link ${activeThemeClass}` : `home-link ${baseThemeClass}`
+              }>Home</NavLink>
+              <NavLink to="/about" className={({ isActive }) =>
+                isActive ? activeThemeClass : hoverThemeClass
+              }>Over Ons</NavLink>
+            </nav>
+
+            <div className="flex justify-end">
+              <Link to="/contact"><button className="coffee-btn text-sm">Contact</button></Link>
             </div>
           </div>
-        </div>
-      </section>
+        </header>
 
-      {/* Footer */}
-      <footer className="py-12 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: '#4A3728', color: '#F5EFE7' }}>
+        <div className="pt-24">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/menu" element={<Menu />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+          </Routes>
+        </div>
+
+        {/* Location section removed as requested */}
+
+        {/* Footer */}
+        <footer className="py-12 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: '#4A3728', color: '#F5EFE7' }}>
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-3 gap-8 mb-8 pb-8" style={{ borderBottom: '1px solid #6B4423' }}>
             <div>
@@ -231,9 +107,9 @@ const App = () => {
             <div>
               <h4 className="font-bold mb-4">Snelle Links</h4>
               <ul className="space-y-2" style={{ color: '#D4A574' }}>
-                <li><a href="#menu" className="hover:text-white transition-colors">Menu</a></li>
-                <li><a href="#about" className="hover:text-white transition-colors">Over Ons</a></li>
-                <li><a href="#location" className="hover:text-white transition-colors">Vind Ons</a></li>
+                <li><Link to="/menu" className="hover:text-white transition-colors">Menu</Link></li>
+                <li><Link to="/about" className="hover:text-white transition-colors">Over Ons</Link></li>
+                <li><Link to="/contact" className="hover:text-white transition-colors">Contact</Link></li>
               </ul>
             </div>
             <div>
