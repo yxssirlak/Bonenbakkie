@@ -14,22 +14,30 @@
     --shadow-glow: 0 48px 140px rgba(28, 12, 8, 0.16);
   }
 
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+    display: none;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
   html,
   body,
   #root,
   .page-shell {
     min-height: 100vh;
-    
-    /* 1. De egale diepbruine basiskleur */
-    background-color: #1f140f; 
-    
-    /* 2. Het effect: een zachte warme gloed, donkere randen en een luxe textuur (noise) */
-    background-image: 
-      radial-gradient(circle at 50% 0%, rgba(94, 57, 36, 0.4) 0%, transparent 70%),
-      radial-gradient(circle at 100% 100%, rgba(10, 5, 2, 0.8) 0%, transparent 60%),
-      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
-    
-    /* Zorgt ervoor dat de textuur en gloed stilstaan terwijl de gebruiker scrolt */
+    background-color: #0a0502;
+    background-image: radial-gradient(
+      60% 80% at 50% 15%, 
+      #3d1f11 0%, 
+      #1c0e08 45%, 
+      #0a0502 100%
+    );
     background-attachment: fixed;
   }
 
@@ -49,17 +57,10 @@
 }
 
 @layer components {
-  .nav-glass,
   header {
-    background: transparent;
+    background: transparent !important;
     border-bottom: none !important;
     box-shadow: none !important;
-  }
-
-  .nav-glass {
-    background: rgba(17, 9, 4, 0.14);
-    backdrop-filter: blur(18px);
-    border: none;
   }
 
   .hero-section {
@@ -67,47 +68,26 @@
     background: transparent;
   }
 
-  .hero-section::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, rgba(0,0,0,0.12), transparent 22%, rgba(0,0,0,0.5) 100%);
-    pointer-events: none;
-  }
-
-  .hero-glow {
-    position: absolute;
-    border-radius: 999px;
-    filter: blur(80px);
-    opacity: 0.22;
-  }
-
-  .hero-glow-left {
-    width: 360px;
-    height: 360px;
-    top: -60px;
-    left: -40px;
-    background: rgba(212, 165, 116, 0.35);
-  }
-
-  .hero-glow-right {
-    width: 420px;
-    height: 420px;
-    top: 24%;
-    right: -80px;
-    background: rgba(255, 243, 220, 0.22);
-  }
-
   .hero-content {
     position: relative;
     z-index: 10;
   }
 
+  /* De vernieuwde, glassy Hero-pill */
   .hero-pill {
-    @apply inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold;
-    color: var(--color-brown-dark);
-    background: rgba(255, 250, 245, 0.92);
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300;
+    color: #f8ede2;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .hero-pill:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.05), 0 4px 20px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
   }
 
   .hero-title {
@@ -125,13 +105,6 @@
     color: #ebdad0;
   }
 
-  .hero-logo {
-    @apply mx-auto rounded-[3rem] shadow-[0_35px_90px_rgba(0,0,0,0.24)];
-    border: 1px solid rgba(255,255,255,0.18);
-    min-width: 16rem;
-  }
-
-  /* Top navigation link styles (centered) */
   .top-nav a {
     @apply px-3 py-1 rounded-md font-medium;
     color: rgba(247, 239, 231, 0.95);
@@ -152,7 +125,6 @@
     border-radius: 10px;
   }
 
-  /* Home link prominence */
   .top-nav .home-link {
     @apply text-lg md:text-xl font-extrabold;
     padding: 8px 18px;
@@ -167,50 +139,20 @@
     background: linear-gradient(90deg, rgba(255,255,240,0.09), rgba(255,255,240,0.03));
   }
 
-  .section-cream {
-    @apply bg-gradient-to-b from-[#fff9f1] to-[#fdf4ea];
+  /* NIEUW: Dé Glass-card class voor prachtige hover effecten */
+  .glass-card {
+    @apply rounded-[2rem] p-8 transition-all duration-500 ease-out;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   }
 
-  .feature-card,
-  .menu-card,
-  .glass-panel,
-  .location-card {
-    @apply rounded-[2rem] border transition-all duration-300;
-    border-color: rgba(139, 111, 71, 0.18);
-    background: rgba(255, 250, 245, 0.95);
-    box-shadow: var(--shadow-glow);
-  }
-
-  .feature-card:hover,
-  .menu-card:hover,
-  .glass-panel:hover {
-    transform: translateY(-8px) scale(1.01);
-    border-color: rgba(139, 111, 71, 0.32);
-    box-shadow: 0 30px 65px rgba(74, 55, 40, 0.18);
-  }
-
-  .feature-card {
-    @apply p-8;
-  }
-
-  .menu-card {
-    @apply p-8 cursor-pointer;
-  }
-
-  .glass-panel {
-    @apply p-10;
-    background: rgba(255, 250, 245, 0.82);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-  }
-
-  .location-card {
-    @apply p-8;
-    background: #f9efe2;
-  }
-
-  .footer-link:hover {
-    color: white;
+  .glass-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(212, 165, 116, 0.1);
+    transform: translateY(-8px);
   }
 
   .coffee-btn {
@@ -225,19 +167,21 @@
     transform: translateY(-2px);
   }
 
+  /* Glassy button stijl */
   .coffee-btn-outline {
     @apply px-6 py-3 border font-semibold rounded-full transition-all duration-300;
-    border-color: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.15);
     color: #f7efe7;
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(8px);
   }
 
   .coffee-btn-outline:hover {
-    background: rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.15);
     color: #fff;
-    border-color: rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.4);
     transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
   }
 
   .section-title {
@@ -246,28 +190,9 @@
   }
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
 @keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.float {
-  animation: float 3s ease-in-out infinite;
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .fade-in-up {
