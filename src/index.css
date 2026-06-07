@@ -18,8 +18,19 @@
   body,
   #root,
   .page-shell {
-    min-height: 100%;
-    background: linear-gradient(180deg, #110904 0%, #140a07 12%, #1b0b08 26%, #2a110b 42%, #38170e 60%, #4b2414 82%, #f7efe7 98%);
+    min-height: 100vh;
+    
+    /* 1. De egale diepbruine basiskleur */
+    background-color: #1f140f; 
+    
+    /* 2. Het effect: een zachte warme gloed, donkere randen en een luxe textuur (noise) */
+    background-image: 
+      radial-gradient(circle at 50% 0%, rgba(94, 57, 36, 0.4) 0%, transparent 70%),
+      radial-gradient(circle at 100% 100%, rgba(10, 5, 2, 0.8) 0%, transparent 60%),
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+    
+    /* Zorgt ervoor dat de textuur en gloed stilstaan terwijl de gebruiker scrolt */
+    background-attachment: fixed;
   }
 
   html,
