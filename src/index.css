@@ -73,9 +73,9 @@
     z-index: 10;
   }
 
-  /* De vernieuwde, glassy Hero-pill */
+  /* HIER IS DE FOUT OPGELOST: 'relative' met een kleine letter r */
   .hero-pill {
-    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300;
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 uppercase tracking-widest font-sans relative;
     color: #f8ede2;
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(12px);
@@ -105,41 +105,42 @@
     color: #ebdad0;
   }
 
+  /* --- SCHUIVENDE BUBBEL NAVIGATIE STIJLEN --- */
+  
+  .top-nav {
+    position: relative;
+  }
+
   .top-nav a {
-    @apply px-3 py-1 rounded-md font-medium;
-    color: rgba(247, 239, 231, 0.95);
-    transition: all 220ms ease;
-  }
-
-  .top-nav a:hover {
-    background: rgba(255,255,255,0.04);
-    color: #fff;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.03) inset;
-  }
-
-  .top-nav a.font-semibold {
-    letter-spacing: 0.6px;
-    padding: 6px 14px;
-    background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-    border-radius: 10px;
+    @apply px-5 py-2 transition-colors duration-300 relative z-10 uppercase tracking-widest text-xs font-bold font-sans;
+    border-radius: 9999px;
   }
 
   .top-nav .home-link {
-    @apply text-lg md:text-xl font-extrabold;
-    padding: 8px 18px;
-    background: linear-gradient(90deg, rgba(255,255,240,0.06), rgba(255,255,240,0.02));
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.28);
-    transform: translateY(0);
+    @apply text-sm;
+    padding: 8px 24px;
+    margin: 0 0.5rem;
   }
 
-  .top-nav .home-link:hover {
-    transform: translateY(-3px) scale(1.02);
-    background: linear-gradient(90deg, rgba(255,255,240,0.09), rgba(255,255,240,0.03));
+  .top-nav.theme-dark a {
+    color: rgba(247, 239, 231, 0.6);
+  }
+  
+  .top-nav.theme-dark a:hover, 
+  .top-nav.theme-dark a.active-link {
+    color: #ffffff !important; 
   }
 
-  /* NIEUW: Dé Glass-card class voor prachtige hover effecten */
+  .top-nav.theme-light a {
+    color: rgba(107, 68, 35, 0.6);
+  }
+  .top-nav.theme-light a:hover, 
+  .top-nav.theme-light a.active-link {
+    color: #140a07 !important;
+  }
+
+  /* ----------------------------------------------- */
+
   .glass-card {
     @apply rounded-[2rem] p-8 transition-all duration-500 ease-out;
     background: rgba(255, 255, 255, 0.03);
@@ -156,7 +157,7 @@
   }
 
   .coffee-btn {
-    @apply px-6 py-3 text-white font-semibold rounded-full transition-all duration-300 shadow-[0_20px_45px_rgba(0,0,0,0.25)];
+    @apply px-6 py-3 text-white rounded-full transition-all duration-300 shadow-[0_20px_45px_rgba(0,0,0,0.25)] uppercase tracking-widest text-xs font-bold font-sans;
     background: linear-gradient(135deg, #b47b4f, #5a361f);
     border: 1px solid rgba(255, 255, 255, 0.18);
     text-shadow: 0 6px 18px rgba(0,0,0,0.22);
@@ -167,9 +168,8 @@
     transform: translateY(-2px);
   }
 
-  /* Glassy button stijl */
   .coffee-btn-outline {
-    @apply px-6 py-3 border font-semibold rounded-full transition-all duration-300;
+    @apply px-6 py-3 border rounded-full transition-all duration-300 uppercase tracking-widest text-xs font-bold font-sans flex items-center justify-center gap-2;
     border-color: rgba(255, 255, 255, 0.15);
     color: #f7efe7;
     background: rgba(255, 255, 255, 0.05);
