@@ -1,3 +1,43 @@
+@font-face {
+  font-family: 'Giaza';
+  src: url('/Giaza.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Lora';
+  src: url('/Lora-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lora';
+  src: url('/Lora-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lora';
+  src: url('/Lora-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lora';
+  src: url('/Lora-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,7 +51,7 @@
     --color-beige-light: #fbf8f3;
     --color-beige-warm: #f5efe7;
     --color-text-dark: #341d14;
-    --shadow-glow: 0 48px 140px rgba(28, 12, 8, 0.16);
+    --logo-cream: #f4f1ea;
   }
 
   ::-webkit-scrollbar {
@@ -31,24 +71,29 @@
   #root,
   .page-shell {
     min-height: 100vh;
-    background-color: #0a0502;
+    background-color: #534026 !important; 
+    /* Spotlight effect op de achtergrond */
     background-image: radial-gradient(
-      60% 80% at 50% 15%, 
-      #3d1f11 0%, 
-      #1c0e08 45%, 
-      #0a0502 100%
-    );
-    background-attachment: fixed;
+      circle at 50% 30%, 
+      #705430 0%,   
+      #534026 50%,  
+      #2e2213 100%  
+    ) !important;
+    background-attachment: fixed !important;
   }
 
+  /* Lora als standaardtekst */
   html,
   body {
-    @apply font-sans antialiased;
-    color: var(--color-text-dark);
+    @apply antialiased;
+    font-family: 'Lora', serif !important; 
+    color: var(--logo-cream) !important; 
   }
 
+  /* Titels zijn overal Giaza */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-serif;
+    font-family: 'Giaza', serif !important; 
+    color: var(--logo-cream) !important; 
   }
 
   a {
@@ -73,120 +118,101 @@
     z-index: 10;
   }
 
-  /* HIER IS DE FOUT OPGELOST: 'relative' met een kleine letter r */
   .hero-pill {
     @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 uppercase tracking-widest font-sans relative;
-    color: #f8ede2;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  }
-
-  .hero-pill:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.25);
-    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.05), 0 4px 20px rgba(0, 0, 0, 0.3);
-    transform: translateY(-2px);
+    color: #2b1708 !important; 
+    background: var(--logo-cream); 
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   }
 
   .hero-title {
-    @apply text-5xl sm:text-6xl md:text-7xl font-serif font-black leading-tight;
-    color: #f8ede2;
-    text-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
-  }
-
-  .hero-title span {
-    color: #f4d8b4;
+    @apply text-5xl sm:text-6xl md:text-7xl leading-tight;
+    font-family: 'Giaza', serif !important;
+    color: var(--logo-cream);
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
   }
 
   .hero-copy {
     @apply max-w-2xl mx-auto text-lg md:text-xl leading-relaxed;
-    color: #ebdad0;
+    color: var(--logo-cream);
+    opacity: 0.9;
   }
 
-  /* --- SCHUIVENDE BUBBEL NAVIGATIE STIJLEN --- */
-  
   .top-nav {
     position: relative;
   }
 
+  /* Navigatiebalk links (Home, Menu, etc.) met handmatige verticale Giaza-fijnafstelling */
   .top-nav a {
-    @apply px-5 py-2 transition-colors duration-300 relative z-10 uppercase tracking-widest text-xs font-bold font-sans;
+    @apply px-8 transition-colors duration-300 relative z-10 font-sans;
+    padding-top: 8px !important;     
+    padding-bottom: 12px !important; 
+    line-height: 1 !important;       
+    
+    font-family: 'Giaza', serif !important;
+    font-size: 20px !important;
+    font-weight: 400 !important; 
+    text-transform: capitalize !important; 
+    letter-spacing: normal !important;
+    color: var(--logo-cream) !important;
     border-radius: 9999px;
   }
 
-  .top-nav .home-link {
-    @apply text-sm;
-    padding: 8px 24px;
-    margin: 0 0.5rem;
-  }
-
   .top-nav.theme-dark a {
-    color: rgba(247, 239, 231, 0.6);
+    color: rgba(244, 241, 234, 0.7) !important; 
   }
   
   .top-nav.theme-dark a:hover, 
   .top-nav.theme-dark a.active-link {
-    color: #ffffff !important; 
+    color: var(--logo-cream) !important; 
   }
-
-  .top-nav.theme-light a {
-    color: rgba(107, 68, 35, 0.6);
-  }
-  .top-nav.theme-light a:hover, 
-  .top-nav.theme-light a.active-link {
-    color: #140a07 !important;
-  }
-
-  /* ----------------------------------------------- */
 
   .glass-card {
     @apply rounded-[2rem] p-8 transition-all duration-500 ease-out;
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   }
 
   .glass-card:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(212, 165, 116, 0.1);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     transform: translateY(-8px);
   }
 
-  .coffee-btn {
-    @apply px-6 py-3 text-white rounded-full transition-all duration-300 shadow-[0_20px_45px_rgba(0,0,0,0.25)] uppercase tracking-widest text-xs font-bold font-sans;
-    background: linear-gradient(135deg, #b47b4f, #5a361f);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    text-shadow: 0 6px 18px rgba(0,0,0,0.22);
-  }
-
-  .coffee-btn:hover {
-    background: linear-gradient(135deg, #d29568, #7a4a28);
-    transform: translateY(-2px);
-  }
-
+  /* De standaard Contact knop (rechts): Transparant met een dunne beige rand */
+  .coffee-btn,
   .coffee-btn-outline {
-    @apply px-6 py-3 border rounded-full transition-all duration-300 uppercase tracking-widest text-xs font-bold font-sans flex items-center justify-center gap-2;
-    border-color: rgba(255, 255, 255, 0.15);
-    color: #f7efe7;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(8px);
+    @apply px-8 transition-all duration-300 relative z-10 cursor-pointer inline-flex items-center justify-center text-center;
+    padding-top: 6px !important;     
+    padding-bottom: 10px !important; 
+    line-height: 1 !important;       
+    
+    font-family: 'Giaza', serif !important;
+    font-size: 20px !important;
+    font-weight: 400 !important; 
+    text-transform: capitalize !important; 
+    background-color: transparent !important; 
+    color: var(--logo-cream) !important; 
+    border: 1px solid var(--logo-cream) !important;
+    border-radius: 9999px !important;
   }
 
+  /* Hover-effect voor de Contact-knop */
+  .coffee-btn:hover,
   .coffee-btn-outline:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: #fff;
-    border-color: rgba(255, 255, 255, 0.4);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+    background-color: var(--logo-cream) !important;
+    color: #534026 !important;
+    border-color: var(--logo-cream) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;
   }
 
   .section-title {
-    @apply text-3xl md:text-4xl font-serif font-bold mb-4;
-    color: var(--color-brown-dark);
+    @apply text-3xl md:text-5xl mb-4;
+    font-family: 'Giaza', serif !important;
+    color: var(--logo-cream);
   }
 }
 

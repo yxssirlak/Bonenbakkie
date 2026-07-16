@@ -92,14 +92,9 @@ const App = () => {
           opacity: `${Math.max(0, 1 - navOffset / 120)}`,
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between md:justify-center gap-6 relative">
+        <div className="w-full px-6 lg:px-16 py-4 flex items-center justify-between h-24 relative">
           
-          <div className="flex items-center gap-4 md:absolute md:left-4 lg:left-8">
-            <img src="/Logo_bonenbakkie.jpeg" alt="'t Bonenbakkie" className="h-10 w-10 sm:h-14 sm:w-14 rounded-full object-cover shadow-lg" />
-            <span className="text-xl sm:text-2xl font-serif font-bold text-white tracking-wide">'t Bonenbakkie</span>
-          </div>
-
-          <nav ref={navRef} className={`hidden md:flex top-nav items-center gap-2 text-sm theme-${navTheme}`}>
+          <nav ref={navRef} className={`hidden md:flex flex-1 justify-start top-nav items-center gap-1 theme-${navTheme} -ml-5`}>
             <div
               className={`absolute h-full top-0 left-0 rounded-full border transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none z-0 ${bubbleClass}`}
               style={{
@@ -109,36 +104,47 @@ const App = () => {
               }}
             />
 
-            <NavLink to="/menu" className={({ isActive }) => (isActive ? 'active-link' : '')}>MENU</NavLink>
-            <NavLink to="/events" className={({ isActive }) => (isActive ? 'active-link' : '')}>EVENTS</NavLink>
-            
-            <NavLink to="/" end className={({ isActive }) => `home-link ${isActive ? 'active-link' : ''}`}>HOME</NavLink>
-            
-            <NavLink to="/sfeer" className={({ isActive }) => (isActive ? 'active-link' : '')}>SFEER</NavLink>
-            <NavLink to="/about" className={({ isActive }) => (isActive ? 'active-link' : '')}>OVER ONS</NavLink>
+            {/* Navigatie-items: kleine letters voor perfecte CSS text-transform */}
+            <NavLink to="/" end className={({ isActive }) => (isActive ? 'active-link' : '')}>Home</NavLink>
+            <NavLink to="/menu" className={({ isActive }) => (isActive ? 'active-link' : '')}>Menu</NavLink>
+            <NavLink to="/events" className={({ isActive }) => (isActive ? 'active-link' : '')}>Boeken</NavLink>
+            <NavLink to="/sfeer" className={({ isActive }) => (isActive ? 'active-link' : '')}>Sfeer</NavLink>
+            <NavLink to="/about" className={({ isActive }) => (isActive ? 'active-link' : '')}>Over ons</NavLink>
           </nav>
 
-          <div className="hidden md:flex absolute right-4 lg:right-8 justify-end">
-            {/* Contact knop heeft nu automatisch de strakke stijl vanuit de CSS class .coffee-btn */}
-            <Link to="/contact"><button className="coffee-btn">CONTACT</button></Link>
+          {/* Logo */}
+          <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center pointer-events-none z-10 w-48 sm:w-72">
+            <img 
+              src="/bonenbakkielogo.png" 
+              alt="'t bonenbakkie" 
+              className="w-full h-auto object-contain pointer-events-auto filter drop-shadow-md" 
+            />
           </div>
 
-          <button 
-            className="md:hidden p-2 text-white"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X size={28} /> : <MenuIcon size={28} />}
-          </button>
+          <div className="flex-1 flex justify-end items-center gap-4">
+            <div className="hidden md:block">
+              {/* Contact-knop strak uitgelijnd */}
+              <Link to="/contact" className="coffee-btn">Contact</Link>
+            </div>
+            <button 
+              className="md:hidden p-2 text-white z-20 relative"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X size={28} color="#f4ebd9" /> : <MenuIcon size={28} color="#f4ebd9" />}
+            </button>
+          </div>
+
         </div>
 
-        <div className={`md:hidden absolute w-full bg-[#110904]/95 backdrop-blur-xl border-b border-white/10 transition-all duration-300 overflow-hidden ${isMobileMenuOpen ? 'max-h-96 py-4' : 'max-h-0 py-0'}`}>
-          <div className="flex flex-col px-6 gap-4 text-center font-sans uppercase tracking-widest text-xs font-bold">
-            <NavLink to="/" end className="text-white py-2 border-b border-white/10">HOME</NavLink>
-            <NavLink to="/menu" className="text-white py-2 border-b border-white/10">MENU</NavLink>
-            <NavLink to="/events" className="text-white py-2 border-b border-white/10">EVENTS</NavLink>
-            <NavLink to="/sfeer" className="text-white py-2 border-b border-white/10">SFEER</NavLink>
-            <NavLink to="/about" className="text-white py-2 border-b border-white/10">OVER ONS</NavLink>
-            <NavLink to="/contact" className="text-[#D4A574] py-2">CONTACT</NavLink>
+        {/* Mobiel menu */}
+        <div className={`md:hidden absolute w-full bg-[#534026]/95 backdrop-blur-xl border-b border-white/10 transition-all duration-300 overflow-hidden ${isMobileMenuOpen ? 'max-h-96 py-4' : 'max-h-0 py-0'}`}>
+          <div className="flex flex-col px-6 gap-4 text-center top-nav">
+            <NavLink to="/" end className="text-[#f4ebd9] py-2 border-b border-white/10" onClick={() => setIsMobileMenuOpen(false)}>Home</NavLink>
+            <NavLink to="/menu" className="text-[#f4ebd9] py-2 border-b border-white/10" onClick={() => setIsMobileMenuOpen(false)}>Menu</NavLink>
+            <NavLink to="/events" className="text-[#f4ebd9] py-2 border-b border-white/10" onClick={() => setIsMobileMenuOpen(false)}>Boeken</NavLink>
+            <NavLink to="/sfeer" className="text-[#f4ebd9] py-2 border-b border-white/10" onClick={() => setIsMobileMenuOpen(false)}>Sfeer</NavLink>
+            <NavLink to="/about" className="text-[#f4ebd9] py-2 border-b border-white/10" onClick={() => setIsMobileMenuOpen(false)}>Over ons</NavLink>
+            <NavLink to="/contact" className="text-[#e3cdb3] py-2" onClick={() => setIsMobileMenuOpen(false)}>Contact</NavLink>
           </div>
         </div>
       </header>
@@ -158,34 +164,33 @@ const App = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-3 gap-10 mb-10 pb-10 border-b border-white/10">
             <div>
-              <div className="flex items-center gap-3 mb-5">
-                <img src="/Logo_bonenbakkie.jpeg" alt="'t Bonenbakkie" className="h-10 w-10 rounded-full object-cover shadow-lg" />
-                <span className="text-2xl font-serif font-bold text-[#F5EFE7]">'t Bonenbakkie</span>
+              <div className="flex items-center gap-3 mb-5 w-48">
+                <img src="/bonenbakkielogo.png" alt="'t bonenbakkie" className="w-full h-auto object-contain" />
               </div>
-              <p className="text-[#ebdad0] leading-relaxed">
+              <p className="text-[#f4ebd9] leading-relaxed opacity-90 font-sans">
                 Premium koffie naar je buurt, één kopje tegelijk. Ervaar de warmte van onze mobiele wagen.
               </p>
             </div>
-            <div>
-              <h4 className="font-bold mb-5 text-[#F5EFE7] uppercase tracking-wider text-sm font-sans">Snelle Links</h4>
-              <ul className="space-y-3 text-[#D4A574] text-xs uppercase tracking-widest font-bold font-sans">
-                <li><Link to="/menu" className="hover:text-white transition-colors block">MENU</Link></li>
-                <li><Link to="/events" className="hover:text-white transition-colors block">EVENTS</Link></li>
-                <li><Link to="/sfeer" className="hover:text-white transition-colors block">SFEER</Link></li>
-                <li><Link to="/about" className="hover:text-white transition-colors block">OVER ONS</Link></li>
+            <div className="top-nav">
+              <h4 className="font-bold mb-5 text-[#f4ebd9] font-sans">Snelle Links</h4>
+              <ul className="space-y-3 text-[#f4ebd9] font-sans">
+                <li><Link to="/menu" className="hover:text-white transition-colors block">Menu</Link></li>
+                <li><Link to="/events" className="hover:text-white transition-colors block">Boeken</Link></li>
+                <li><Link to="/sfeer" className="hover:text-white transition-colors block">Sfeer</Link></li>
+                <li><Link to="/about" className="hover:text-white transition-colors block">Over ons</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-bold mb-5 text-[#F5EFE7] uppercase tracking-wider text-sm font-sans">Volg Ons</h4>
-              <div className="flex flex-col gap-3 text-[#D4A574] text-xs uppercase tracking-widest font-bold font-sans">
-                <a href="#" className="hover:text-white transition-colors">INSTAGRAM</a>
-                <a href="#" className="hover:text-white transition-colors">FACEBOOK</a>
-                <a href="#" className="hover:text-white transition-colors">LINKEDIN</a>
+              <h4 className="font-bold mb-5 text-[#f4ebd9] font-sans">Volg Ons</h4>
+              <div className="flex flex-col gap-3 text-[#f4ebd9] font-sans">
+                <a href="#" className="hover:text-white transition-colors">Instagram</a>
+                <a href="#" className="hover:text-white transition-colors">Facebook</a>
+                <a href="#" className="hover:text-white transition-colors">LinkedIn</a>
               </div>
             </div>
           </div>
-          <div className="text-center text-sm text-[#ebdad0]/60 font-sans">
-            <p>© 2026 't Bonenbakkie. Met liefde gemaakt van de fijnste koffiebonen.</p>
+          <div className="text-center text-sm text-[#f4ebd9] opacity-60 font-sans">
+            <p>© 2026 't bonenbakkie. Met liefde gemaakt van de fijnste koffiebonen.</p>
           </div>
         </div>
       </footer>
