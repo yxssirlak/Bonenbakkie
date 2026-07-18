@@ -71,15 +71,40 @@
   #root,
   .page-shell {
     min-height: 100vh;
-    background-color: #534026 !important; 
-    /* Spotlight effect op de achtergrond */
+    background-color: #534026 !important;
     background-image: radial-gradient(
-      circle at 50% 30%, 
-      #705430 0%,   
-      #534026 50%,  
-      #2e2213 100%  
+      circle at 50% 20%,
+      rgba(112, 84, 48, 0.8) 0%,
+      rgba(83, 64, 38, 0.96) 42%,
+      rgba(46, 34, 19, 1) 100%
     ) !important;
     background-attachment: fixed !important;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.08;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 220px 220px;
+    mix-blend-mode: soft-light;
+  }
+
+  .page-shell,
+  main {
+    position: relative;
+    isolation: isolate;
+  }
+
+  /* Ensure titles inside light-themed sections use the brown brand color for readability */
+  [data-nav-theme="light"] h1,
+  [data-nav-theme="light"] h2,
+  [data-nav-theme="light"] h3,
+  [data-nav-theme="light"] h4 {
+    color: var(--color-brown-main) !important;
   }
 
   /* Lora als standaardtekst */
@@ -169,16 +194,60 @@
 
   .glass-card {
     @apply rounded-[2rem] p-8 transition-all duration-500 ease-out;
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    background: rgba(244,241,234,0.14);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(244,241,234,0.18);
+    box-shadow: 0 10px 26px rgba(46,34,19,0.08);
+    color: var(--color-brown-main);
   }
 
   .glass-card:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    transform: translateY(-8px);
+    background: rgba(244,241,234,0.18);
+    border: 1px solid rgba(244,241,234,0.24);
+    transform: translateY(-6px);
+  }
+
+  /* Accent styles to reuse the logo cream and brown throughout the UI */
+  .accent-btn {
+    background: var(--logo-cream) !important;
+    color: var(--color-brown-main) !important;
+    border-color: transparent !important;
+    box-shadow: 0 8px 30px rgba(83,64,38,0.12) !important;
+  }
+
+  .accent-btn:hover {
+    transform: translateY(-2px) !important;
+    background: linear-gradient(180deg, var(--logo-cream), rgba(244,241,234,0.92)) !important;
+  }
+
+  .accent-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.9rem;
+    border-radius: 9999px;
+    background: var(--logo-cream);
+    color: var(--color-brown-main);
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  .accent-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(83,64,38,0.12);
+  }
+
+  /* Footer login smaller and slightly lower when inside footer column */
+  .footer-login {
+    padding: 0.35rem 0.6rem !important;
+    font-size: 0.85rem !important;
+    margin-top: 1.25rem !important;
+    align-self: flex-end;
+  }
+
+  .glass-card:hover {
+    border-color: rgba(244,241,234,0.12) !important;
   }
 
   /* De standaard Contact knop (rechts): Transparant met een dunne beige rand */

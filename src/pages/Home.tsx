@@ -1,8 +1,18 @@
-import React, { useEffect, useRef } from 'react'; // <--- useEffect & useRef toegevoegd
-import { Sparkles, ArrowRight, Coffee, Award, ChevronDown } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Sparkles, ArrowRight, Coffee, Award, ChevronDown, Camera } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+type HomeGalleryImage = {
+  id: number;
+  src: string;
+  alt: string;
+  title?: string;
+  description?: string;
+};
+
 const Home: React.FC = () => {
+  const [galleryImages, setGalleryImages] = useState<HomeGalleryImage[]>([]);
+
   // Parallax refs
   const bokehRef1 = useRef<HTMLDivElement>(null);
   const bokehRef2 = useRef<HTMLDivElement>(null);
@@ -15,6 +25,25 @@ const Home: React.FC = () => {
   const bokehRef9 = useRef<HTMLDivElement>(null);
 
   // Parallax logica: laat de boontjes reageren op de muis
+  useEffect(() => {
+    try {
+      const stored = window.localStorage.getItem('bonenbakkie-home-gallery');
+      if (stored) {
+        const parsed = JSON.parse(stored) as HomeGalleryImage[];
+        const images = parsed.filter((item) => item.src).map((item) => ({
+          ...item,
+          title: item.title || 'Onze koffiewagen',
+          description: item.description || 'Sfeer en detail',
+        }));
+        if (images.length) {
+          setGalleryImages(images);
+        }
+      }
+    } catch {
+      // fallback to defaults below
+    }
+  }, []);
+
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       const { clientX, clientY } = e;
@@ -81,6 +110,15 @@ const Home: React.FC = () => {
       element.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  useEffect(() => {
+    if (galleryImages.length) return;
+    setGalleryImages([
+      { id: 1, src: '/bonenbakkie1.jpeg', alt: "'t bonenbakkie koffiewagen", title: 'Onze koffiewagen', description: 'In actie op locatie' },
+      { id: 2, src: '/bonenbakkie2.png', alt: "Interieur van 't bonenbakkie", title: 'Sfeer binnenin', description: 'Een warm en stijlvol interieur' },
+      { id: 3, src: '/Logo_bonenbakkie.jpeg', alt: 'Logo van het mobiele koffiehuisje', title: 'Ons merk', description: 'Karakter en identiteit' },
+    ]);
+  }, [galleryImages.length]);
 
   return (
     <main>
@@ -254,13 +292,12 @@ const Home: React.FC = () => {
               <span className="flex items-center gap-1.5"><Sparkles size={14} /> Mobiele koffie met karakter</span>
             </div>
             
-            <h1 
-              className="animate-fade-in-up text-6xl md:text-7xl lg:text-8xl font-serif mb-6 text-[#f4f1ea]"
-              style={{ animationDelay: '0.3s' }}
-            >
-              't bonenbakkie brengt <br />
-              <span className="opacity-80">sfeer in elk kopje</span>
-            </h1>
+            <div className="animate-fade-in-up mb-6 flex flex-col items-center md:items-start" style={{ animationDelay: '0.3s' }}>
+              <h1 className="text-6xl md:text-7xl lg:text-8xl font-serif text-[#f4f1ea]">
+                't bonenbakkie brengt <br />
+                <span className="opacity-80">sfeer in elk kopje</span>
+              </h1>
+            </div>
             
             <p 
               className="animate-fade-in-up max-w-xl text-lg leading-relaxed mb-10 text-[#f4f1ea] opacity-80"
@@ -273,10 +310,10 @@ const Home: React.FC = () => {
               className="animate-fade-in-up flex flex-col sm:flex-row gap-4 justify-center md:justify-start items-center w-full sm:w-auto"
               style={{ animationDelay: '0.7s' }}
             >
-              <Link to="/contact" className="coffee-btn hero-btn w-full sm:w-auto">
+              <Link to="/contact" className="coffee-btn hero-btn accent-btn w-full sm:w-auto">
                 Proef de sfeer <ArrowRight size={18} />
               </Link>
-              <Link to="/menu" className="coffee-btn hero-btn w-full sm:w-auto">
+              <Link to="/menu" className="coffee-btn hero-btn accent-btn w-full sm:w-auto">
                 Ontdek het menu
               </Link>
             </div>
@@ -324,34 +361,42 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 2. ONS MOBIELE KOFFIEHUISJE */}
-      {/* 2. ONS MOBIELE KOFFIEHUISJE */}
       <section 
         id="koffiehuisje" 
         data-nav-theme="light" 
         className="w-full bg-[#f4f1ea] py-24 px-4 sm:px-6 lg:px-8 relative z-20 text-[#534026] -mt-10 rounded-t-[3rem] shadow-[0_-20px_40px_rgba(0,0,0,0.2)]"
       >
         <div className="max-w-6xl mx-auto relative z-10">
-          {/* De titel expliciet bruin maken */}
-          {/* De classes 'text-center' en 'mx-auto' dwingen hem in het midden */}
-          <h2 className="text-4xl md:text-5xl font-serif text-center mx-auto mb-16 text-[#534026] w-full">
-            Ons Mobiele Koffiehuisje
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="rounded-[2rem] overflow-hidden shadow-2xl">
-              <img src="/bonenbakkie1.jpeg" alt="'t bonenbakkie koffiewagen" className="w-full h-96 object-cover hover:scale-105 transition-transform duration-700" />
-            </div>
-            <div className="rounded-[2rem] overflow-hidden shadow-2xl">
-              <img src="/bonenbakkie2.png" alt="'t bonenbakkie interieur" className="w-full h-96 object-cover hover:scale-105 transition-transform duration-700" />
-            </div>
-          </div>
-          <div className="mt-12 text-center">
-            {/* Ook de paragraaf tekst is hier nu expliciet #534026 */}
-            <p className="text-lg max-w-2xl mx-auto font-medium leading-relaxed text-[#534026] opacity-90">
+          <div className="mb-10 flex flex-col items-center text-center">
+            <h2 className="text-4xl md:text-5xl font-serif text-[#534026]">
+              Ons mobiele koffiehuisje
+            </h2>
+            <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[#534026] opacity-90">
               Vanuit onze karaktervolle koffiewagen serveren we premium koffie rechtstreeks naar jouw favoriete plek. Elk moment voelt speciaal.
             </p>
           </div>
+
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {galleryImages.map((image, index) => (
+              <div
+                key={`${image.src}-${index}`}
+                className={`group relative overflow-hidden rounded-[2rem] shadow-[0_20px_45px_rgba(0,0,0,0.16)] ${index === 0 ? 'md:col-span-2 md:row-span-2 h-96 md:h-[32rem]' : 'h-72'}`}
+              >
+                <img
+                  src={image.src}
+                  alt={image.alt || `Foto ${index + 1} van 't bonenbakkie`}
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#120a07]/70 via-transparent to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-6 text-left text-[#f4f1ea]">
+                  <p className="text-sm uppercase tracking-[0.2em] opacity-80">Foto collage</p>
+                  <p className="mt-1 text-xl font-semibold">{image.title || 'Onze koffiewagen'}</p>
+                  <p className="mt-1 text-sm opacity-90">{image.description || 'Sfeer en detail'}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
         </div>
       </section>
 
@@ -366,9 +411,11 @@ const Home: React.FC = () => {
               { icon: Sparkles, title: 'Altijd Vers', desc: 'Vers gezet op bestelling. Geen koffie uit een kan. Puur genot in elk kopje.' },
             ].map((item, i) => (
               <div key={i} className="glass-card"> 
-                <item.icon className="w-12 h-12 mb-6 opacity-80" />
-                <h3 className="text-2xl font-serif mb-3 text-[#f4f1ea]">{item.title}</h3>
-                <p className="opacity-80 text-[#f4f1ea] text-sm leading-relaxed">{item.desc}</p>
+                <div className="inline-flex items-center justify-center rounded-xl bg-[var(--logo-cream)] p-3 mb-6">
+                  <item.icon className="w-6 h-6 text-[var(--color-brown-main)]" />
+                </div>
+                <h3 className="text-2xl font-serif mb-3 text-[var(--color-brown-main)]">{item.title}</h3>
+                <p className="opacity-80 text-[var(--logo-cream)] text-sm leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>

@@ -1,12 +1,13 @@
 import { useEffect, useState, useRef } from 'react';
 import { Routes, Route, NavLink, Link, useLocation } from 'react-router-dom';
-import { Menu as MenuIcon, X } from 'lucide-react';
+import { Menu as MenuIcon, X, Instagram, Facebook, Linkedin } from 'lucide-react';
 import Home from './pages/Home';
 import Menu from './pages/Menu';
 import About from './pages/About';
 import Events from './pages/Events';
 import Sfeer from './pages/Sfeer';
 import Contact from './pages/Contact';
+import Admin from './pages/Admin';
 
 const App = () => {
   const location = useLocation();
@@ -157,6 +158,7 @@ const App = () => {
           <Route path="/sfeer" element={<Sfeer />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </div>
 
@@ -172,20 +174,27 @@ const App = () => {
               </p>
             </div>
             <div className="top-nav">
-              <h4 className="font-bold mb-5 text-[#f4ebd9] font-sans">Snelle Links</h4>
-              <ul className="space-y-3 text-[#f4ebd9] font-sans">
-                <li><Link to="/menu" className="hover:text-white transition-colors block">Menu</Link></li>
-                <li><Link to="/events" className="hover:text-white transition-colors block">Boeken</Link></li>
-                <li><Link to="/sfeer" className="hover:text-white transition-colors block">Sfeer</Link></li>
-                <li><Link to="/about" className="hover:text-white transition-colors block">Over ons</Link></li>
+              <h4 className="font-serif font-bold mb-5 text-[var(--logo-cream)] text-center text-xl">Snelle Links</h4>
+              <ul className="space-y-3 text-[var(--logo-cream)]">
+                <li className="text-center"><Link to="/menu" className="hover:text-white transition-colors block font-serif">Menu</Link></li>
+                <li className="text-center"><Link to="/events" className="hover:text-white transition-colors block font-serif">Boeken</Link></li>
+                <li className="text-center"><Link to="/sfeer" className="hover:text-white transition-colors block font-serif">Sfeer</Link></li>
+                <li className="text-center"><Link to="/about" className="hover:text-white transition-colors block font-serif">Over ons</Link></li>
               </ul>
             </div>
-            <div>
-              <h4 className="font-bold mb-5 text-[#f4ebd9] font-sans">Volg Ons</h4>
-              <div className="flex flex-col gap-3 text-[#f4ebd9] font-sans">
-                <a href="#" className="hover:text-white transition-colors">Instagram</a>
-                <a href="#" className="hover:text-white transition-colors">Facebook</a>
-                <a href="#" className="hover:text-white transition-colors">LinkedIn</a>
+            <div className="flex flex-col justify-between">
+              <h4 className="font-serif font-bold mb-5 text-[var(--logo-cream)] text-center text-xl">Volg Ons</h4>
+              <div className="flex flex-col gap-3 text-[var(--logo-cream)]">
+                <a href="#" className="hover:text-white transition-colors font-serif text-center inline-flex items-center justify-center gap-2">
+                  <Instagram className="w-4 h-4" /> Instagram
+                </a>
+                <a href="#" className="hover:text-white transition-colors font-serif text-center inline-flex items-center justify-center gap-2">
+                  <Facebook className="w-4 h-4" /> Facebook
+                </a>
+                <a href="#" className="hover:text-white transition-colors font-serif text-center inline-flex items-center justify-center gap-2">
+                  <Linkedin className="w-4 h-4" /> LinkedIn
+                </a>
+                <Link to="/admin" className="accent-link footer-login">Login</Link>
               </div>
             </div>
           </div>
