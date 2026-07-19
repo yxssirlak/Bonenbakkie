@@ -105,7 +105,6 @@ const App = () => {
               }}
             />
 
-            {/* Navigatie-items: kleine letters voor perfecte CSS text-transform */}
             <NavLink to="/" end className={({ isActive }) => (isActive ? 'active-link' : '')}>Home</NavLink>
             <NavLink to="/menu" className={({ isActive }) => (isActive ? 'active-link' : '')}>Menu</NavLink>
             <NavLink to="/events" className={({ isActive }) => (isActive ? 'active-link' : '')}>Boeken</NavLink>
@@ -113,8 +112,8 @@ const App = () => {
             <NavLink to="/about" className={({ isActive }) => (isActive ? 'active-link' : '')}>Over ons</NavLink>
           </nav>
 
-          {/* Logo */}
-          <div className="absolute left-1/2 lg:left-[52%] -top-2 md:top-1/4 transform -translate-x-1/2 flex items-center pointer-events-none z-10 w-64 sm:w-72">
+          {/* Logo - Nu perfect gecentreerd met top-1/2 en -translate-y-1/2 */}
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none z-10 w-56 sm:w-64 md:w-72">
             <img 
               src="/bonenbakkielogo.png" 
               alt="'t bonenbakkie" 
@@ -124,7 +123,6 @@ const App = () => {
 
           <div className="flex-1 max-w-[40%] flex justify-end items-center gap-4">
             <div className="hidden md:block">
-              {/* Contact-knop strak uitgelijnd */}
               <Link to="/contact" className="coffee-btn">Contact</Link>
             </div>
             <button 
