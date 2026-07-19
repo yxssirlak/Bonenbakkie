@@ -1,24 +1,92 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Coffee, Snowflake, Cookie, Milk } from 'lucide-react';
 
-const Menu: React.FC = () => {
-  const menuData = [
+type MenuItem = {
+  id: number;
+  name: string;
+  image?: string;
+};
+
+type MenuCategory = {
+  id: number;
+  title: string;
+  icon: 'coffee' | 'snowflake' | 'cookie' | 'milk';
+  items: MenuItem[];
+};
+
+type MenuData = {
+  categories: MenuCategory[];
+  milkOptions: string[];
+};
+
+const defaultMenuData: MenuData = {
+  categories: [
     {
-      category: 'WARME DRANKEN',
-      icon: Coffee,
-      items: ['ESPRESSO', 'KOFFIE', 'CAPPUCCINO', 'FLAT WHITE', 'KOFFIE VERKEERD', 'LATTE MACCHIATO', 'THEE', 'MUNTTHEE', 'GEMBERTHEE']
+      id: 1,
+      title: 'WARME DRANKEN',
+      icon: 'coffee',
+      items: [
+        { id: 1, name: 'ESPRESSO' },
+        { id: 2, name: 'KOFFIE' },
+        { id: 3, name: 'CAPPUCCINO' },
+        { id: 4, name: 'FLAT WHITE' },
+        { id: 5, name: 'KOFFIE VERKEERD' },
+        { id: 6, name: 'LATTE MACCHIATO' },
+        { id: 7, name: 'THEE' },
+        { id: 8, name: 'MUNTTHEE' },
+        { id: 9, name: 'GEMBERTHEE' }
+      ]
     },
     {
-      category: 'KOUDE DRANKEN',
-      icon: Snowflake,
-      items: ['IJSKOFFIE', 'MATCHA', 'LIMONADE']
+      id: 2,
+      title: 'KOUDE DRANKEN',
+      icon: 'snowflake',
+      items: [
+        { id: 10, name: 'IJSKOFFIE' },
+        { id: 11, name: 'MATCHA' },
+        { id: 12, name: 'LIMONADE' }
+      ]
     },
     {
-      category: 'ZOET & EXTRA',
-      icon: Cookie,
-      items: ['STROOPWAFEL', 'KARAMEL', 'VANILLE', 'AARDBEI', 'HAZELNOOT', 'SLAGROOM']
+      id: 3,
+      title: 'ZOET & EXTRA',
+      icon: 'cookie',
+      items: [
+        { id: 13, name: 'STROOPWAFEL' },
+        { id: 14, name: 'KARAMEL' },
+        { id: 15, name: 'VANILLE' },
+        { id: 16, name: 'AARDBEI' },
+        { id: 17, name: 'HAZELNOOT' },
+        { id: 18, name: 'SLAGROOM' }
+      ]
     }
-  ];
+  ],
+  milkOptions: ['VOLLE KOEMELK', 'HAVERMELK', 'SOJAMELK', 'KOKOSMELK']
+};
+
+const iconMap = {
+  coffee: Coffee,
+  snowflake: Snowflake,
+  cookie: Cookie,
+  milk: Milk
+};
+
+const Menu: React.FC = () => {
+  const [menuData, setMenuData] = useState<MenuData>(defaultMenuData);
+
+  useEffect(() => {
+    try {
+      const stored = window.localStorage.getItem('bonenbakkie-menu');
+      if (stored) {
+        const parsed = JSON.parse(stored) as MenuData;
+        if (parsed.categories && parsed.categories.length > 0) {
+          setMenuData(parsed);
+        }
+      }
+    } catch {
+      // use default
+    }
+  }, []);
 
   return (
     <main className="min-h-screen pt-32 pb-20 px-4 sm:px-6 lg:px-8">
@@ -34,54 +102,54 @@ const Menu: React.FC = () => {
         <div className="glass-card p-10 md:p-16 border border-white/5 shadow-2xl">
           <div className="grid md:grid-cols-2 gap-16">
             
-            {/* Kolom 1 */}
-            <div className="space-y-12">
-              {menuData.slice(0, 2).map((section, i) => (
-                <div key={i}>
-                  <div className="flex items-center gap-3 mb-8">
-                    <section.icon className="text-[#D4A574]" size={20} />
-                    <h2 className="text-sm font-bold text-[#F5EFE7] tracking-[0.3em] uppercase">{section.category}</h2>
-                  </div>
-                  <div className="space-y-5">
-                    {section.items.map((item) => (
-                      <div key={item} className="text-[#ebdad0] text-xs font-medium tracking-[0.2em] uppercase hover:text-white transition-colors cursor-default">
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Kolom 2 */}
-            <div className="space-y-12">
-              <div>
-                <div className="flex items-center gap-3 mb-8">
-                  <Cookie className="text-[#D4A574]" size={20} />
-                  <h2 className="text-sm font-bold text-[#F5EFE7] tracking-[0.3em] uppercase">{menuData[2].category}</h2>
-                </div>
-                <div className="space-y-5">
-                  {menuData[2].items.map((item) => (
-                    <div key={item} className="text-[#ebdad0] text-xs font-medium tracking-[0.2em] uppercase hover:text-white transition-colors cursor-default">
-                      {item}
+            {/* Categorieën in twee kolommen */}
+            {menuData.categories.map((category, colIndex) => (
+              <div key={category.id} className={colIndex >= 2 ? 'col-span-2 md:col-span-1' : ''}>
+                <div className="space-y-12">
+                  <div>
+                    <div className="flex items-center gap-3 mb-8">
+                      {React.createElement(iconMap[category.icon], { 
+                        className: "text-[#D4A574]", 
+                        size: 20 
+                      })}
+                      <h2 className="text-sm font-bold text-[#F5EFE7] tracking-[0.3em] uppercase">{category.title}</h2>
                     </div>
-                  ))}
+                    <div className="space-y-5">
+                      {category.items.map((item) => (
+                        <div key={item.id} className="flex items-start gap-3">
+                          {item.image && (
+                            <img 
+                              src={item.image} 
+                              alt={item.name}
+                              className="w-12 h-12 rounded object-cover flex-shrink-0"
+                            />
+                          )}
+                          <div className="text-[#ebdad0] text-xs font-medium tracking-[0.2em] uppercase hover:text-white transition-colors cursor-default">
+                            {item.name}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
+            ))}
 
-              {/* Melk opties */}
-              <div className="pt-8 border-t border-white/5">
-                <div className="flex items-center gap-3 mb-8">
-                  <Milk className="text-[#D4A574]" size={20} />
-                  <h2 className="text-sm font-bold text-[#F5EFE7] tracking-[0.3em] uppercase">SOORTEN MELK</h2>
-                </div>
-                <div className="flex flex-wrap gap-x-6 gap-y-4">
-                  {['VOLLE KOEMELK', 'HAVERMELK', 'SOJAMELK', 'KOKOSMELK'].map((milk) => (
-                    <span key={milk} className="text-[#ebdad0] text-[10px] font-bold tracking-[0.2em] uppercase opacity-70">
-                      {milk}
-                    </span>
-                  ))}
-                </div>
+            {/* Melk opties */}
+            <div className="md:col-span-2 pt-8 border-t border-white/5">
+              <div className="flex items-center gap-3 mb-8">
+                {React.createElement(iconMap.milk, { 
+                  className: "text-[#D4A574]", 
+                  size: 20 
+                })}
+                <h2 className="text-sm font-bold text-[#F5EFE7] tracking-[0.3em] uppercase">SOORTEN MELK</h2>
+              </div>
+              <div className="flex flex-wrap gap-x-6 gap-y-4">
+                {menuData.milkOptions.map((milk) => (
+                  <span key={milk} className="text-[#ebdad0] text-[10px] font-bold tracking-[0.2em] uppercase opacity-70">
+                    {milk}
+                  </span>
+                ))}
               </div>
             </div>
           </div>

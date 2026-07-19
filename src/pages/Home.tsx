@@ -23,6 +23,12 @@ const Home: React.FC = () => {
   const bokehRef7 = useRef<HTMLDivElement>(null);
   const bokehRef8 = useRef<HTMLDivElement>(null);
   const bokehRef9 = useRef<HTMLDivElement>(null);
+  const bokehRef10 = useRef<HTMLDivElement>(null);
+  const bokehRef11 = useRef<HTMLDivElement>(null);
+  const bokehRef12 = useRef<HTMLDivElement>(null);
+  const bokehRef13 = useRef<HTMLDivElement>(null);
+  const bokehRef14 = useRef<HTMLDivElement>(null);
+  const bokehRef15 = useRef<HTMLDivElement>(null);
 
   // Parallax logica: laat de boontjes reageren op de muis
   useEffect(() => {
@@ -96,6 +102,39 @@ const Home: React.FC = () => {
       if (bokehRef9.current) {
         bokehRef9.current.style.setProperty('--tx', `${x * m9}px`);
         bokehRef9.current.style.setProperty('--ty', `${y * m9}px`);
+      }
+
+      // Boontjes in "Waarom 't bonenbakkie?" sectie
+      const m10 = 0.25;
+      const m11 = 0.35;
+      const m12 = 0.2;
+      const m13 = 0.3;
+      const m14 = 0.22;
+      const m15 = 0.28;
+
+      if (bokehRef10.current) {
+        bokehRef10.current.style.setProperty('--tx', `${x * m10}px`);
+        bokehRef10.current.style.setProperty('--ty', `${y * m10}px`);
+      }
+      if (bokehRef11.current) {
+        bokehRef11.current.style.setProperty('--tx', `${x * m11}px`);
+        bokehRef11.current.style.setProperty('--ty', `${y * m11}px`);
+      }
+      if (bokehRef12.current) {
+        bokehRef12.current.style.setProperty('--tx', `${x * m12}px`);
+        bokehRef12.current.style.setProperty('--ty', `${y * m12}px`);
+      }
+      if (bokehRef13.current) {
+        bokehRef13.current.style.setProperty('--tx', `${x * m13}px`);
+        bokehRef13.current.style.setProperty('--ty', `${y * m13}px`);
+      }
+      if (bokehRef14.current) {
+        bokehRef14.current.style.setProperty('--tx', `${x * m14}px`);
+        bokehRef14.current.style.setProperty('--ty', `${y * m14}px`);
+      }
+      if (bokehRef15.current) {
+        bokehRef15.current.style.setProperty('--tx', `${x * m15}px`);
+        bokehRef15.current.style.setProperty('--ty', `${y * m15}px`);
       }
     };
 
@@ -402,6 +441,26 @@ const Home: React.FC = () => {
 
       {/* 3. WAAROM 'T BONENBAKKIE? */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        {/* Decoratieve boontjes in achtergrond */}
+        <div ref={bokehRef10} className="bean absolute left-[5%] top-[10%] z-0 opacity-40 blur-sm w-16 h-16 pointer-events-none">
+          <img src="/Boontje.png" alt="" className="w-full h-full object-contain" />
+        </div>
+        <div ref={bokehRef11} className="bean absolute right-[8%] top-[15%] z-0 opacity-35 blur-sm w-20 h-20 pointer-events-none">
+          <img src="/Boontje.png" alt="" className="w-full h-full object-contain" />
+        </div>
+        <div ref={bokehRef12} className="bean absolute left-[12%] bottom-[20%] z-0 opacity-30 blur-sm w-14 h-14 pointer-events-none">
+          <img src="/Boontje.png" alt="" className="w-full h-full object-contain" />
+        </div>
+        <div ref={bokehRef13} className="bean absolute right-[15%] bottom-[15%] z-0 opacity-45 blur-sm w-24 h-24 pointer-events-none">
+          <img src="/Boontje.png" alt="" className="w-full h-full object-contain" />
+        </div>
+        <div ref={bokehRef14} className="bean absolute left-[35%] top-[5%] z-0 opacity-25 blur-sm w-18 h-18 pointer-events-none">
+          <img src="/Boontje.png" alt="" className="w-full h-full object-contain" />
+        </div>
+        <div ref={bokehRef15} className="bean absolute right-[25%] bottom-[8%] z-0 opacity-35 blur-sm w-16 h-16 pointer-events-none">
+          <img src="/Boontje.png" alt="" className="w-full h-full object-contain" />
+        </div>
+        
         <div className="max-w-6xl mx-auto z-10 relative">
           <h2 className="section-title text-center mb-16">Waarom 't bonenbakkie?</h2>
           <div className="grid md:grid-cols-3 gap-8">

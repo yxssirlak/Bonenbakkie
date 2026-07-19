@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Lock, ImagePlus, Trash2, ArrowLeft, Image as ImageIcon } from 'lucide-react';
+import { Lock, ImagePlus, Trash2, ArrowLeft, Image as ImageIcon, Plus } from 'lucide-react';
 
 type GalleryImage = {
   id: number;
@@ -17,8 +17,28 @@ type GalleryCollection = {
   images: GalleryImage[];
 };
 
+type MenuItem = {
+  id: number;
+  name: string;
+  image?: string;
+};
+
+type MenuCategory = {
+  id: number;
+  title: string;
+  icon: 'coffee' | 'snowflake' | 'cookie' | 'milk';
+  items: MenuItem[];
+};
+
+type MenuData = {
+  categories: MenuCategory[];
+  milkOptions: string[];
+};
+
 const homeStorageKey = 'bonenbakkie-home-gallery';
 const galleryStorageKey = 'bonenbakkie-gallery-collections';
+const menuStorageKey = 'bonenbakkie-menu';
+
 const defaultHomeGallery: GalleryImage[] = [
   { id: 1, src: '/bonenbakkie1.jpeg', alt: "'t bonenbakkie koffiewagen", title: 'Onze koffiewagen', description: 'In actie op locatie' },
   { id: 2, src: '/bonenbakkie2.png', alt: "Interieur van 't bonenbakkie", title: 'Sfeer binnenin', description: 'Een warm en stijlvol interieur' },
@@ -37,14 +57,60 @@ const defaultCollections: GalleryCollection[] = [
   },
 ];
 
+const defaultMenu: MenuData = {
+  categories: [
+    {
+      id: 1,
+      title: 'WARME DRANKEN',
+      icon: 'coffee',
+      items: [
+        { id: 1, name: 'ESPRESSO' },
+        { id: 2, name: 'KOFFIE' },
+        { id: 3, name: 'CAPPUCCINO' },
+        { id: 4, name: 'FLAT WHITE' },
+        { id: 5, name: 'KOFFIE VERKEERD' },
+        { id: 6, name: 'LATTE MACCHIATO' },
+        { id: 7, name: 'THEE' },
+        { id: 8, name: 'MUNTTHEE' },
+        { id: 9, name: 'GEMBERTHEE' }
+      ]
+    },
+    {
+      id: 2,
+      title: 'KOUDE DRANKEN',
+      icon: 'snowflake',
+      items: [
+        { id: 10, name: 'IJSKOFFIE' },
+        { id: 11, name: 'MATCHA' },
+        { id: 12, name: 'LIMONADE' }
+      ]
+    },
+    {
+      id: 3,
+      title: 'ZOET & EXTRA',
+      icon: 'cookie',
+      items: [
+        { id: 13, name: 'STROOPWAFEL' },
+        { id: 14, name: 'KARAMEL' },
+        { id: 15, name: 'VANILLE' },
+        { id: 16, name: 'AARDBEI' },
+        { id: 17, name: 'HAZELNOOT' },
+        { id: 18, name: 'SLAGROOM' }
+      ]
+    }
+  ],
+  milkOptions: ['VOLLE KOEMELK', 'HAVERMELK', 'SOJAMELK', 'KOKOSMELK']
+};
+
 const Admin: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [homeGallery, setHomeGallery] = useState<GalleryImage[]>(defaultHomeGallery);
   const [collections, setCollections] = useState<GalleryCollection[]>(defaultCollections);
+  const [menuData, setMenuData] = useState<MenuData>(defaultMenu);
   const [selectedHomeFile, setSelectedHomeFile] = useState<File | null>(null);
-  const [activeTab, setActiveTab] = useState<'home' | 'sfeer'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'sfeer' | 'menu'>('home');
   const [newHomeImage, setNewHomeImage] = useState('');
   const [newHomeAlt, setNewHomeAlt] = useState('Nieuwe homefoto');
   const [newHomeTitle, setNewHomeTitle] = useState('Nieuwe titel');
@@ -57,6 +123,15 @@ const Admin: React.FC = () => {
   const [newCollectionImageTitle, setNewCollectionImageTitle] = useState('Nieuwe titel');
   const [newCollectionImageDescription, setNewCollectionImageDescription] = useState('Beschrijving');
   const [selectedCollectionFile, setSelectedCollectionFile] = useState<File | null>(null);
+  
+  // Menu states
+  const [newMenuCategoryTitle, setNewMenuCategoryTitle] = useState('');
+  const [newMenuCategoryIcon, setNewMenuCategoryIcon] = useState<'coffee' | 'snowflake' | 'cookie' | 'milk'>('coffee');
+  const [activeCategoryId, setActiveCategoryId] = useState<number>(defaultMenu.categories[0]?.id ?? 0);
+  const [newMenuItemName, setNewMenuItemName] = useState('');
+  const [newMenuItemImage, setNewMenuItemImage] = useState('');
+  const [selectedMenuItemFile, setSelectedMenuItemFile] = useState<File | null>(null);
+  const [newMilkOption, setNewMilkOption] = useState('');
 
   useEffect(() => {
     try {
