@@ -114,7 +114,7 @@ const App = () => {
           </nav>
 
           {/* Logo */}
-          <div className="absolute left-1/2 lg:left-[52%] transform -translate-x-1/2 flex items-center pointer-events-none z-10 w-48 sm:w-72">
+          <div className="absolute left-1/2 lg:left-[52%] top-2 md:top-1/2 transform -translate-x-1/2 flex items-center pointer-events-none z-10 w-48 sm:w-72">
             <img 
               src="/bonenbakkielogo.png" 
               alt="'t bonenbakkie" 
@@ -128,8 +128,9 @@ const App = () => {
               <Link to="/contact" className="coffee-btn">Contact</Link>
             </div>
             <button 
-              className="md:hidden p-2 text-white z-20 relative"
+              className="md:hidden p-2 text-white z-30 absolute left-4 top-4"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Open mobiel menu"
             >
               {isMobileMenuOpen ? <X size={28} color="#f4ebd9" /> : <MenuIcon size={28} color="#f4ebd9" />}
             </button>

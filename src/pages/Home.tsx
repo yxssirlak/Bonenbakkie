@@ -270,7 +270,7 @@ const Home: React.FC = () => {
         </div>
         {/* DE KOFFIEMACHINE */}
         <div 
-          className="absolute right-[-20%] md:right-[-2%] top-1/2 w-[140%] md:w-[65%] h-[115%] z-10 pointer-events-none opacity-40 animate-float"
+          className="absolute right-[-20%] md:right-[-2%] top-3/4 md:top-1/2 w-[140%] md:w-[65%] h-[115%] z-10 pointer-events-none opacity-40 animate-float"
           style={{ 
             backgroundImage: "url('/koffiemachine.png')", 
             backgroundSize: 'contain',
@@ -292,8 +292,8 @@ const Home: React.FC = () => {
               <span className="flex items-center gap-1.5"><Sparkles size={14} /> Mobiele koffie met karakter</span>
             </div>
             
-            <div className="animate-fade-in-up mb-6 flex flex-col items-center md:items-start" style={{ animationDelay: '0.3s' }}>
-              <h1 className="text-6xl md:text-7xl lg:text-8xl font-serif text-[#f4f1ea]">
+              <div className="animate-fade-in-up mb-6 flex flex-col items-center md:items-start" style={{ animationDelay: '0.3s' }}>
+              <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-serif text-[#f4f1ea]">
                 't bonenbakkie brengt <br />
                 <span className="text-[#d4cab4] opacity-100">sfeer in elk kopje</span>
               </h1>
