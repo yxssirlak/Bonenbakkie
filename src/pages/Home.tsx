@@ -165,21 +165,23 @@ const Home: React.FC = () => {
         .hero-btn {
           background-color: #f4f1ea !important;
           color: #534026 !important;
-          padding-top: 20px !important;
-          padding-bottom: 20px !important;
-          padding-left: 48px !important;
-          padding-right: 48px !important;
+          border: 2px solid #f4f1ea !important; /* Beige border toegevoegd */
+          padding-top: 18px !important; /* Iets verkleind om padding+border gelijk te houden aan de oude 20px */
+          padding-bottom: 18px !important;
+          padding-left: 46px !important;
+          padding-right: 46px !important;
           font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
           font-size: 15px !important;
           font-weight: 600 !important;
           text-transform: uppercase !important;
           letter-spacing: 2px !important;
           line-height: 1 !important;
+          transition: all 0.3s ease-in-out !important; /* Zorgt voor de soepele overgang */
         }
         
         .hero-btn:hover {
           background-color: transparent !important;
-          color: #f4f1ea !important;
+          color: #f4f1ea !important; /* Tekst wordt nu perfect beige! */
         }
 
         @keyframes float {

@@ -1,160 +1,146 @@
 import React, { useEffect, useState } from 'react';
-import { Coffee, Snowflake, Cookie, Milk } from 'lucide-react';
+import { Coffee, Sparkles } from 'lucide-react';
 
-type MenuItem = {
-  id: number;
+export type MenuCategory = {
+  id: string;
   name: string;
-  image?: string;
 };
 
-type MenuCategory = {
-  id: number;
-  title: string;
-  icon: 'coffee' | 'snowflake' | 'cookie' | 'milk';
-  items: MenuItem[];
-};
-
-type MenuData = {
-  categories: MenuCategory[];
-  milkOptions: string[];
-};
-
-const defaultMenuData: MenuData = {
-  categories: [
-    {
-      id: 1,
-      title: 'WARME DRANKEN',
-      icon: 'coffee',
-      items: [
-        { id: 1, name: 'ESPRESSO' },
-        { id: 2, name: 'KOFFIE' },
-        { id: 3, name: 'CAPPUCCINO' },
-        { id: 4, name: 'FLAT WHITE' },
-        { id: 5, name: 'KOFFIE VERKEERD' },
-        { id: 6, name: 'LATTE MACCHIATO' },
-        { id: 7, name: 'THEE' },
-        { id: 8, name: 'MUNTTHEE' },
-        { id: 9, name: 'GEMBERTHEE' }
-      ]
-    },
-    {
-      id: 2,
-      title: 'KOUDE DRANKEN',
-      icon: 'snowflake',
-      items: [
-        { id: 10, name: 'IJSKOFFIE' },
-        { id: 11, name: 'MATCHA' },
-        { id: 12, name: 'LIMONADE' }
-      ]
-    },
-    {
-      id: 3,
-      title: 'ZOET & EXTRA',
-      icon: 'cookie',
-      items: [
-        { id: 13, name: 'STROOPWAFEL' },
-        { id: 14, name: 'KARAMEL' },
-        { id: 15, name: 'VANILLE' },
-        { id: 16, name: 'AARDBEI' },
-        { id: 17, name: 'HAZELNOOT' },
-        { id: 18, name: 'SLAGROOM' }
-      ]
-    }
-  ],
-  milkOptions: ['VOLLE KOEMELK', 'HAVERMELK', 'SOJAMELK', 'KOKOSMELK']
-};
-
-const iconMap = {
-  coffee: Coffee,
-  snowflake: Snowflake,
-  cookie: Cookie,
-  milk: Milk
+export type MenuItem = {
+  id: string;
+  categoryId: string;
+  name: string;
+  description: string;
+  price: string;
+  imageUrl?: string;
 };
 
 const Menu: React.FC = () => {
-  const [menuData, setMenuData] = useState<MenuData>(defaultMenuData);
+  const [categories, setCategories] = useState<MenuCategory[]>([]);
+  const [items, setItems] = useState<MenuItem[]>([]);
+  const [activeCategory, setActiveCategory] = useState<string>('');
 
   useEffect(() => {
-    try {
-      const stored = window.localStorage.getItem('bonenbakkie-menu');
-      if (stored) {
-        const parsed = JSON.parse(stored) as MenuData;
-        if (parsed.categories && parsed.categories.length > 0) {
-          setMenuData(parsed);
-        }
-      }
-    } catch {
-      // use default
+    // Laad categorieën
+    const storedCategories = localStorage.getItem('bonenbakkie-menu-categories');
+    if (storedCategories) {
+      const parsedCats = JSON.parse(storedCategories);
+      setCategories(parsedCats);
+      if (parsedCats.length > 0) setActiveCategory(parsedCats[0].id);
+    } else {
+      // Fallback standaard categorieën als de admin nog leeg is
+      const defaultCats = [
+        { id: '1', name: 'Warme Dranken' },
+        { id: '2', name: 'Koude Dranken' },
+        { id: '3', name: 'Lekkernijen' }
+      ];
+      setCategories(defaultCats);
+      setActiveCategory(defaultCats[0].id);
+    }
+
+    // Laad items
+    const storedItems = localStorage.getItem('bonenbakkie-menu-items');
+    if (storedItems) {
+      setItems(JSON.parse(storedItems));
+    } else {
+      // Fallback items
+      setItems([
+        { id: '101', categoryId: '1', name: 'Espresso', description: 'Krachtig en puur. Een perfecte shot van onze premium bonen.', price: '€ 2,50' },
+        { id: '102', categoryId: '1', name: 'Cappuccino', description: 'Rijke espresso met perfect opgeschuimde volle melk.', price: '€ 3,20', imageUrl: '/bonenbakkie1.jpeg' },
+        { id: '103', categoryId: '2', name: 'Iced Latte', description: 'Verfrissende espresso met ijskoude melk en ijsblokjes.', price: '€ 3,80' },
+      ]);
     }
   }, []);
 
+  // Filter items op basis van de actieve tab
+  const filteredItems = items.filter(item => item.categoryId === activeCategory);
+
   return (
-    <main className="min-h-screen pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-      <section data-nav-theme="dark" className="max-w-4xl mx-auto">
+    <main className="min-h-screen bg-[#1e0f0a] pt-32 pb-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Achtergrond gloed */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,transparent_10%,rgba(30,15,10,0.8)_100%)] pointer-events-none z-0"></div>
+      <div className="absolute right-[-10%] top-[10%] w-[50%] h-[50%] bg-[#a37042] rounded-full blur-[160px] opacity-20 pointer-events-none z-0"></div>
+
+      <div className="max-w-6xl mx-auto relative z-10">
         
-        {/* Titel */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl md:text-7xl font-serif font-black text-[#F5EFE7] tracking-tighter mb-4">MENU</h1>
-          <div className="h-1 w-20 bg-[#D4A574] mx-auto rounded-full"></div>
+        {/* Header Sectie */}
+        <div className="text-center mb-16 animate-fade-in-up">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md mb-6">
+            <Coffee size={16} className="text-[var(--logo-cream)]" />
+            <span className="text-[var(--logo-cream)] uppercase tracking-widest text-xs font-bold">Ons Aanbod</span>
+          </div>
+          <h1 className="text-5xl md:text-7xl font-serif text-[#f4f1ea] mb-6">
+            Het <span className="text-[#d4cab4]">Menu</span>
+          </h1>
+          <p className="max-w-2xl mx-auto text-[#f4f1ea] opacity-80 text-lg">
+            Vers bereid met passie. Ontdek onze met zorg samengestelde selectie van premium koffies, verfrissende drankjes en bijpassende lekkernijen.
+          </p>
         </div>
 
-        {/* Kaart Container */}
-        <div className="glass-card p-10 md:p-16 border border-white/5 shadow-2xl">
-          <div className="grid md:grid-cols-2 gap-16">
-            
-            {/* Categorieën in twee kolommen */}
-            {menuData.categories.map((category, colIndex) => (
-              <div key={category.id} className={colIndex >= 2 ? 'col-span-2 md:col-span-1' : ''}>
-                <div className="space-y-12">
-                  <div>
-                    <div className="flex items-center gap-3 mb-8">
-                      {React.createElement(iconMap[category.icon], { 
-                        className: "text-[#D4A574]", 
-                        size: 20 
-                      })}
-                      <h2 className="text-sm font-bold text-[#F5EFE7] tracking-[0.3em] uppercase">{category.title}</h2>
-                    </div>
-                    <div className="space-y-5">
-                      {category.items.map((item) => (
-                        <div key={item.id} className="flex items-start gap-3">
-                          {item.image && (
-                            <img 
-                              src={item.image} 
-                              alt={item.name}
-                              className="w-12 h-12 rounded object-cover flex-shrink-0"
-                            />
-                          )}
-                          <div className="text-[#ebdad0] text-xs font-medium tracking-[0.2em] uppercase hover:text-white transition-colors cursor-default">
-                            {item.name}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+        {/* Categorie Tabs */}
+        {categories.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-4 mb-16 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                className={`px-8 py-3 rounded-full font-serif text-lg transition-all duration-300 ${
+                  activeCategory === cat.id
+                    ? 'bg-[#f4f1ea] text-[#534026] shadow-[0_0_20px_rgba(244,241,234,0.3)]'
+                    : 'bg-white/5 text-[#f4f1ea] border border-white/10 hover:bg-white/10'
+                }`}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Menu Items Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+          {filteredItems.map((item) => (
+            <div key={item.id} className="glass-card !bg-white/5 !backdrop-blur-md border border-white/10 flex flex-col overflow-hidden !p-0 transition-transform duration-300 hover:-translate-y-2 group">
+              
+              {/* ALLES-OF-NIETS AFBEELDING: Wordt alleen gerenderd als er een imageUrl is ingevuld */}
+              {item.imageUrl && item.imageUrl.trim() !== '' && (
+                <div className="w-full h-56 overflow-hidden">
+                  <img 
+                    src={item.imageUrl} 
+                    alt={item.name} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                </div>
+              )}
+              
+              {/* Content Deel */}
+              <div className="p-8 flex flex-col flex-grow">
+                <div className="flex justify-between items-start mb-4 gap-4">
+                  <h3 className="text-2xl font-serif text-[#f4f1ea]">{item.name}</h3>
+                  <span className="font-bold text-[#d4cab4] text-xl whitespace-nowrap">{item.price}</span>
+                </div>
+                <p className="text-[#f4f1ea] opacity-70 text-sm leading-relaxed font-sans">
+                  {item.description}
+                </p>
+                
+                {/* Decoratief streepje onderaan (optioneel, geeft een chique touch) */}
+                <div className="mt-auto pt-6">
+                  <div className="w-12 h-[1px] bg-[#d4cab4]/30"></div>
                 </div>
               </div>
-            ))}
 
-            {/* Melk opties */}
-            <div className="md:col-span-2 pt-8 border-t border-white/5">
-              <div className="flex items-center gap-3 mb-8">
-                {React.createElement(iconMap.milk, { 
-                  className: "text-[#D4A574]", 
-                  size: 20 
-                })}
-                <h2 className="text-sm font-bold text-[#F5EFE7] tracking-[0.3em] uppercase">SOORTEN MELK</h2>
-              </div>
-              <div className="flex flex-wrap gap-x-6 gap-y-4">
-                {menuData.milkOptions.map((milk) => (
-                  <span key={milk} className="text-[#ebdad0] text-[10px] font-bold tracking-[0.2em] uppercase opacity-70">
-                    {milk}
-                  </span>
-                ))}
-              </div>
             </div>
-          </div>
+          ))}
+
+          {/* Als een categorie leeg is */}
+          {filteredItems.length === 0 && (
+            <div className="col-span-full text-center py-12 text-[#f4f1ea] opacity-60">
+              <Sparkles className="mx-auto mb-4 opacity-50" size={32} />
+              <p>Er zijn nog geen items toegevoegd aan deze categorie.</p>
+            </div>
+          )}
         </div>
-      </section>
+
+      </div>
     </main>
   );
 };
