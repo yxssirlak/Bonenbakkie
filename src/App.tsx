@@ -112,8 +112,7 @@ const App = () => {
             <NavLink to="/about" className={({ isActive }) => (isActive ? 'active-link' : '')}>Over ons</NavLink>
           </nav>
 
-          {/* Logo - Nu perfect gecentreerd met top-1/2 en -translate-y-1/2 */}
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none z-10 w-56 sm:w-64 md:w-72">
+          <div className="absolute top-1/2 left-1/2 lg:left-[53%] transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none z-10 w-56 sm:w-64 md:w-72">
             <img 
               src="/bonenbakkielogo.png" 
               alt="'t bonenbakkie" 
