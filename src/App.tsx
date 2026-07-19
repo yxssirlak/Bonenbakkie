@@ -95,7 +95,7 @@ const App = () => {
       >
         <div className="w-full px-6 lg:px-16 py-4 flex items-center justify-between h-24 relative">
           
-          <nav ref={navRef} className={`hidden md:flex flex-1 justify-start top-nav items-center gap-1 theme-${navTheme} -ml-5`}>
+          <nav ref={navRef} className={`hidden md:flex flex-1 max-w-[40%] justify-start top-nav items-center gap-1 theme-${navTheme} -ml-5`}>
             <div
               className={`absolute h-full top-0 left-0 rounded-full border transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none z-0 ${bubbleClass}`}
               style={{
@@ -114,7 +114,7 @@ const App = () => {
           </nav>
 
           {/* Logo */}
-          <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center pointer-events-none z-10 w-48 sm:w-72">
+          <div className="absolute left-1/2 lg:left-[52%] transform -translate-x-1/2 flex items-center pointer-events-none z-10 w-48 sm:w-72">
             <img 
               src="/bonenbakkielogo.png" 
               alt="'t bonenbakkie" 
@@ -122,7 +122,7 @@ const App = () => {
             />
           </div>
 
-          <div className="flex-1 flex justify-end items-center gap-4">
+          <div className="flex-1 max-w-[40%] flex justify-end items-center gap-4">
             <div className="hidden md:block">
               {/* Contact-knop strak uitgelijnd */}
               <Link to="/contact" className="coffee-btn">Contact</Link>

@@ -167,20 +167,31 @@
     position: relative;
   }
 
-  /* Navigatiebalk links (Home, Menu, etc.) met handmatige verticale Giaza-fijnafstelling */
+  /* Navigatiebalk links (Home, Menu, etc.) - mobile-first, smaller touch targets */
   .top-nav a {
-    @apply px-8 transition-colors duration-300 relative z-10 font-sans;
-    padding-top: 8px !important;     
-    padding-bottom: 12px !important; 
-    line-height: 1 !important;       
-    
-    font-family: 'Giaza', serif !important;
-    font-size: 20px !important;
-    font-weight: 400 !important; 
-    text-transform: capitalize !important; 
-    letter-spacing: normal !important;
+    @apply px-3 transition-colors duration-300 relative z-10 font-sans;
+    padding-top: 6px !important;
+    padding-bottom: 8px !important;
+    line-height: 1 !important;
+
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
     color: var(--logo-cream) !important;
     border-radius: 9999px;
+  }
+
+  @media (min-width: 768px) {
+    .top-nav a {
+      @apply px-8;
+      padding-top: 8px !important;
+      padding-bottom: 12px !important;
+      font-size: 15px !important;
+      letter-spacing: 2px !important;
+      text-transform: uppercase !important;
+    }
   }
 
   .top-nav.theme-dark a {
@@ -253,19 +264,31 @@
   /* De standaard Contact knop (rechts): Transparant met een dunne beige rand */
   .coffee-btn,
   .coffee-btn-outline {
-    @apply px-8 transition-all duration-300 relative z-10 cursor-pointer inline-flex items-center justify-center text-center;
-    padding-top: 6px !important;     
-    padding-bottom: 10px !important; 
-    line-height: 1 !important;       
-    
-    font-family: 'Giaza', serif !important;
-    font-size: 20px !important;
-    font-weight: 400 !important; 
-    text-transform: capitalize !important; 
-    background-color: transparent !important; 
-    color: var(--logo-cream) !important; 
+    @apply px-6 transition-all duration-300 relative z-10 cursor-pointer inline-flex items-center justify-center text-center;
+    padding-top: 8px !important;
+    padding-bottom: 10px !important;
+    line-height: 1 !important;
+
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1.5px !important;
+    background-color: transparent !important;
+    color: var(--logo-cream) !important;
     border: 1px solid var(--logo-cream) !important;
     border-radius: 9999px !important;
+  }
+
+  @media (min-width: 768px) {
+    .coffee-btn,
+    .coffee-btn-outline {
+      @apply px-8;
+      padding-top: 6px !important;
+      padding-bottom: 10px !important;
+      font-size: 15px !important;
+      letter-spacing: 2px !important;
+    }
   }
 
   /* Hover-effect voor de Contact-knop */
