@@ -165,8 +165,8 @@ const Home: React.FC = () => {
         .hero-btn {
           background-color: #f4f1ea !important;
           color: #534026 !important;
-          border: 2px solid #f4f1ea !important; /* Beige border toegevoegd */
-          padding-top: 18px !important; /* Iets verkleind om padding+border gelijk te houden aan de oude 20px */
+          border: 2px solid #f4f1ea !important;
+          padding-top: 18px !important;
           padding-bottom: 18px !important;
           padding-left: 46px !important;
           padding-right: 46px !important;
@@ -176,12 +176,12 @@ const Home: React.FC = () => {
           text-transform: uppercase !important;
           letter-spacing: 2px !important;
           line-height: 1 !important;
-          transition: all 0.3s ease-in-out !important; /* Zorgt voor de soepele overgang */
+          transition: all 0.3s ease-in-out !important;
         }
         
         .hero-btn:hover {
           background-color: transparent !important;
-          color: #f4f1ea !important; /* Tekst wordt nu perfect beige! */
+          color: #f4f1ea !important;
         }
 
         @keyframes float {
@@ -199,15 +199,6 @@ const Home: React.FC = () => {
         .animate-fade-in-up {
           opacity: 0;
           animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        .noise-overlay {
-          position: absolute;
-          top: 0; left: 0; right: 0; bottom: 0;
-          pointer-events: none;
-          z-index: 1;
-          opacity: 0.04;
-          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
         /* Beans (boontjes) base styles using CSS variables set from JS */
@@ -231,7 +222,6 @@ const Home: React.FC = () => {
 
       <section id="home" className="hero-section min-h-screen flex flex-col justify-center px-4 sm:px-6 lg:px-16 relative overflow-hidden">
         
-        <div className="noise-overlay"></div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_10%,rgba(30,15,10,0.45)_150%)] pointer-events-none z-0"></div>
         <div className="absolute right-[0%] top-1/2 transform -translate-y-1/2 w-[60%] h-[80%] bg-[#a37042] rounded-full blur-[160px] opacity-25 pointer-events-none z-0"></div>
 
@@ -252,7 +242,6 @@ const Home: React.FC = () => {
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
 
-        {/* Extra boontjes toegevoegd */}
         <div
           ref={bokehRef3}
           className="bean absolute left-[10%] top-[8%] z-20 opacity-55 blur-sm bean--small"
@@ -277,7 +266,6 @@ const Home: React.FC = () => {
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
 
-        {/* Extra boontjes 6-9 */}
         <div
           ref={bokehRef6}
           className="bean absolute left-[55%] top-[12%] z-10 opacity-45 blur-sm bean--small animate-float"
@@ -309,6 +297,7 @@ const Home: React.FC = () => {
         >
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
+        
         {/* DE KOFFIEMACHINE */}
         <div 
           className="absolute right-[-20%] md:right-[-2%] top-3/4 md:top-1/2 w-[140%] md:w-[65%] h-[115%] z-10 pointer-events-none opacity-40 animate-float"
@@ -325,7 +314,6 @@ const Home: React.FC = () => {
           
           <div className="w-full md:w-3/5 flex flex-col items-center md:items-start text-center md:text-left relative z-20">
             
-            {/* Subtekst ZONDER locatie pin */}
             <div 
               className="animate-fade-in-up mb-6 flex flex-wrap items-center justify-center md:justify-start gap-3 text-[#f4f1ea] uppercase tracking-[0.2em] text-[11px] font-bold opacity-80"
               style={{ animationDelay: '0.1s' }}
@@ -409,7 +397,8 @@ const Home: React.FC = () => {
       >
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="mb-10 flex flex-col items-center text-center">
-            <h2 className="text-4xl md:text-5xl font-serif text-[#534026]">
+            {/* Hier is de titelkleur aangepast naar #d4cab4 */}
+            <h2 className="text-4xl md:text-5xl font-serif" style={{ color: '#d4cab4' }}>
               Ons mobiele koffiehuisje
             </h2>
             <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[#534026] opacity-90">
@@ -418,25 +407,25 @@ const Home: React.FC = () => {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {galleryImages.map((image, index) => (
-              <div
-                key={`${image.src}-${index}`}
-                className={`group relative overflow-hidden rounded-[2rem] shadow-[0_20px_45px_rgba(0,0,0,0.16)] ${index === 0 ? 'md:col-span-2 md:row-span-2 h-96 md:h-[32rem]' : 'h-72'}`}
-              >
-                <img
-                  src={image.src}
-                  alt={image.alt || `Foto ${index + 1} van 't bonenbakkie`}
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#120a07]/70 via-transparent to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-left text-[#f4f1ea]">
-                  <p className="text-sm uppercase tracking-[0.2em] opacity-80">Foto collage</p>
-                  <p className="mt-1 text-xl font-semibold">{image.title || 'Onze koffiewagen'}</p>
-                  <p className="mt-1 text-sm opacity-90">{image.description || 'Sfeer en detail'}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+  {galleryImages.map((image, index) => (
+    <div
+      key={`${image.src}-${index}`}
+      className={`group relative overflow-hidden rounded-[2rem] shadow-[0_20px_45px_rgba(0,0,0,0.16)] ${index === 0 ? 'md:col-span-2 md:row-span-2 h-96 md:h-[32rem]' : 'h-72'}`}
+    >
+      <img
+        src={image.src}
+        alt={image.alt || `Foto ${index + 1} van 't bonenbakkie`}
+        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#120a07]/70 via-transparent to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 p-6 text-left text-[#f4f1ea]">
+        {/* "Foto collage" tekst is hier verwijderd */}
+        <p className="text-xl font-semibold">{image.title || 'Onze koffiewagen'}</p>
+        <p className="mt-1 text-sm opacity-90">{image.description || 'Sfeer en detail'}</p>
+      </div>
+    </div>
+  ))}
+</div>
 
         </div>
       </section>

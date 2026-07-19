@@ -114,42 +114,56 @@ const App = () => {
           opacity: `${Math.max(0, 1 - navOffset / 120)}`,
         }}
       >
-        <div className="w-full px-6 lg:px-16 py-4 flex items-center justify-between h-24 relative">
+        {/* VERNIEUWDE LAYOUT: flex-1, flex-shrink-0, flex-1 voorkomt overlappen! */}
+        <div className="w-full px-4 md:px-8 xl:px-16 py-4 flex items-center justify-between h-24 relative">
           
-          <nav 
-            ref={navRef} 
-            className={`hidden md:flex flex-1 max-w-[40%] justify-start top-nav items-center gap-1 theme-${navTheme} -ml-5 relative`}
-            onMouseLeave={() => {
-              setIsHovering(false);
-              snapToActive();
-            }}
-          >
-            <div
-              className={`absolute h-full top-0 left-0 rounded-full transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none z-0 ${bubbleClass}`}
-              style={{
-                left: `${bubbleStyle.left}px`,
-                width: `${bubbleStyle.width}px`,
-                opacity: bubbleStyle.opacity,
+          {/* LINKER KANT: Navigatie (of Hamburger op mobiel) */}
+          <div className="flex-1 flex justify-start items-center z-20">
+            <nav 
+              ref={navRef} 
+              className={`hidden lg:flex top-nav items-center gap-1 xl:gap-2 theme-${navTheme} relative`}
+              onMouseLeave={() => {
+                setIsHovering(false);
+                snapToActive();
               }}
-            />
-
-            {menuItems.map((item) => (
-              <NavLink 
-                key={item.path}
-                to={item.path} 
-                end={item.end} 
-                className={({ isActive }) => `px-3 py-1.5 transition-colors relative z-10 ${isActive ? 'active-link' : ''}`}
-                onMouseEnter={(e) => {
-                  setIsHovering(true);
-                  moveBubbleTo(e.currentTarget);
+            >
+              <div
+                className={`absolute h-full top-0 left-0 rounded-full transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none z-0 ${bubbleClass}`}
+                style={{
+                  left: `${bubbleStyle.left}px`,
+                  width: `${bubbleStyle.width}px`,
+                  opacity: bubbleStyle.opacity,
                 }}
-              >
-                {item.label}
-              </NavLink>
-            ))}
-          </nav>
+              />
 
-          <div className="absolute top-1/2 left-1/2 lg:left-[53%] transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none z-10 w-56 sm:w-64 md:w-72">
+              {menuItems.map((item) => (
+                <NavLink 
+                  key={item.path}
+                  to={item.path} 
+                  end={item.end} 
+                  className={({ isActive }) => `px-2 xl:px-3 py-1.5 whitespace-nowrap text-sm xl:text-base transition-colors relative z-10 ${isActive ? 'active-link' : ''}`}
+                  onMouseEnter={(e) => {
+                    setIsHovering(true);
+                    moveBubbleTo(e.currentTarget);
+                  }}
+                >
+                  {item.label}
+                </NavLink>
+              ))}
+            </nav>
+            
+            {/* Hamburger menu wordt nu ook op tablets getoond om ruimte te besparen */}
+            <button 
+              className="lg:hidden p-2 text-white"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Open mobiel menu"
+            >
+              {isMobileMenuOpen ? <X size={28} color="#f4ebd9" /> : <MenuIcon size={28} color="#f4ebd9" />}
+            </button>
+          </div>
+
+          {/* MIDDEN: Logo (Kan niet meer in elkaar gedrukt worden door flex-shrink-0) */}
+          <div className="flex-shrink-0 z-10 w-44 sm:w-56 lg:w-64 xl:w-72 flex justify-center pointer-events-none">
             <img 
               src="/bonenbakkielogo.png" 
               alt="'t bonenbakkie" 
@@ -157,21 +171,17 @@ const App = () => {
             />
           </div>
 
-          <div className="flex-1 max-w-[40%] flex justify-end items-center gap-4">
-            <div className="hidden md:block">
-              <Link to="/contact" className="coffee-btn">Contact</Link>
+          {/* RECHTER KANT: Contact Knop */}
+          <div className="flex-1 flex justify-end items-center z-20">
+            <div className="hidden lg:block">
+              <Link to="/contact" className="coffee-btn text-sm xl:text-base whitespace-nowrap">Contact</Link>
             </div>
-            <button 
-              className="md:hidden p-2 text-white z-30 absolute left-4 top-4"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label="Open mobiel menu"
-            >
-              {isMobileMenuOpen ? <X size={28} color="#f4ebd9" /> : <MenuIcon size={28} color="#f4ebd9" />}
-            </button>
           </div>
+          
         </div>
 
-        <div className={`md:hidden absolute w-full bg-[#534026]/95 backdrop-blur-xl transition-all duration-300 overflow-hidden ${isMobileMenuOpen ? 'max-h-96 py-4 border-b border-white/10' : 'max-h-0 py-0'}`}>
+        {/* Mobiel menu */}
+        <div className={`lg:hidden absolute w-full bg-[#534026]/95 backdrop-blur-xl transition-all duration-300 overflow-hidden ${isMobileMenuOpen ? 'max-h-96 py-4 border-b border-white/10' : 'max-h-0 py-0'}`}>
           <div className="flex flex-col px-6 gap-4 text-center top-nav">
             <NavLink to="/" end className="text-[#f4ebd9] py-2 border-b border-white/10" onClick={() => setIsMobileMenuOpen(false)}>Home</NavLink>
             <NavLink to="/menu" className="text-[#f4ebd9] py-2 border-b border-white/10" onClick={() => setIsMobileMenuOpen(false)}>Menu</NavLink>
@@ -195,7 +205,6 @@ const App = () => {
         </Routes>
       </div>
 
-      {/* VERNIEUWDE, STRAKKE FOOTER */}
       <footer className="w-full border-t border-white/10 bg-white/5 backdrop-blur-md py-16 px-4 sm:px-6 lg:px-8 mt-auto relative z-10">
         <div className="max-w-7xl mx-auto">
           
@@ -210,9 +219,8 @@ const App = () => {
                 Premium koffie naar je buurt, één kopje tegelijk. Ervaar de warmte van onze mobiele wagen.
               </p>
               
-              {/* Je zakelijke details (KvK etc) */}
               <div className="text-[#f4ebd9] opacity-60 font-sans text-sm flex flex-col gap-1">
-                <p>KvK: 99842807</p> {/* <-- Vul hier je echte KvK in */}
+                <p>KvK: 12345678</p>
                 <p>info@bonenbakkie.nl</p>
               </div>
             </div>
@@ -250,11 +258,10 @@ const App = () => {
 
           </div>
 
-          {/* Bottom Bar met Copyright & Verborgen Login */}
+          {/* Bottom Bar */}
           <div className="flex justify-between items-center text-xs text-[#f4ebd9] font-sans">
             <p className="opacity-50">© 2026 't bonenbakkie. Met liefde gemaakt.</p>
             
-            {/* De bijna onzichtbare login knop (opacity-5) */}
             <Link 
               to="/admin" 
               className="opacity-5 hover:opacity-100 transition-opacity duration-300 px-2 py-1 uppercase tracking-widest font-bold"
