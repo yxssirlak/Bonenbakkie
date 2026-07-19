@@ -114,7 +114,7 @@ const App = () => {
           </nav>
 
           {/* Logo */}
-          <div className="absolute left-1/2 lg:left-[52%] top-1 md:top-1/2 transform -translate-x-1/2 flex items-center pointer-events-none z-10 w-56 sm:w-72">
+          <div className="absolute left-1/2 lg:left-[52%] -top-2 md:top-1/4 transform -translate-x-1/2 flex items-center pointer-events-none z-10 w-64 sm:w-72">
             <img 
               src="/bonenbakkielogo.png" 
               alt="'t bonenbakkie" 
@@ -139,7 +139,7 @@ const App = () => {
         </div>
 
         {/* Mobiel menu */}
-        <div className={`md:hidden absolute w-full bg-[#534026]/95 backdrop-blur-xl border-b border-white/10 transition-all duration-300 overflow-hidden ${isMobileMenuOpen ? 'max-h-96 py-4' : 'max-h-0 py-0'}`}>
+        <div className={`md:hidden absolute w-full bg-[#534026]/95 backdrop-blur-xl transition-all duration-300 overflow-hidden ${isMobileMenuOpen ? 'max-h-96 py-4 border-b border-white/10' : 'max-h-0 py-0'}`}>
           <div className="flex flex-col px-6 gap-4 text-center top-nav">
             <NavLink to="/" end className="text-[#f4ebd9] py-2 border-b border-white/10" onClick={() => setIsMobileMenuOpen(false)}>Home</NavLink>
             <NavLink to="/menu" className="text-[#f4ebd9] py-2 border-b border-white/10" onClick={() => setIsMobileMenuOpen(false)}>Menu</NavLink>
