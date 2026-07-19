@@ -114,7 +114,7 @@ const App = () => {
           </nav>
 
           {/* Logo */}
-          <div className="absolute left-1/2 lg:left-[52%] top-2 md:top-1/2 transform -translate-x-1/2 flex items-center pointer-events-none z-10 w-48 sm:w-72">
+          <div className="absolute left-1/2 lg:left-[52%] top-1 md:top-1/2 transform -translate-x-1/2 flex items-center pointer-events-none z-10 w-56 sm:w-72">
             <img 
               src="/bonenbakkielogo.png" 
               alt="'t bonenbakkie" 
