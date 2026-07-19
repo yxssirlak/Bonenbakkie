@@ -166,7 +166,7 @@ const App = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-3 gap-10 mb-10 pb-10 border-b border-white/10">
             <div>
-              <div className="flex items-center gap-3 mb-5 w-48">
+              <div className="flex items-center gap-3 mb-5 w-64 sm:w-72 md:w-80">
                 <img src="/bonenbakkielogo.png" alt="'t bonenbakkie" className="w-full h-auto object-contain" />
               </div>
               <p className="text-[#f4ebd9] leading-relaxed opacity-90 font-sans">

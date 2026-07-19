@@ -295,7 +295,7 @@ const Home: React.FC = () => {
             <div className="animate-fade-in-up mb-6 flex flex-col items-center md:items-start" style={{ animationDelay: '0.3s' }}>
               <h1 className="text-6xl md:text-7xl lg:text-8xl font-serif text-[#f4f1ea]">
                 't bonenbakkie brengt <br />
-                <span className="opacity-80">sfeer in elk kopje</span>
+                <span className="text-[#d4cab4] opacity-100">sfeer in elk kopje</span>
               </h1>
             </div>
             

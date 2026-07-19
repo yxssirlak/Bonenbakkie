@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Briefcase, PartyPopper, Check, ArrowRight, Star } from 'lucide-react';
+import { Calendar, Briefcase, PartyPopper, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Events: React.FC = () => {
@@ -22,54 +22,48 @@ const Events: React.FC = () => {
         </div>
 
         {/* Pakketten / Arrangementen (Glass Cards) */}
-        <div className="grid md:grid-cols-3 gap-8 mb-24">
+        <div className="grid md:grid-cols-2 gap-8 mb-24">
           
-          {/* Pakket 1: Particulier */}
-          <div className="glass-card flex flex-col fade-in-up" style={{ animationDelay: '0.1s' }}>
-            <PartyPopper className="w-12 h-12 text-[#D4A574] mb-6" />
-            <h3 className="text-2xl font-serif font-bold text-[#F5EFE7] mb-2">Particulier & Feesten</h3>
-            <p className="text-[#ebdad0] mb-8 flex-grow leading-relaxed">
-              Perfect voor bruiloften, verjaardagen en familiefeesten. Geef je gasten een unieke, warme welkomstbeleving.
-            </p>
-            <ul className="space-y-4 mb-10 text-[#ebdad0]/80">
-              <li className="flex items-center gap-3"><Check size={20} className="text-[#D4A574]" /> Onbeperkt koffie, thee & water</li>
-              <li className="flex items-center gap-3"><Check size={20} className="text-[#D4A574]" /> Vanaf 2 uur barista service</li>
-              <li className="flex items-center gap-3"><Check size={20} className="text-[#D4A574]" /> Inclusief alle disposables</li>
-            </ul>
-            <Link to="/contact" className="coffee-btn-outline w-full text-center mt-auto">Vraag offerte aan</Link>
-          </div>
-
-          {/* Pakket 2: Zakelijk (Uitgelicht) */}
-          <div className="glass-card flex flex-col fade-in-up relative border-[#D4A574]/40" style={{ animationDelay: '0.2s', background: 'rgba(212, 165, 116, 0.08)' }}>
-            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#D4A574] text-[#140a07] px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase flex items-center gap-1">
-              <Star size={12} /> Meest Gekozen
+          {/* Particulier */}
+          <div className="glass-card group relative overflow-hidden flex flex-col fade-in-up border-white/10 bg-white/5 shadow-[0_26px_70px_rgba(0,0,0,0.22)] backdrop-blur-xl p-10 transition duration-300 hover:-translate-y-1" style={{ animationDelay: '0.1s' }}>
+            <div className="absolute inset-x-0 top-0 h-2 bg-gradient-to-r from-[#D4A574] via-[#c8b191] to-transparent opacity-60" />
+            <div className="relative z-10">
+              <div className="inline-flex items-center gap-2 rounded-full bg-[#d4cab4]/15 px-4 py-2 text-xs uppercase tracking-[0.25em] font-bold text-[#f4ebd9] mb-5">
+                Voor jouw privé momenten
+              </div>
+              <PartyPopper className="w-14 h-14 text-[#D4A574] mb-6" />
+              <h3 className="text-3xl font-serif font-bold text-[#F5EFE7] mb-4">Particulier</h3>
+              <p className="text-[#ebdad0] mb-10 leading-relaxed text-base max-w-xl">
+                Perfect voor bruiloften, verjaardagen en familiefeestjes. Een warme, persoonlijke koffiebeleving met aandacht voor sfeer en smaak.
+              </p>
+              <div className="space-y-4 mb-10 text-[#ebdad0]/90 text-sm">
+                <p>Barista service op locatie</p>
+                <p>Vers gezette koffie, thee en seizoensspecials</p>
+                <p>Een zachte, gastvrije uitstraling voor kleine gezelschappen</p>
+              </div>
+              <Link to="/contact" className="coffee-btn-outline w-full text-center mt-auto">Vraag offerte aan</Link>
             </div>
-            <Briefcase className="w-12 h-12 text-[#D4A574] mb-6" />
-            <h3 className="text-2xl font-serif font-bold text-[#F5EFE7] mb-2">Zakelijk & Events</h3>
-            <p className="text-[#ebdad0] mb-8 flex-grow leading-relaxed">
-              Ideaal voor bedrijfsborrels, beurzen en open dagen. Een professionele uitstraling die indruk maakt op klanten en personeel.
-            </p>
-            <ul className="space-y-4 mb-10 text-[#ebdad0]/80">
-              <li className="flex items-center gap-3"><Check size={20} className="text-[#D4A574]" /> Capaciteit tot 150+ kopjes/uur</li>
-              <li className="flex items-center gap-3"><Check size={20} className="text-[#D4A574]" /> Mogelijkheid tot branding</li>
-              <li className="flex items-center gap-3"><Check size={20} className="text-[#D4A574]" /> Uit te breiden met zoetigheden</li>
-            </ul>
-            <Link to="/contact" className="coffee-btn w-full text-center mt-auto">Vraag offerte aan</Link>
           </div>
 
-          {/* Pakket 3: Maatwerk */}
-          <div className="glass-card flex flex-col fade-in-up" style={{ animationDelay: '0.3s' }}>
-            <Calendar className="w-12 h-12 text-[#D4A574] mb-6" />
-            <h3 className="text-2xl font-serif font-bold text-[#F5EFE7] mb-2">Festivals & Markten</h3>
-            <p className="text-[#ebdad0] mb-8 flex-grow leading-relaxed">
-              We komen graag naar jouw festival, braderie of foodtruck event om het publiek te voorzien van een snelle cafeïne-boost.
-            </p>
-            <ul className="space-y-4 mb-10 text-[#ebdad0]/80">
-              <li className="flex items-center gap-3"><Check size={20} className="text-[#D4A574]" /> Hoge capaciteit en doorloop</li>
-              <li className="flex items-center gap-3"><Check size={20} className="text-[#D4A574]" /> Ook Iced Coffees & Limonades</li>
-              <li className="flex items-center gap-3"><Check size={20} className="text-[#D4A574]" /> Flexibele opstelling</li>
-            </ul>
-            <Link to="/contact" className="coffee-btn-outline w-full text-center mt-auto">Bespreek de opties</Link>
+          {/* Zakelijk */}
+          <div className="glass-card group relative overflow-hidden flex flex-col fade-in-up border-white/10 bg-white/5 shadow-[0_26px_70px_rgba(0,0,0,0.22)] backdrop-blur-xl p-10 transition duration-300 hover:-translate-y-1" style={{ animationDelay: '0.2s' }}>
+            <div className="absolute inset-x-0 top-0 h-2 bg-gradient-to-r from-transparent via-[#D4A574] to-[#c8b191] opacity-60" />
+            <div className="relative z-10">
+              <div className="inline-flex items-center gap-2 rounded-full bg-[#d4cab4]/15 px-4 py-2 text-xs uppercase tracking-[0.25em] font-bold text-[#f4ebd9] mb-5">
+                Voor bedrijfsfeesten en events
+              </div>
+              <Briefcase className="w-14 h-14 text-[#D4A574] mb-6" />
+              <h3 className="text-3xl font-serif font-bold text-[#F5EFE7] mb-4">Zakelijk</h3>
+              <p className="text-[#ebdad0] mb-10 leading-relaxed text-base max-w-xl">
+                Geschikt voor bedrijfsfeestjes, markten, festivals en beurzen. Professionele koffie met een toegankelijke én krachtige presentatie.
+              </p>
+              <div className="space-y-4 mb-10 text-[#ebdad0]/90 text-sm">
+                <p>Snelle service voor grotere groepen</p>
+                <p>Flexibel inzetbaar op evenementen en buitenlocaties</p>
+                <p>Optie voor branding en een representatieve uitstraling</p>
+              </div>
+              <Link to="/contact" className="coffee-btn w-full text-center mt-auto">Vraag offerte aan</Link>
+            </div>
           </div>
 
         </div>
