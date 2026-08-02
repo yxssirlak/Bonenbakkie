@@ -213,62 +213,65 @@ const App = () => {
         </Routes>
       </div>
 
-      <footer className="w-full border-t border-white/10 bg-white/5 backdrop-blur-md py-16 px-4 sm:px-6 lg:px-8 mt-auto relative z-10">
+      <footer className="w-full border-t border-white/10 bg-white/5 backdrop-blur-md py-24 px-4 sm:px-6 lg:px-12 mt-auto relative z-10">
         <div className="max-w-7xl mx-auto">
           
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 mb-12 pb-12 border-b border-white/10">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 mb-16 pb-16 border-b border-white/10">
             
-            <div className="md:col-span-5 lg:col-span-4">
-              <Link to="/" className="inline-block mb-6 w-56 sm:w-64 transition-transform hover:scale-105">
+            {/* Logo & Info */}
+            <div className="md:col-span-5 lg:col-span-5">
+              <Link to="/" className="inline-block mb-8 w-64 sm:w-80 transition-transform hover:scale-105">
                 <img src="/bonenbakkielogo.png" alt="'t bonenbakkie" className="w-full h-auto object-contain" />
               </Link>
-              <p className="text-[#f4ebd9] leading-relaxed opacity-80 font-sans text-sm max-w-sm mb-6">
+              <p className="text-[#f4ebd9] leading-relaxed opacity-80 font-sans text-base max-w-md mb-8">
                 Premium koffie naar je buurt, één kopje tegelijk. Ervaar de warmte van onze mobiele wagen.
               </p>
               
-              <div className="text-[#f4ebd9] opacity-60 font-sans text-sm flex flex-col gap-1">
+              <div className="text-[#f4ebd9] opacity-60 font-sans text-base flex flex-col gap-2">
                 <p>KvK: 99842807</p>
                 <p>info@bonenbakkie.nl</p>
               </div>
             </div>
 
-            <div className="md:col-span-3 lg:col-span-2 lg:col-start-7">
-              <h4 className="font-sans font-bold tracking-widest uppercase mb-6 text-[var(--logo-cream)] text-xs opacity-50">
+            {/* Snelle Links */}
+            <div className="md:col-span-3 lg:col-span-2 lg:col-start-8">
+              <h4 className="font-sans font-bold tracking-[0.2em] uppercase mb-8 text-[#d4cab4] text-sm opacity-70">
                 Snelle Links
               </h4>
-              <ul className="space-y-4 text-[var(--logo-cream)]">
-                <li><Link to="/menu" className="hover:text-white hover:translate-x-1 transition-transform inline-block font-sans text-sm">Menu</Link></li>
-                <li><Link to="/events" className="hover:text-white hover:translate-x-1 transition-transform inline-block font-sans text-sm">Boeken</Link></li>
-                <li><Link to="/sfeer" className="hover:text-white hover:translate-x-1 transition-transform inline-block font-sans text-sm">Sfeer</Link></li>
-                <li><Link to="/about" className="hover:text-white hover:translate-x-1 transition-transform inline-block font-sans text-sm">Over ons</Link></li>
+              <ul className="space-y-5 text-[#f4ebd9]">
+                <li><Link to="/menu" className="hover:text-white hover:translate-x-2 transition-transform inline-block font-sans text-base">Menu</Link></li>
+                <li><Link to="/events" className="hover:text-white hover:translate-x-2 transition-transform inline-block font-sans text-base">Boeken</Link></li>
+                <li><Link to="/sfeer" className="hover:text-white hover:translate-x-2 transition-transform inline-block font-sans text-base">Sfeer</Link></li>
+                <li><Link to="/about" className="hover:text-white hover:translate-x-2 transition-transform inline-block font-sans text-base">Over ons</Link></li>
               </ul>
             </div>
 
-            <div className="md:col-span-4 lg:col-span-3">
-              <h4 className="font-sans font-bold tracking-widest uppercase mb-6 text-[var(--logo-cream)] text-xs opacity-50">
+            {/* Volg Ons */}
+            <div className="md:col-span-4 lg:col-span-2">
+              <h4 className="font-sans font-bold tracking-[0.2em] uppercase mb-8 text-[#d4cab4] text-sm opacity-70">
                 Volg Ons
               </h4>
-              <div className="flex flex-col gap-4 text-[var(--logo-cream)]">
-                <a href="#" className="hover:text-white hover:translate-x-1 transition-transform inline-flex items-center gap-3 font-sans text-sm w-max">
-                  <Instagram className="w-4 h-4" /> Instagram
+              <div className="flex flex-col gap-5 text-[#f4ebd9]">
+                <a href="#" className="hover:text-white hover:translate-x-2 transition-transform inline-flex items-center gap-4 font-sans text-base w-max">
+                  <Instagram className="w-5 h-5 text-[#d4cab4]" /> Instagram
                 </a>
-                <a href="#" className="hover:text-white hover:translate-x-1 transition-transform inline-flex items-center gap-3 font-sans text-sm w-max">
-                  <Facebook className="w-4 h-4" /> Facebook
+                <a href="#" className="hover:text-white hover:translate-x-2 transition-transform inline-flex items-center gap-4 font-sans text-base w-max">
+                  <Facebook className="w-5 h-5 text-[#d4cab4]" /> Facebook
                 </a>
-                <a href="#" className="hover:text-white hover:translate-x-1 transition-transform inline-flex items-center gap-3 font-sans text-sm w-max">
-                  <Linkedin className="w-4 h-4" /> LinkedIn
+                <a href="#" className="hover:text-white hover:translate-x-2 transition-transform inline-flex items-center gap-4 font-sans text-base w-max">
+                  <Linkedin className="w-5 h-5 text-[#d4cab4]" /> LinkedIn
                 </a>
               </div>
             </div>
 
           </div>
 
-          <div className="flex justify-between items-center text-xs text-[#f4ebd9] font-sans">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-[#f4ebd9] font-sans">
             <p className="opacity-50">© 2026 't bonenbakkie. Met liefde gemaakt.</p>
             
             <Link 
               to="/admin" 
-              className="opacity-5 hover:opacity-100 transition-opacity duration-300 px-2 py-1 uppercase tracking-widest font-bold"
+              className="opacity-10 hover:opacity-100 transition-opacity duration-300 px-4 py-2 uppercase tracking-[0.2em] font-bold text-xs bg-white/5 hover:bg-white/10 rounded-full"
               aria-label="Admin Login"
             >
               Admin
