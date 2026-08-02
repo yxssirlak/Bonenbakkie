@@ -8,7 +8,6 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
-  // Dit lost de gevreesde CORS error op
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -16,7 +15,62 @@ serve(async (req) => {
   try {
     const { record } = await req.json()
 
-    // Stuur de mail via Resend
+    // Mooie HTML Template met jouw huisstijl
+    const htmlEmail = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+    </head>
+    <body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f1ea; margin: 0; padding: 40px 20px;">
+      
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
+        
+        <!-- Header met Logo (Gepakt van je live website) -->
+        <tr>
+          <td style="background-color: #1e0f0a; text-align: center; padding: 40px 20px;">
+            <img src="https://www.bonenbakkie.nl/bonenbakkielogo.png" alt="'t bonenbakkie" style="max-width: 200px; height: auto;" />
+          </td>
+        </tr>
+
+        <!-- Inhoud van de mail -->
+        <tr>
+          <td style="padding: 40px 30px;">
+            <h2 style="color: #534026; margin-top: 0; margin-bottom: 25px; font-size: 24px; border-bottom: 2px solid #f4f1ea; padding-bottom: 15px;">
+              ☕ Nieuwe Offerte Aanvraag
+            </h2>
+            
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="font-size: 15px; line-height: 1.6;">
+              <tr><td style="padding-bottom: 10px;"><strong style="color: #a37042; display: inline-block; width: 130px;">Naam:</strong> <span style="color: #534026;">${record.naam || '-'}</span></td></tr>
+              <tr><td style="padding-bottom: 10px;"><strong style="color: #a37042; display: inline-block; width: 130px;">Bedrijf:</strong> <span style="color: #534026;">${record.bedrijfsnaam || '-'}</span></td></tr>
+              <tr><td style="padding-bottom: 10px;"><strong style="color: #a37042; display: inline-block; width: 130px;">E-mail:</strong> <span style="color: #534026;">${record.email || '-'}</span></td></tr>
+              <tr><td style="padding-bottom: 10px;"><strong style="color: #a37042; display: inline-block; width: 130px;">Telefoon:</strong> <span style="color: #534026;">${record.telefoon || '-'}</span></td></tr>
+              <tr><td style="padding-bottom: 10px;"><strong style="color: #a37042; display: inline-block; width: 130px;">Gelegenheid:</strong> <span style="color: #534026;">${record.gelegenheid || '-'}</span></td></tr>
+              <tr><td style="padding-bottom: 10px;"><strong style="color: #a37042; display: inline-block; width: 130px;">Datum:</strong> <span style="color: #534026;">${record.datum || '-'}</span></td></tr>
+              <tr><td style="padding-bottom: 10px;"><strong style="color: #a37042; display: inline-block; width: 130px;">Locatie:</strong> <span style="color: #534026;">${record.locatie || '-'}</span></td></tr>
+              <tr><td style="padding-bottom: 25px;"><strong style="color: #a37042; display: inline-block; width: 130px;">Aantal Gasten:</strong> <span style="color: #534026;">${record.aantal_gasten || '-'}</span></td></tr>
+            </table>
+
+            <!-- Extra wensen blok -->
+            <h3 style="color: #a37042; font-size: 16px; margin-bottom: 10px;">Extra wensen / Bericht:</h3>
+            <div style="background-color: #f4f1ea; padding: 20px; border-radius: 8px; color: #534026; font-size: 15px; line-height: 1.6;">
+              ${record.bericht || '<em>Geen bijzonderheden opgegeven.</em>'}
+            </div>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td style="background-color: #f4f1ea; text-align: center; padding: 20px; color: #a37042; font-size: 12px;">
+            Deze aanvraag is automatisch verstuurd vanaf <strong>www.bonenbakkie.nl</strong>
+          </td>
+        </tr>
+      </table>
+      
+    </body>
+    </html>
+    `
+
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -24,24 +78,10 @@ serve(async (req) => {
         'Authorization': `Bearer ${resendApiKey}`
       },
       body: JSON.stringify({
-        from: 'Bonenbakkie <onboarding@resend.dev>', // Laat dit staan om te testen
-        to: 'info@bonenbakkie.nl', // Vul hier in waar je de aanvragen wilt ONTVANGEN
+        from: 'Bonenbakkie <onboarding@resend.dev>', 
+        to: 'info@bonenbakkie.nl', 
         subject: `Nieuwe aanvraag: ${record.type_aanvraag} - ${record.naam}`,
-        html: `
-          <div style="font-family: sans-serif; padding: 20px;">
-            <h2>☕ Nieuwe Offerte Aanvraag</h2>
-            <p><strong>Naam:</strong> ${record.naam || '-'}</p>
-            <p><strong>Bedrijf:</strong> ${record.bedrijfsnaam || '-'}</p>
-            <p><strong>E-mail:</strong> ${record.email || '-'}</p>
-            <p><strong>Telefoon:</strong> ${record.telefoon || '-'}</p>
-            <p><strong>Gelegenheid:</strong> ${record.gelegenheid || '-'}</p>
-            <p><strong>Datum:</strong> ${record.datum || '-'}</p>
-            <p><strong>Locatie:</strong> ${record.locatie || '-'}</p>
-            <p><strong>Gasten:</strong> ${record.aantal_gasten || '-'}</p>
-            <hr />
-            <p><strong>Extra wensen:</strong><br/> ${record.bericht || 'Geen'}</p>
-          </div>
-        `
+        html: htmlEmail // Verwijst naar de HTML hierboven
       })
     })
 
