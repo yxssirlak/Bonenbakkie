@@ -93,12 +93,12 @@ const App = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Luxere bubbel styling
   const bubbleClass = navTheme === 'dark' 
-    ? 'bg-white/10 border border-white/20 backdrop-blur-md shadow-[0_4px_15px_rgba(0,0,0,0.1)]' 
-    : 'bg-white/40 border border-white/50 backdrop-blur-md shadow-sm';
+    ? 'bg-white/10 border border-white/20 backdrop-blur-md shadow-[0_4px_20px_rgba(255,255,255,0.05)]' 
+    : 'bg-[#534026]/10 border border-[#534026]/20 backdrop-blur-md shadow-sm';
 
   const menuItems = [
-    { path: '/', label: 'Home', end: true },
     { path: '/menu', label: 'Menu' },
     { path: '/events', label: 'Boeken' },
     { path: '/sfeer', label: 'Sfeer' },
@@ -108,16 +108,16 @@ const App = () => {
   return (
     <div className="page-shell flex flex-col min-h-screen">
       <header
-        className="fixed w-full z-50 top-0 left-0 transition-all duration-300 ease-[cubic-bezier(0.215,0.61,0.355,1)]"
+        className="fixed w-full z-50 top-0 left-0 transition-all duration-500 ease-out"
         style={{
           transform: `translateY(-${navOffset}px)`,
           opacity: `${Math.max(0, 1 - navOffset / 120)}`,
         }}
       >
-        {/* VERNIEUWDE LAYOUT: flex-1, flex-shrink-0, flex-1 voorkomt overlappen! */}
-        <div className="w-full px-4 md:px-8 xl:px-16 py-4 flex items-center justify-between h-24 relative">
+        {/* HIER GEWIJZIGD: px-[2px] zorgt ervoor dat alles strak 2 pixels van de rand staat */}
+        <div className="w-full px-[2px] flex items-center justify-between h-28 relative">
           
-          {/* LINKER KANT: Navigatie (of Hamburger op mobiel) */}
+          {/* LINKER KANT (Navigatie) */}
           <div className="flex-1 flex justify-start items-center z-20">
             <nav 
               ref={navRef} 
@@ -128,7 +128,7 @@ const App = () => {
               }}
             >
               <div
-                className={`absolute h-full top-0 left-0 rounded-full transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none z-0 ${bubbleClass}`}
+                className={`absolute h-full top-0 left-0 rounded-full transition-all duration-300 ease-out pointer-events-none z-0 ${bubbleClass}`}
                 style={{
                   left: `${bubbleStyle.left}px`,
                   width: `${bubbleStyle.width}px`,
@@ -140,8 +140,7 @@ const App = () => {
                 <NavLink 
                   key={item.path}
                   to={item.path} 
-                  end={item.end} 
-                  className={({ isActive }) => `px-2 xl:px-3 py-1.5 whitespace-nowrap text-sm xl:text-base transition-colors relative z-10 ${isActive ? 'active-link' : ''}`}
+                  className={({ isActive }) => `px-3 xl:px-4 py-1.5 whitespace-nowrap text-[11px] xl:text-[13px] font-semibold tracking-[0.15em] uppercase transition-colors duration-300 relative z-10 ${isActive ? 'active-link text-white' : 'opacity-80 hover:opacity-100'}`}
                   onMouseEnter={(e) => {
                     setIsHovering(true);
                     moveBubbleTo(e.currentTarget);
@@ -152,43 +151,52 @@ const App = () => {
               ))}
             </nav>
             
-            {/* Hamburger menu wordt nu ook op tablets getoond om ruimte te besparen */}
             <button 
-              className="lg:hidden p-2 text-white"
+              className="lg:hidden p-2 text-white hover:opacity-80 transition-opacity ml-2"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Open mobiel menu"
             >
-              {isMobileMenuOpen ? <X size={28} color="#f4ebd9" /> : <MenuIcon size={28} color="#f4ebd9" />}
+              {isMobileMenuOpen ? <X size={32} color="#f4ebd9" /> : <MenuIcon size={32} color="#f4ebd9" />}
             </button>
           </div>
 
-          {/* MIDDEN: Logo (Kan niet meer in elkaar gedrukt worden door flex-shrink-0) */}
-          <div className="flex-shrink-0 z-10 w-44 sm:w-56 lg:w-64 xl:w-72 flex justify-center pointer-events-none">
-            <img 
-              src="/bonenbakkielogo.png" 
-              alt="'t bonenbakkie" 
-              className="w-full h-auto object-contain pointer-events-auto filter drop-shadow-md" 
-            />
+          {/* MIDDEN (Logo) */}
+          <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 flex justify-center">
+            <Link 
+              to="/" 
+              className="w-48 sm:w-60 lg:w-72 xl:w-80 transition-transform duration-300 ease-out hover:scale-[1.03] group"
+              aria-label="Terug naar Home"
+            >
+              <img 
+                src="/bonenbakkielogo.png" 
+                alt="'t bonenbakkie" 
+                className="w-full h-auto object-contain filter drop-shadow-md transition-all duration-300 group-hover:drop-shadow-xl" 
+              />
+            </Link>
           </div>
 
-          {/* RECHTER KANT: Contact Knop */}
+          {/* RECHTER KANT (Contact Knop) */}
           <div className="flex-1 flex justify-end items-center z-20">
             <div className="hidden lg:block">
-              <Link to="/contact" className="coffee-btn text-sm xl:text-base whitespace-nowrap">Contact</Link>
+              <Link 
+                to="/contact" 
+                className="coffee-btn text-[11px] xl:text-[13px] tracking-[0.15em] whitespace-nowrap px-6 py-2.5 xl:px-8 xl:py-3 shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                Contact
+              </Link>
             </div>
           </div>
           
         </div>
 
-        {/* Mobiel menu */}
-        <div className={`lg:hidden absolute w-full bg-[#534026]/95 backdrop-blur-xl transition-all duration-300 overflow-hidden ${isMobileMenuOpen ? 'max-h-96 py-4 border-b border-white/10' : 'max-h-0 py-0'}`}>
-          <div className="flex flex-col px-6 gap-4 text-center top-nav">
-            <NavLink to="/" end className="text-[#f4ebd9] py-2 border-b border-white/10" onClick={() => setIsMobileMenuOpen(false)}>Home</NavLink>
-            <NavLink to="/menu" className="text-[#f4ebd9] py-2 border-b border-white/10" onClick={() => setIsMobileMenuOpen(false)}>Menu</NavLink>
-            <NavLink to="/events" className="text-[#f4ebd9] py-2 border-b border-white/10" onClick={() => setIsMobileMenuOpen(false)}>Boeken</NavLink>
-            <NavLink to="/sfeer" className="text-[#f4ebd9] py-2 border-b border-white/10" onClick={() => setIsMobileMenuOpen(false)}>Sfeer</NavLink>
-            <NavLink to="/about" className="text-[#f4ebd9] py-2 border-b border-white/10" onClick={() => setIsMobileMenuOpen(false)}>Over ons</NavLink>
-            <NavLink to="/contact" className="text-[#e3cdb3] py-2" onClick={() => setIsMobileMenuOpen(false)}>Contact</NavLink>
+        <div className={`lg:hidden absolute w-full bg-[#3d2f1b]/95 backdrop-blur-xl transition-all duration-500 overflow-hidden shadow-2xl ${isMobileMenuOpen ? 'max-h-96 py-4 border-b border-white/10' : 'max-h-0 py-0'}`}>
+          <div className="flex flex-col px-8 gap-2 text-center top-nav">
+            <NavLink to="/" end className="text-[#f4ebd9] py-3 text-sm tracking-widest uppercase border-b border-white/5" onClick={() => setIsMobileMenuOpen(false)}>Home</NavLink>
+            <NavLink to="/menu" className="text-[#f4ebd9] py-3 text-sm tracking-widest uppercase border-b border-white/5" onClick={() => setIsMobileMenuOpen(false)}>Menu</NavLink>
+            <NavLink to="/events" className="text-[#f4ebd9] py-3 text-sm tracking-widest uppercase border-b border-white/5" onClick={() => setIsMobileMenuOpen(false)}>Boeken</NavLink>
+            <NavLink to="/sfeer" className="text-[#f4ebd9] py-3 text-sm tracking-widest uppercase border-b border-white/5" onClick={() => setIsMobileMenuOpen(false)}>Sfeer</NavLink>
+            <NavLink to="/about" className="text-[#f4ebd9] py-3 text-sm tracking-widest uppercase border-b border-white/5" onClick={() => setIsMobileMenuOpen(false)}>Over ons</NavLink>
+            <NavLink to="/contact" className="text-[#d4cab4] py-3 text-sm tracking-widest uppercase font-bold" onClick={() => setIsMobileMenuOpen(false)}>Contact</NavLink>
           </div>
         </div>
       </header>
@@ -210,9 +218,8 @@ const App = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 mb-12 pb-12 border-b border-white/10">
             
-            {/* Kolom 1: Logo & Info */}
             <div className="md:col-span-5 lg:col-span-4">
-              <Link to="/" className="inline-block mb-6 w-56 sm:w-64">
+              <Link to="/" className="inline-block mb-6 w-56 sm:w-64 transition-transform hover:scale-105">
                 <img src="/bonenbakkielogo.png" alt="'t bonenbakkie" className="w-full h-auto object-contain" />
               </Link>
               <p className="text-[#f4ebd9] leading-relaxed opacity-80 font-sans text-sm max-w-sm mb-6">
@@ -220,12 +227,11 @@ const App = () => {
               </p>
               
               <div className="text-[#f4ebd9] opacity-60 font-sans text-sm flex flex-col gap-1">
-                <p>KvK: 12345678</p>
+                <p>KvK: 99842807</p>
                 <p>info@bonenbakkie.nl</p>
               </div>
             </div>
 
-            {/* Kolom 2: Snelle Links */}
             <div className="md:col-span-3 lg:col-span-2 lg:col-start-7">
               <h4 className="font-sans font-bold tracking-widest uppercase mb-6 text-[var(--logo-cream)] text-xs opacity-50">
                 Snelle Links
@@ -238,7 +244,6 @@ const App = () => {
               </ul>
             </div>
 
-            {/* Kolom 3: Volg Ons */}
             <div className="md:col-span-4 lg:col-span-3">
               <h4 className="font-sans font-bold tracking-widest uppercase mb-6 text-[var(--logo-cream)] text-xs opacity-50">
                 Volg Ons
@@ -258,7 +263,6 @@ const App = () => {
 
           </div>
 
-          {/* Bottom Bar */}
           <div className="flex justify-between items-center text-xs text-[#f4ebd9] font-sans">
             <p className="opacity-50">© 2026 't bonenbakkie. Met liefde gemaakt.</p>
             

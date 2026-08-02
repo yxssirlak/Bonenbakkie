@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Sparkles, ArrowRight, Coffee, Award, ChevronDown, Camera } from 'lucide-react';
+import { ArrowRight, Coffee, Award, ChevronDown, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 type HomeGalleryImage = {
@@ -298,7 +298,7 @@ const Home: React.FC = () => {
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
         
-        {/* DE KOFFIEMACHINE */}
+        {/* DE KOFFIEMACHINE ACHTERGROND */}
         <div 
           className="absolute right-[-20%] md:right-[-2%] top-3/4 md:top-1/2 w-[140%] md:w-[65%] h-[115%] z-10 pointer-events-none opacity-40 animate-float"
           style={{ 
@@ -312,19 +312,13 @@ const Home: React.FC = () => {
 
         <div className="max-w-7xl mx-auto w-full z-20 relative flex flex-col md:flex-row items-center pt-10">
           
+          {/* LINKER KANT: TITEL EN TEKST */}
           <div className="w-full md:w-3/5 flex flex-col items-center md:items-start text-center md:text-left relative z-20">
             
-            <div 
-              className="animate-fade-in-up mb-6 flex flex-wrap items-center justify-center md:justify-start gap-3 text-[#f4f1ea] uppercase tracking-[0.2em] text-[11px] font-bold opacity-80"
-              style={{ animationDelay: '0.1s' }}
-            >
-              <span className="flex items-center gap-1.5"><Sparkles size={14} /> Mobiele koffie met karakter</span>
-            </div>
-            
-              <div className="animate-fade-in-up mb-6 flex flex-col items-center md:items-start" style={{ animationDelay: '0.3s' }}>
-              <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-serif text-[#f4f1ea]">
-                't bonenbakkie brengt <br />
-                <span className="text-[#d4cab4] opacity-100">sfeer in elk kopje</span>
+            <div className="animate-fade-in-up mb-12 flex flex-col items-center md:items-start" style={{ animationDelay: '0.3s' }}>
+              <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-serif text-[#f4f1ea]">
+                Mobiele koffiekar  <br />
+                <span className="text-[#d4cab4] opacity-100">'t bonenbakkie</span>
               </h1>
             </div>
             
@@ -332,7 +326,7 @@ const Home: React.FC = () => {
               className="animate-fade-in-up max-w-xl text-lg leading-relaxed mb-10 text-[#f4f1ea] opacity-80"
               style={{ animationDelay: '0.5s' }}
             >
-              Ervaar warme, rijke koffie vanuit onze stijlvolle wagen. Iedere slok voelt als een zorgvuldig samengesteld moment vol smaak, geur en sfeer.
+              ‘t bonenbakkie brengt heerlijke vers gezette koffie naar uw locatie. Waar wij stilstaan, begint een koffiemoment.
             </p>
             
             <div 
@@ -349,7 +343,7 @@ const Home: React.FC = () => {
 
             {/* Google Reviews */}
             <a 
-              href="https://maps.google.com" /* <-- VERVANG DIT MET JOUW ECHTE GOOGLE MAPS LINK */
+              href="https://maps.google.com" 
               target="_blank"
               rel="noreferrer"
               className="animate-fade-in-up mt-10 flex items-center justify-center md:justify-start gap-4 cursor-pointer group"
@@ -371,8 +365,28 @@ const Home: React.FC = () => {
                 <span className="underline opacity-70 group-hover:opacity-100 transition-opacity">Lees onze reviews</span>
               </div>
             </a>
-
           </div>
+
+          {/* RECHTER KANT: OVERLAPPENDE FOTO PLACEHOLDERS */}
+          <div className="hidden md:flex w-2/5 justify-end items-center relative h-[400px] z-30">
+            <div 
+              className="relative w-full max-w-[320px] h-[350px] animate-fade-in-up mr-4 lg:mr-8"
+              style={{ animationDelay: '0.9s' }}
+            >
+              {/* Foto 1 (Achtergrond, gedraaid naar links) */}
+              <div className="absolute top-0 right-16 w-52 h-64 rounded-2xl border-[3px] border-white/30 shadow-[0_20px_40px_rgba(0,0,0,0.4)] transform -rotate-6 transition-all duration-500 hover:rotate-0 hover:scale-105 hover:z-40 overflow-hidden z-20">
+                {/* VERVANG DEZE SRC LATER MET JOUW EIGEN FOTO! */}
+                <img src="https://placehold.co/400x500/534026/f4f1ea?text=Foto+1" alt="Sfeerfoto 1" className="w-full h-full object-cover" />
+              </div>
+
+              {/* Foto 2 (Voorgrond, gedraaid naar rechts) */}
+              <div className="absolute bottom-4 right-0 w-48 h-48 rounded-2xl border-[3px] border-white/30 shadow-[0_25px_50px_rgba(0,0,0,0.5)] transform rotate-6 transition-all duration-500 hover:rotate-0 hover:scale-105 hover:z-40 overflow-hidden z-30">
+                {/* VERVANG DEZE SRC LATER MET JOUW EIGEN FOTO! */}
+                <img src="https://placehold.co/400x400/a37042/f4f1ea?text=Foto+2" alt="Sfeerfoto 2" className="w-full h-full object-cover" />
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <div 
@@ -419,7 +433,6 @@ const Home: React.FC = () => {
       />
       <div className="absolute inset-0 bg-gradient-to-t from-[#120a07]/70 via-transparent to-transparent" />
       <div className="absolute bottom-0 left-0 right-0 p-6 text-left text-[#f4f1ea]">
-        {/* "Foto collage" tekst is hier verwijderd */}
         <p className="text-xl font-semibold">{image.title || 'Onze koffiewagen'}</p>
         <p className="mt-1 text-sm opacity-90">{image.description || 'Sfeer en detail'}</p>
       </div>

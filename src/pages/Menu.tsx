@@ -83,7 +83,8 @@ const Menu: React.FC = () => {
         <div className="text-center mb-16 animate-fade-in-up">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md mb-6">
             <Coffee size={16} className="text-[var(--logo-cream)]" />
-            <span className="text-[var(--logo-cream)] uppercase tracking-widest text-xs font-bold">Ons Aanbod</span>
+            {/* Hier is font-sans toegevoegd om exact hetzelfde lettertype als de navbar af te dwingen */}
+            <span className="text-[var(--logo-cream)] uppercase tracking-[0.15em] text-[11px] sm:text-[13px] font-semibold font-sans">Ons Aanbod</span>
           </div>
           <h1 className="text-5xl md:text-7xl font-serif text-[#f4f1ea] mb-6">
             Het <span className="text-[#d4cab4]">Menu</span>
@@ -99,7 +100,8 @@ const Menu: React.FC = () => {
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`px-8 py-3 rounded-full font-serif text-lg transition-all duration-300 ${
+                /* Hier is font-sans toegevoegd voor de menucategorie knoppen */
+                className={`px-6 sm:px-8 py-3 rounded-full font-sans font-semibold uppercase tracking-[0.15em] text-[10px] sm:text-[12px] transition-all duration-300 ${
                   activeCategory === cat.id
                     ? 'bg-[#f4f1ea] text-[#534026] shadow-[0_0_20px_rgba(244,241,234,0.3)]'
                     : 'bg-white/5 text-[#f4f1ea] border border-white/10 hover:bg-white/10'
