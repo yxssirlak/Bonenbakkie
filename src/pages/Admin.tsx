@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { CheckCircle, Trash2, Plus, Image as ImageIcon, Coffee, Home, Lock } from 'lucide-react';
+import { CheckCircle, Trash2, Plus, Image as ImageIcon, Coffee, Home, Lock, LayoutTemplate } from 'lucide-react';
 
 // --- STANDAARD DATA (FALLBACKS) ---
 const defaultCats = [
@@ -41,10 +41,15 @@ const defaultHomeGallery = [
   { id: '3', src: '/Logo_bonenbakkie.jpeg', alt: 'Logo van het mobiele koffiehuisje', title: 'Ons merk', description: 'Karakter en identiteit' },
 ];
 
+const defaultHomepageFotos = [
+  { id: '1', src: '/bonenbakkie1.jpeg', alt: "Homepage foto 1", title: 'Homepage Foto 1', description: 'Eerste uitgelichte foto' },
+  { id: '2', src: '/bonenbakkie2.png', alt: "Homepage foto 2", title: 'Homepage Foto 2', description: 'Tweede uitgelichte foto' },
+];
+
 const Admin: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
-  const [activeTab, setActiveTab] = useState<'home' | 'sfeer' | 'menu'>('menu');
+  const [activeTab, setActiveTab] = useState<'menu' | 'home' | 'sfeer' | 'homepage_fotos'>('menu');
   const [isLoaded, setIsLoaded] = useState(false);
 
   // Refs om de bestandsvelden leeg te maken na uploaden
@@ -63,6 +68,7 @@ const Admin: React.FC = () => {
   // --- GALERIJ STATES ---
   const [homeImages, setHomeImages] = useState<any[]>([]);
   const [sfeerImages, setSfeerImages] = useState<any[]>([]);
+  const [homepageFotos, setHomepageFotos] = useState<any[]>([]); // Nieuwe state voor de 2 homepage foto's
   const [newGalleryImgBase64, setNewGalleryImgBase64] = useState('');
   const [newGalleryTitle, setNewGalleryTitle] = useState('');
   const [newGalleryDesc, setNewGalleryDesc] = useState('');
@@ -82,6 +88,7 @@ const Admin: React.FC = () => {
       const storedItems = localStorage.getItem('bonenbakkie-menu-items');
       const storedHome = localStorage.getItem('bonenbakkie-home-gallery');
       const storedSfeer = localStorage.getItem('bonenbakkie-sfeer-gallery');
+      const storedHomepageFotos = localStorage.getItem('bonenbakkie-homepage-fotos');
 
       if (storedCats && storedCats !== '[]') setCategories(JSON.parse(storedCats));
       else setCategories(defaultCats);
@@ -94,6 +101,9 @@ const Admin: React.FC = () => {
 
       if (storedSfeer && storedSfeer !== '[]') setSfeerImages(JSON.parse(storedSfeer));
       else setSfeerImages([]);
+      
+      if (storedHomepageFotos && storedHomepageFotos !== '[]') setHomepageFotos(JSON.parse(storedHomepageFotos));
+      else setHomepageFotos(defaultHomepageFotos);
 
       setIsLoaded(true);
     }
@@ -105,8 +115,9 @@ const Admin: React.FC = () => {
       localStorage.setItem('bonenbakkie-menu-items', JSON.stringify(items));
       localStorage.setItem('bonenbakkie-home-gallery', JSON.stringify(homeImages));
       localStorage.setItem('bonenbakkie-sfeer-gallery', JSON.stringify(sfeerImages));
+      localStorage.setItem('bonenbakkie-homepage-fotos', JSON.stringify(homepageFotos));
     }
-  }, [categories, items, homeImages, sfeerImages, isAuthenticated, isLoaded]);
+  }, [categories, items, homeImages, sfeerImages, homepageFotos, isAuthenticated, isLoaded]);
 
   // Helper functie om een bestand naar Base64 string om te zetten
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, setBase64String: (val: string) => void) => {
@@ -178,6 +189,7 @@ const Admin: React.FC = () => {
 
     if (activeTab === 'home') setHomeImages([...homeImages, newImg]);
     else if (activeTab === 'sfeer') setSfeerImages([...sfeerImages, newImg]);
+    else if (activeTab === 'homepage_fotos') setHomepageFotos([...homepageFotos, newImg]);
 
     setNewGalleryImgBase64('');
     setNewGalleryTitle('');
@@ -188,6 +200,7 @@ const Admin: React.FC = () => {
   const handleDeleteImage = (id: string) => {
     if (activeTab === 'home') setHomeImages(homeImages.filter(i => i.id !== id));
     else if (activeTab === 'sfeer') setSfeerImages(sfeerImages.filter(i => i.id !== id));
+    else if (activeTab === 'homepage_fotos') setHomepageFotos(homepageFotos.filter(i => i.id !== id));
   };
 
   if (!isAuthenticated) {
@@ -207,7 +220,7 @@ const Admin: React.FC = () => {
             placeholder="Wachtwoord"
             className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white mb-6 focus:outline-none focus:border-[#d4cab4]"
           />
-          <button type="submit" className="w-full bg-[#f4f1ea] text-[#534026] font-bold py-3 rounded-xl hover:bg-white transition-colors">
+          <button type="submit" className="w-full bg-[#f4f1ea] text-[#534026] font-sans uppercase tracking-[0.15em] text-[13px] font-bold py-3 rounded-xl hover:bg-white transition-colors">
             Inloggen
           </button>
         </form>
@@ -223,14 +236,17 @@ const Admin: React.FC = () => {
         </h1>
 
         <div className="flex flex-wrap justify-center gap-4 mb-12">
-          <button onClick={() => setActiveTab('menu')} className={`px-6 py-2 rounded-full font-serif flex items-center gap-2 transition-all ${activeTab === 'menu' ? 'bg-[#f4f1ea] text-[#534026]' : 'bg-white/5 text-[#f4f1ea] hover:bg-white/10'}`}>
-            <Coffee size={18} /> Menu Beheren
+          <button onClick={() => setActiveTab('menu')} className={`px-6 py-3 rounded-full font-sans uppercase tracking-[0.15em] text-[11px] sm:text-[12px] font-semibold flex items-center gap-2 transition-all ${activeTab === 'menu' ? 'bg-[#f4f1ea] text-[#534026]' : 'bg-white/5 text-[#f4f1ea] hover:bg-white/10'}`}>
+            <Coffee size={16} /> Menu Beheren
           </button>
-          <button onClick={() => setActiveTab('home')} className={`px-6 py-2 rounded-full font-serif flex items-center gap-2 transition-all ${activeTab === 'home' ? 'bg-[#f4f1ea] text-[#534026]' : 'bg-white/5 text-[#f4f1ea] hover:bg-white/10'}`}>
-            <Home size={18} /> Home Galerij
+          <button onClick={() => setActiveTab('home')} className={`px-6 py-3 rounded-full font-sans uppercase tracking-[0.15em] text-[11px] sm:text-[12px] font-semibold flex items-center gap-2 transition-all ${activeTab === 'home' ? 'bg-[#f4f1ea] text-[#534026]' : 'bg-white/5 text-[#f4f1ea] hover:bg-white/10'}`}>
+            <Home size={16} /> Home Galerij
           </button>
-          <button onClick={() => setActiveTab('sfeer')} className={`px-6 py-2 rounded-full font-serif flex items-center gap-2 transition-all ${activeTab === 'sfeer' ? 'bg-[#f4f1ea] text-[#534026]' : 'bg-white/5 text-[#f4f1ea] hover:bg-white/10'}`}>
-            <ImageIcon size={18} /> Sfeer Galerij
+          <button onClick={() => setActiveTab('sfeer')} className={`px-6 py-3 rounded-full font-sans uppercase tracking-[0.15em] text-[11px] sm:text-[12px] font-semibold flex items-center gap-2 transition-all ${activeTab === 'sfeer' ? 'bg-[#f4f1ea] text-[#534026]' : 'bg-white/5 text-[#f4f1ea] hover:bg-white/10'}`}>
+            <ImageIcon size={16} /> Sfeer Galerij
+          </button>
+          <button onClick={() => setActiveTab('homepage_fotos')} className={`px-6 py-3 rounded-full font-sans uppercase tracking-[0.15em] text-[11px] sm:text-[12px] font-semibold flex items-center gap-2 transition-all ${activeTab === 'homepage_fotos' ? 'bg-[#f4f1ea] text-[#534026]' : 'bg-white/5 text-[#f4f1ea] hover:bg-white/10'}`}>
+            <LayoutTemplate size={16} /> Home Pagina Foto's
           </button>
         </div>
 
@@ -240,7 +256,7 @@ const Admin: React.FC = () => {
             
             <div className="glass-card !bg-white/5 border border-white/10 p-8 rounded-[2rem]">
               <h2 className="text-2xl font-serif text-[#f4f1ea] mb-6 border-b border-white/10 pb-4">1. Menu Tabs (Categorieën)</h2>
-              <form onSubmit={handleAddCategory} className="flex gap-4 mb-8">
+              <form onSubmit={handleAddCategory} className="flex flex-col sm:flex-row gap-4 mb-8">
                 <input
                   type="text"
                   placeholder="Bv. Koude Drankjes"
@@ -248,15 +264,15 @@ const Admin: React.FC = () => {
                   onChange={(e) => setNewCategoryName(e.target.value)}
                   className="flex-grow bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#d4cab4]"
                 />
-                <button type="submit" className="bg-[#f4f1ea] text-[#534026] px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-white transition-colors">
-                  <Plus size={20} /> Toevoegen
+                <button type="submit" className="bg-[#f4f1ea] text-[#534026] px-6 py-3 rounded-xl font-sans uppercase tracking-[0.15em] text-[11px] sm:text-[13px] font-semibold flex items-center justify-center gap-2 hover:bg-white transition-colors">
+                  <Plus size={18} /> Toevoegen
                 </button>
               </form>
 
               <div className="flex flex-wrap gap-3">
                 {categories.map(cat => (
                   <div key={cat.id} className="bg-black/30 border border-white/10 px-4 py-2 rounded-full flex items-center gap-3 text-[#f4f1ea]">
-                    <span>{cat.name}</span>
+                    <span className="font-sans uppercase tracking-widest text-[11px] font-semibold">{cat.name}</span>
                     <button onClick={() => handleDeleteCategory(cat.id)} className="text-red-400 hover:text-red-300">
                       <Trash2 size={16} />
                     </button>
@@ -290,7 +306,6 @@ const Admin: React.FC = () => {
                     <textarea value={newItemDesc} onChange={(e) => setNewItemDesc(e.target.value)} placeholder="Wat zit erin?" className="bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none h-24" />
                   </div>
 
-                  {/* VERNIEUWD: BESTAND UPLOADEN */}
                   <div className="flex flex-col gap-2 md:col-span-2">
                     <label className="text-sm text-white/70">Foto Uploaden (Optioneel)</label>
                     <input 
@@ -298,9 +313,8 @@ const Admin: React.FC = () => {
                       accept="image/*"
                       ref={menuFileRef}
                       onChange={(e) => handleFileUpload(e, setNewItemImgBase64)}
-                      className="bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#f4f1ea] file:text-[#534026] hover:file:bg-white transition-colors cursor-pointer" 
+                      className="bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[11px] file:uppercase file:tracking-widest file:font-semibold file:bg-[#f4f1ea] file:text-[#534026] hover:file:bg-white transition-colors cursor-pointer" 
                     />
-                    {/* Pre-view van de geselecteerde afbeelding */}
                     {newItemImgBase64 && (
                       <div className="mt-3">
                         <img src={newItemImgBase64} alt="Preview" className="w-24 h-24 object-cover rounded-xl border border-white/10" />
@@ -309,8 +323,8 @@ const Admin: React.FC = () => {
                   </div>
 
                   <div className="md:col-span-2 pt-4">
-                    <button type="submit" className="w-full bg-[#f4f1ea] text-[#534026] px-6 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-white transition-colors">
-                      <CheckCircle size={20} /> Item Opslaan
+                    <button type="submit" className="w-full bg-[#f4f1ea] text-[#534026] px-6 py-4 rounded-xl font-sans uppercase tracking-[0.15em] text-[11px] sm:text-[13px] font-semibold flex items-center justify-center gap-2 hover:bg-white transition-colors">
+                      <CheckCircle size={18} /> Item Opslaan
                     </button>
                   </div>
                 </form>
@@ -351,17 +365,15 @@ const Admin: React.FC = () => {
           </div>
         )}
 
-        {/* --- 2. GALERIJ AANPASSEN TAB --- */}
-        {(activeTab === 'home' || activeTab === 'sfeer') && (
+        {/* --- 2. GALERIJ / HOMEPAGE FOTO'S AANPASSEN TAB --- */}
+        {(activeTab === 'home' || activeTab === 'sfeer' || activeTab === 'homepage_fotos') && (
           <div className="space-y-12 animate-fade-in-up">
             <div className="glass-card !bg-white/5 border border-white/10 p-8 rounded-[2rem]">
               <h2 className="text-2xl font-serif text-[#f4f1ea] mb-6 border-b border-white/10 pb-4">
-                Foto Toevoegen aan {activeTab === 'home' ? 'Home' : 'Sfeer'} Galerij
+                Foto Toevoegen aan {activeTab === 'home' ? 'Home Galerij' : activeTab === 'sfeer' ? 'Sfeer Galerij' : 'Home Pagina'}
               </h2>
               
               <form onSubmit={handleAddImage} className="grid md:grid-cols-2 gap-6 mb-12">
-                
-                {/* VERNIEUWD: BESTAND UPLOADEN VOOR GALERIJ */}
                 <div className="flex flex-col gap-2 md:col-span-2">
                   <label className="text-sm text-white/70">Foto Uploaden</label>
                   <input 
@@ -369,7 +381,7 @@ const Admin: React.FC = () => {
                     accept="image/*"
                     ref={galleryFileRef}
                     onChange={(e) => handleFileUpload(e, setNewGalleryImgBase64)}
-                    className="bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#f4f1ea] file:text-[#534026] hover:file:bg-white transition-colors cursor-pointer" 
+                    className="bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[11px] file:uppercase file:tracking-widest file:font-semibold file:bg-[#f4f1ea] file:text-[#534026] hover:file:bg-white transition-colors cursor-pointer" 
                   />
                   {newGalleryImgBase64 && (
                     <div className="mt-3">
@@ -389,15 +401,17 @@ const Admin: React.FC = () => {
                 </div>
 
                 <div className="md:col-span-2 pt-4">
-                  <button type="submit" className="w-full bg-[#f4f1ea] text-[#534026] px-6 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-white transition-colors">
-                    <Plus size={20} /> Foto Opslaan
+                  <button type="submit" className="w-full bg-[#f4f1ea] text-[#534026] px-6 py-4 rounded-xl font-sans uppercase tracking-[0.15em] text-[11px] sm:text-[13px] font-semibold flex items-center justify-center gap-2 hover:bg-white transition-colors">
+                    <Plus size={18} /> Foto Opslaan
                   </button>
                 </div>
               </form>
 
-              <h3 className="text-xl font-serif text-[#f4f1ea] mb-4">Huidige Foto's in Galerij</h3>
+              <h3 className="text-xl font-serif text-[#f4f1ea] mb-4">
+                Huidige Foto's in {activeTab === 'home' ? 'Home Galerij' : activeTab === 'sfeer' ? 'Sfeer Galerij' : 'Home Pagina'}
+              </h3>
               <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-                {(activeTab === 'home' ? homeImages : sfeerImages).map(img => (
+                {(activeTab === 'home' ? homeImages : activeTab === 'sfeer' ? sfeerImages : homepageFotos).map(img => (
                   <div key={img.id} className="relative group overflow-hidden rounded-xl border border-white/10">
                     <img src={img.src} alt={img.alt} className="w-full h-48 object-cover" />
                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-4">
@@ -405,14 +419,14 @@ const Admin: React.FC = () => {
                         <p className="text-white font-bold truncate">{img.title || 'Geen titel'}</p>
                         <p className="text-white/70 text-sm truncate">{img.description}</p>
                       </div>
-                      <button onClick={() => handleDeleteImage(img.id)} className="bg-red-500/80 text-white py-2 rounded-lg hover:bg-red-500 flex items-center justify-center gap-2">
-                        <Trash2 size={16} /> Verwijderen
+                      <button onClick={() => handleDeleteImage(img.id)} className="bg-red-500/80 text-white py-2 rounded-lg hover:bg-red-500 font-sans uppercase tracking-widest text-[10px] font-semibold flex items-center justify-center gap-2">
+                        <Trash2 size={14} /> Verwijderen
                       </button>
                     </div>
                   </div>
                 ))}
-                {(activeTab === 'home' ? homeImages : sfeerImages).length === 0 && (
-                  <p className="text-white/50 col-span-full">Nog geen foto's in deze galerij.</p>
+                {(activeTab === 'home' ? homeImages : activeTab === 'sfeer' ? sfeerImages : homepageFotos).length === 0 && (
+                  <p className="text-white/50 col-span-full">Nog geen foto's geüpload.</p>
                 )}
               </div>
             </div>
