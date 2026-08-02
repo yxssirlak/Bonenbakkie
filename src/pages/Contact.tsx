@@ -17,6 +17,9 @@ const Contact: React.FC = () => {
     const formData = new FormData(e.currentTarget);
     const formValues = Object.fromEntries(formData.entries());
     
+    // VOEG DEZE REGEL TOE: Dit haalt het vinkje uit de data voor Supabase
+    delete formValues.privacy_akkoord;
+    
     const aanvraagData = {
       ...formValues,
       type_aanvraag: aanvraagType,
