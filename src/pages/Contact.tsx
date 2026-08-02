@@ -80,7 +80,7 @@ const Contact: React.FC = () => {
 
         {isSuccess ? (
           /* --- HET NIEUWE, PREMIUM SUCCES SCHERM (VOLLE BREEDTE) --- */
-          <div className="w-full max-w-3xl mx-auto relative glass-card overflow-hidden p-12 sm:p-16 lg:p-20 border border-[#d4cab4]/40 bg-gradient-to-b from-[#3d2f1b]/50 to-[#1e0f0a]/90 text-center animate-fade-in-up flex flex-col justify-center items-center rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+          <div className="w-full max-w-3xl mx-auto relative glass-card overflow-hidden p-12 sm:p-16 lg:p-20 border border-white/10 bg-white/5 text-center animate-fade-in-up flex flex-col justify-center items-center rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
             {/* Subtiele gloed in de achtergrond */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,202,180,0.08)_0%,transparent_70%)] pointer-events-none" />
             
