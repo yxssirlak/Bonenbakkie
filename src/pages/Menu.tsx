@@ -74,33 +74,33 @@ const Menu: React.FC = () => {
   return (
     <main className="min-h-screen pt-32 pb-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       
-      {/* Zachte, gladde achtergrond effecten (geen noise meer) */}
+      {/* Zachte, gladde achtergrond effecten */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_10%,rgba(30,15,10,0.45)_150%)] pointer-events-none z-0"></div>
       <div className="absolute right-[0%] top-1/2 transform -translate-y-1/2 w-[60%] h-[80%] bg-[#a37042] rounded-full blur-[160px] opacity-25 pointer-events-none z-0"></div>
 
       <div className="max-w-6xl mx-auto relative z-10">
         
+        {/* Introductie Sectie */}
         <div className="text-center mb-16 animate-fade-in-up">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md mb-6">
             <Coffee size={16} className="text-[var(--logo-cream)]" />
-            {/* Hier is font-sans toegevoegd om exact hetzelfde lettertype als de navbar af te dwingen */}
             <span className="text-[var(--logo-cream)] uppercase tracking-[0.15em] text-[11px] sm:text-[13px] font-semibold font-sans">Ons Aanbod</span>
           </div>
           <h1 className="text-5xl md:text-7xl font-serif text-[#f4f1ea] mb-6">
             Het <span className="text-[#d4cab4]">Menu</span>
           </h1>
-          <p className="max-w-2xl mx-auto text-[#f4f1ea] opacity-80 text-lg">
-            Vers bereid met passie. Ontdek onze selectie van premium koffies, verfrissende drankjes, extra's en lekkernijen.
+          <p className="max-w-3xl mx-auto text-[#ebdad0] opacity-90 text-sm sm:text-base leading-relaxed font-sans">
+            Wij zijn voorzien van een veelzijdig assortiment met zowel warme als koude dranken. Wij gaan van een traditioneel zwart bakkie tot de nieuwste trends zoals matcha. Naast koemelk serveren wij alternatieven zoals haver en sojamelk, zodat wij kunnen inspelen op de wensen van onze gasten.
           </p>
         </div>
 
+        {/* Categorie Tabs */}
         {categories.length > 0 && (
           <div className="flex flex-wrap justify-center gap-4 mb-16 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                /* Hier is font-sans toegevoegd voor de menucategorie knoppen */
                 className={`px-6 sm:px-8 py-3 rounded-full font-sans font-semibold uppercase tracking-[0.15em] text-[10px] sm:text-[12px] transition-all duration-300 ${
                   activeCategory === cat.id
                     ? 'bg-[#f4f1ea] text-[#534026] shadow-[0_0_20px_rgba(244,241,234,0.3)]'
@@ -113,6 +113,7 @@ const Menu: React.FC = () => {
           </div>
         )}
 
+        {/* Menu Items Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
           {filteredItems.map((item) => (
             <div key={item.id} className="glass-card !bg-white/5 !backdrop-blur-md border border-white/10 flex flex-col overflow-hidden !p-0 transition-transform duration-300 hover:-translate-y-2 group">
@@ -131,7 +132,7 @@ const Menu: React.FC = () => {
                 <div className="flex justify-between items-start mb-4 gap-4">
                   <h3 className="text-2xl font-serif text-[#f4f1ea]">{item.name}</h3>
                 </div>
-                <p className="text-[#f4f1ea] opacity-70 text-sm leading-relaxed font-sans">
+                <p className="text-[#ebdad0] opacity-80 text-sm leading-relaxed font-sans">
                   {item.description}
                 </p>
                 
@@ -149,6 +150,23 @@ const Menu: React.FC = () => {
               <p>Er zijn nog geen items toegevoegd aan deze categorie.</p>
             </div>
           )}
+        </div>
+
+        {/* Extra Informatie Sectie Onderaan */}
+        <div className="mt-24 glass-card p-10 sm:p-16 text-center animate-fade-in-up border border-white/10 bg-white/5 relative overflow-hidden rounded-[2rem]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,202,180,0.06)_0%,transparent_70%)] pointer-events-none" />
+          
+          <div className="relative z-10 max-w-3xl mx-auto space-y-6">
+            <h2 className="text-3xl md:text-4xl font-serif text-[#F5EFE7] mb-6">
+              Jouw evenement, jouw keuze
+            </h2>
+            <p className="text-[#ebdad0] font-sans text-sm sm:text-base leading-relaxed opacity-90">
+              Verder kunnen wij ook warme stroopwafels verzorgen, een lekkere toevoeging die perfect past bij een kopje koffie.
+            </p>
+            <p className="text-[#ebdad0] font-sans text-sm sm:text-base leading-relaxed opacity-90">
+              Het is bij ons mogelijk om de menukaart bij een boeking af te stemmen naar uw voorkeur. Wij bieden de flexibiliteit om te kiezen uit ons volledige assortiment of een geselecteerde menukaart. Ook zijn bij ons eigen voorkeuren altijd welkom.
+            </p>
+          </div>
         </div>
 
       </div>

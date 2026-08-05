@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Mail, Phone, MapPin, Send, Star, PartyPopper, Briefcase, ArrowLeft, ArrowDown } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import confetti from 'canvas-confetti'; // Confetti animatie toegevoegd!
 
 const Contact: React.FC = () => {
-  const [aanvraagType, setAanvraagType] = useState<'kies' | 'particulier' | 'zakelijk'>('kies');
+  const location = useLocation();
+const [aanvraagType, setAanvraagType] = useState<'kies' | 'particulier' | 'zakelijk'>(
+  location.state?.formType || 'kies'
+);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 

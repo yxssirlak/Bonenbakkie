@@ -4,7 +4,7 @@ import { Menu as MenuIcon, X, Instagram, Facebook, Linkedin } from 'lucide-react
 import Home from './pages/Home';
 import Menu from './pages/Menu';
 import About from './pages/About';
-import Events from './pages/Events';
+import Boeken from './pages/Boeken';
 import Sfeer from './pages/Sfeer';
 import Contact from './pages/Contact';
 import Admin from './pages/Admin';
@@ -100,7 +100,7 @@ const App = () => {
 
   const menuItems = [
     { path: '/menu', label: 'Menu' },
-    { path: '/events', label: 'Boeken' },
+    { path: '/boeken', label: 'Boeken' },
     { path: '/sfeer', label: 'Sfeer' },
     { path: '/about', label: 'Over ons' },
   ];
@@ -193,7 +193,7 @@ const App = () => {
           <div className="flex flex-col px-8 gap-2 text-center top-nav">
             <NavLink to="/" end className="text-[#f4ebd9] py-3 text-sm tracking-widest uppercase border-b border-white/5" onClick={() => setIsMobileMenuOpen(false)}>Home</NavLink>
             <NavLink to="/menu" className="text-[#f4ebd9] py-3 text-sm tracking-widest uppercase border-b border-white/5" onClick={() => setIsMobileMenuOpen(false)}>Menu</NavLink>
-            <NavLink to="/events" className="text-[#f4ebd9] py-3 text-sm tracking-widest uppercase border-b border-white/5" onClick={() => setIsMobileMenuOpen(false)}>Boeken</NavLink>
+            <NavLink to="/boeken" className="text-[#f4ebd9] py-3 text-sm tracking-widest uppercase border-b border-white/5" onClick={() => setIsMobileMenuOpen(false)}>Boeken</NavLink>
             <NavLink to="/sfeer" className="text-[#f4ebd9] py-3 text-sm tracking-widest uppercase border-b border-white/5" onClick={() => setIsMobileMenuOpen(false)}>Sfeer</NavLink>
             <NavLink to="/about" className="text-[#f4ebd9] py-3 text-sm tracking-widest uppercase border-b border-white/5" onClick={() => setIsMobileMenuOpen(false)}>Over ons</NavLink>
             <NavLink to="/contact" className="text-[#d4cab4] py-3 text-sm tracking-widest uppercase font-bold" onClick={() => setIsMobileMenuOpen(false)}>Contact</NavLink>
@@ -205,7 +205,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/menu" element={<Menu />} />
-          <Route path="/events" element={<Events />} />
+          <Route path="/boeken" element={<Boeken />} />
           <Route path="/sfeer" element={<Sfeer />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
@@ -240,7 +240,7 @@ const App = () => {
               </h4>
               <ul className="space-y-5 text-[#f4ebd9]">
                 <li><Link to="/menu" className="hover:text-white hover:translate-x-2 transition-transform inline-block font-sans text-base">Menu</Link></li>
-                <li><Link to="/events" className="hover:text-white hover:translate-x-2 transition-transform inline-block font-sans text-base">Boeken</Link></li>
+                <li><Link to="/boeken" className="hover:text-white hover:translate-x-2 transition-transform inline-block font-sans text-base">Boeken</Link></li>
                 <li><Link to="/sfeer" className="hover:text-white hover:translate-x-2 transition-transform inline-block font-sans text-base">Sfeer</Link></li>
                 <li><Link to="/about" className="hover:text-white hover:translate-x-2 transition-transform inline-block font-sans text-base">Over ons</Link></li>
               </ul>
