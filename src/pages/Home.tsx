@@ -286,10 +286,10 @@ const Home: React.FC = () => {
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="mb-10 flex flex-col items-center text-center">
             <h2 className="text-4xl md:text-5xl font-serif" style={{ color: '#d4cab4' }}>
-              Ons mobiele koffiehuisje
+              Onze Koffie Kar
             </h2>
             <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[#534026] opacity-90">
-              Vanuit onze karaktervolle koffiewagen serveren we premium koffie rechtstreeks naar jouw favoriete plek. Elk moment voelt speciaal.
+              ‘t bonenbakkie staat voor kwaliteit, gezelligheid en flexibiliteit. Met koffiebonen van een lokale branderij, maken we van ieder kopje iets bijzonders. Buitenom koffie dragen we bij aan een fijne sfeer en een gezellig praatje.
             </p>
           </div>
 
@@ -305,6 +305,14 @@ const Home: React.FC = () => {
               </div>
             ))}
           </div>
+
+          {/* NIEUWE TEKST ONDER DE FOTO'S */}
+          <div className="mt-16 max-w-3xl mx-auto text-center">
+            <p className="text-lg leading-relaxed text-[#534026] opacity-90">
+              Onze koffiekar is volledig flexibel inzetbaar en beweegt mee met uw wensen. Van kleine bijeenkomsten tot grote evenementen passen wij ons moeiteloos aan. Ook het menu kan volledig worden afgestemd op de gelegenheid, zodat de koffiebeleving perfect aansluit bij uw gasten en het moment.
+            </p>
+          </div>
+
         </div>
       </section>
 

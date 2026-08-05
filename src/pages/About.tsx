@@ -18,22 +18,36 @@ const About: React.FC = () => {
         </div>
 
         <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div className="glass-card fade-in-up border border-white/10 bg-white/5">
-            <h2 className="text-3xl font-serif mb-6 text-[#F5EFE7]">Met Hartstocht Gemaakt</h2>
-            <p className="text-lg mb-6 leading-relaxed text-[#ebdad0] font-sans">
-              't Bonenbakkie is niet zomaar een koffiewagen—het is een mobiel paradijs voor koffieliefhebbers. We zijn begonnen met een eenvoudige missie: uitzonderlijke koffie naar je buurt brengen.
+          <div className="glass-card fade-in-up border border-white/10 bg-white/5 p-8 sm:p-10 lg:p-12">
+            <h2 className="text-3xl font-serif mb-8 text-[#F5EFE7]">Van droom naar werkelijkheid</h2>
+            
+            <p className="text-base sm:text-lg mb-6 leading-relaxed text-[#ebdad0] font-sans">
+              Van beste vrienden naar collega’s: wij zijn Quinn en Renske, de oprichters van ’t bonenbakkie.
             </p>
-            <p className="text-lg leading-relaxed text-[#ebdad0] font-sans">
-              Elk kopje wordt bereid door ervaren barista's met alleen de fijnste bonen, vers gemalen en perfect geëxtraheerd. We geloven in kwaliteit boven snelheid, en dat proef je in elke slok.
+
+            <p className="text-base sm:text-lg mb-6 leading-relaxed text-[#ebdad0] font-sans">
+              Al voordat we aan de ondernemersopleiding begonnen, waren we beste vriendinnen. Tijdens deze opleiding hebben we veel samengewerkt en ontstond het idee om samen een eigen bedrijf te starten. Omdat we allebei gek zijn op koffie en graag genieten van een goed bakkie buiten de deur, was het idee voor een koffiekar snel geboren.
+            </p>
+
+            <p className="text-base sm:text-lg mb-6 leading-relaxed text-[#ebdad0] font-sans">
+              Wat begon als een leuk plan, groeide uit tot een echte onderneming. We volgden verschillende cursussen, verdiepten ons in de wereld van koffie en gingen op zoek naar een koffiekar die bij ons paste. Toen we die hadden gevonden, hebben we hem opgeknapt en ingericht naar onze eigen stijl.
+            </p>
+
+            <p className="text-base sm:text-lg mb-6 leading-relaxed text-[#ebdad0] font-sans">
+              Met veel enthousiasme, creativiteit en hard werken hebben we de kar omgetoverd tot het ’t Bonenbakkie zoals het vandaag de dag is. Nu gaan we samen op pad naar evenementen, bedrijfsfeesten, markten en andere gelegenheden om mensen te voorzien van heerlijke koffie en een gezellige sfeer.
+            </p>
+
+            <p className="text-base sm:text-lg leading-relaxed text-[#ebdad0] font-sans">
+              Met ’t Bonenbakkie combineren we onze passie voor koffie, onze vriendschap en ons ondernemerschap. Dat maakt dit avontuur voor ons extra bijzonder.
             </p>
           </div>
           
           <div className="relative fade-in-up" style={{ animationDelay: '0.2s' }}>
             <div className="absolute inset-0 rounded-[2.5rem] transform rotate-3 bg-[#d4cab4]/20 blur-lg"></div>
             <div className="relative glass-card p-2 border border-white/10 bg-white/5">
-              <div className="h-80 rounded-[2rem] flex items-center justify-center bg-[#140a07]/50 overflow-hidden">
-                 {/* Optioneel: vervang de Coffee icon hier door een echte foto src="/bonenbakkie1.jpeg" */}
-                 <Coffee className="w-32 h-32 text-[#d4cab4] opacity-80" />
+              <div className="h-[36rem] rounded-[2rem] flex items-center justify-center bg-[#140a07]/50 overflow-hidden">
+                {/* TIP: Super leuk om hier later een foto van jullie twee in te zetten! Bijv: <img src="/foto-quinn-renske.jpg" className="w-full h-full object-cover" /> */}
+                <Coffee className="w-32 h-32 text-[#d4cab4] opacity-80" />
               </div>
             </div>
           </div>
