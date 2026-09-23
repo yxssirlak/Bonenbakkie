@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { Routes, Route, NavLink, Link, useLocation } from 'react-router-dom';
-import { Menu as MenuIcon, X, Instagram, Facebook, Linkedin } from 'lucide-react';
+import { Menu as MenuIcon, X, Instagram, Facebook, Linkedin, ArrowRight } from 'lucide-react';
 import Home from './pages/Home';
 import Menu from './pages/Menu';
 import About from './pages/About';
@@ -164,13 +164,13 @@ const App = () => {
           <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 flex justify-center">
             <Link 
               to="/" 
-              className="w-48 sm:w-60 lg:w-72 xl:w-80 transition-transform duration-300 ease-out hover:scale-[1.03] group"
+              className="group relative block h-14 w-48 transition-transform duration-300 ease-out hover:scale-[1.03] sm:h-16 sm:w-60 lg:h-16 lg:w-72 xl:w-80"
               aria-label="Terug naar Home"
             >
               <img 
                 src="/bonenbakkielogo.png" 
                 alt="'t bonenbakkie" 
-                className="w-full h-auto object-contain filter drop-shadow-md transition-all duration-300 group-hover:drop-shadow-xl" 
+                className="pointer-events-none absolute left-0 top-1/2 w-full -translate-y-1/2 object-contain filter drop-shadow-md transition-all duration-300 group-hover:drop-shadow-xl" 
               />
             </Link>
           </div>
@@ -180,9 +180,10 @@ const App = () => {
             <div className="hidden lg:block">
               <Link 
                 to="/contact" 
-                className="coffee-btn text-[11px] xl:text-[13px] tracking-[0.15em] whitespace-nowrap px-6 py-2.5 xl:px-8 xl:py-3 shadow-lg hover:shadow-xl transition-all duration-300"
+                className="group inline-flex items-center gap-2 whitespace-nowrap px-8 py-[8px] pb-[12px] font-sans text-[15px] font-semibold leading-none tracking-[2px] uppercase text-[var(--logo-cream)] opacity-80 transition-all duration-300 hover:opacity-100"
               >
                 Contact
+                <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
             </div>
           </div>
@@ -213,65 +214,66 @@ const App = () => {
         </Routes>
       </div>
 
-      <footer className="w-full border-t border-white/10 bg-white/5 backdrop-blur-md py-24 px-4 sm:px-6 lg:px-12 mt-auto relative z-10">
+      <footer className="site-footer w-full border-t border-[#534026]/10 bg-[#f4f1ea] pb-10 pt-24 px-4 sm:px-6 lg:px-12 mt-auto relative z-10">
         <div className="max-w-7xl mx-auto">
           
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 mb-16 pb-16 border-b border-white/10">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 mb-8 pb-16 border-b border-[#534026]/15">
             
             {/* Logo & Info */}
-            <div className="md:col-span-5 lg:col-span-5">
-              <Link to="/" className="inline-block mb-8 w-64 sm:w-80 transition-transform hover:scale-105">
-                <img src="/bonenbakkielogo.png" alt="'t bonenbakkie" className="w-full h-auto object-contain" />
+            <div className="md:col-span-5 lg:col-span-5 text-center">
+              <Link to="/" className="group relative mx-auto mb-8 block h-16 w-64 transition-transform hover:scale-105 sm:h-20 sm:w-80">
+                <img
+                  src="/bonenbakkielogo.png"
+                  alt="'t bonenbakkie"
+                  className="pointer-events-none absolute left-0 top-1/2 w-full -translate-y-1/2 object-contain"
+                  style={{ filter: 'brightness(0) saturate(100%) invert(24%) sepia(22%) saturate(930%) hue-rotate(353deg) brightness(88%) contrast(95%)' }}
+                />
               </Link>
-              <p className="text-[#f4ebd9] leading-relaxed opacity-80 font-sans text-base max-w-md mb-8">
-                Premium koffie naar je buurt, één kopje tegelijk. Ervaar de warmte van onze mobiele wagen.
-              </p>
-              
-              <div className="text-[#f4ebd9] opacity-60 font-sans text-base flex flex-col gap-2">
+              <div className="flex flex-col items-center gap-2 text-[#534026] font-sans text-base">
                 <p>KvK: 99842807</p>
                 <p>info@bonenbakkie.nl</p>
               </div>
             </div>
 
             {/* Snelle Links */}
-            <div className="md:col-span-3 lg:col-span-2 lg:col-start-8">
-              <h4 className="font-sans font-bold tracking-[0.2em] uppercase mb-8 text-[#d4cab4] text-sm opacity-70">
+            <div className="md:col-span-3 lg:col-span-2 lg:col-start-8 text-center">
+              <h4 className="font-serif font-bold tracking-[0.2em] uppercase mb-8 !text-[#534026] text-lg">
                 Snelle Links
               </h4>
-              <ul className="space-y-5 text-[#f4ebd9]">
-                <li><Link to="/menu" className="hover:text-white hover:translate-x-2 transition-transform inline-block font-sans text-base">Menu</Link></li>
-                <li><Link to="/boeken" className="hover:text-white hover:translate-x-2 transition-transform inline-block font-sans text-base">Boeken</Link></li>
-                <li><Link to="/sfeer" className="hover:text-white hover:translate-x-2 transition-transform inline-block font-sans text-base">Sfeer</Link></li>
-                <li><Link to="/about" className="hover:text-white hover:translate-x-2 transition-transform inline-block font-sans text-base">Over ons</Link></li>
+              <ul className="flex flex-col items-center space-y-5 text-[#534026]">
+                <li><Link to="/menu" className="hover:text-[#8a6b45] hover:translate-x-2 transition-transform inline-block font-sans text-base">Menu</Link></li>
+                <li><Link to="/boeken" className="hover:text-[#8a6b45] hover:translate-x-2 transition-transform inline-block font-sans text-base">Boeken</Link></li>
+                <li><Link to="/sfeer" className="hover:text-[#8a6b45] hover:translate-x-2 transition-transform inline-block font-sans text-base">Sfeer</Link></li>
+                <li><Link to="/about" className="hover:text-[#8a6b45] hover:translate-x-2 transition-transform inline-block font-sans text-base">Over ons</Link></li>
               </ul>
             </div>
 
             {/* Volg Ons */}
-            <div className="md:col-span-4 lg:col-span-2">
-              <h4 className="font-sans font-bold tracking-[0.2em] uppercase mb-8 text-[#d4cab4] text-sm opacity-70">
+            <div className="md:col-span-4 lg:col-span-2 text-center">
+              <h4 className="font-serif font-bold tracking-[0.2em] uppercase mb-8 !text-[#534026] text-lg">
                 Volg Ons
               </h4>
-              <div className="flex flex-col gap-5 text-[#f4ebd9]">
-                <a href="#" className="hover:text-white hover:translate-x-2 transition-transform inline-flex items-center gap-4 font-sans text-base w-max">
-                  <Instagram className="w-5 h-5 text-[#d4cab4]" /> Instagram
+              <div className="flex flex-col items-center gap-5 text-[#534026]">
+                <a href="#" className="hover:text-[#8a6b45] hover:translate-x-2 transition-transform inline-flex items-center gap-4 font-sans text-base w-max">
+                  <Instagram className="w-5 h-5 text-[#534026]" /> Instagram
                 </a>
-                <a href="#" className="hover:text-white hover:translate-x-2 transition-transform inline-flex items-center gap-4 font-sans text-base w-max">
-                  <Facebook className="w-5 h-5 text-[#d4cab4]" /> Facebook
+                <a href="#" className="hover:text-[#8a6b45] hover:translate-x-2 transition-transform inline-flex items-center gap-4 font-sans text-base w-max">
+                  <Facebook className="w-5 h-5 text-[#534026]" /> Facebook
                 </a>
-                <a href="#" className="hover:text-white hover:translate-x-2 transition-transform inline-flex items-center gap-4 font-sans text-base w-max">
-                  <Linkedin className="w-5 h-5 text-[#d4cab4]" /> LinkedIn
+                <a href="#" className="hover:text-[#8a6b45] hover:translate-x-2 transition-transform inline-flex items-center gap-4 font-sans text-base w-max">
+                  <Linkedin className="w-5 h-5 text-[#534026]" /> LinkedIn
                 </a>
               </div>
             </div>
 
           </div>
 
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-[#f4ebd9] font-sans">
-            <p className="opacity-50">© 2026 't bonenbakkie. Met liefde gemaakt.</p>
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-[#534026] font-sans">
+            <p>© 2026 't bonenbakkie. Met liefde gemaakt.</p>
             
             <Link 
               to="/admin" 
-              className="opacity-10 hover:opacity-100 transition-opacity duration-300 px-4 py-2 uppercase tracking-[0.2em] font-bold text-xs bg-white/5 hover:bg-white/10 rounded-full"
+              className="text-[#534026] hover:text-[#534026] transition-opacity duration-300 px-4 py-2 uppercase tracking-[0.2em] font-bold text-xs bg-[#534026]/5 hover:bg-[#534026]/10 rounded-full"
               aria-label="Admin Login"
             >
               Admin

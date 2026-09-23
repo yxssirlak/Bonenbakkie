@@ -1,19 +1,44 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Mail, Phone, MapPin, Send, Star, PartyPopper, Briefcase, ArrowLeft, ArrowDown } from 'lucide-react';
+import { Mail, MapPin, Send, Instagram, Facebook, Linkedin, PartyPopper, Briefcase, ArrowLeft, ArrowDown, ArrowRight } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import confetti from 'canvas-confetti'; // Confetti animatie toegevoegd!
 
 const Contact: React.FC = () => {
   const location = useLocation();
+  const beanRefs = useRef<Array<HTMLDivElement | null>>([]);
 const [aanvraagType, setAanvraagType] = useState<'kies' | 'particulier' | 'zakelijk'>(
   location.state?.formType || 'kies'
 );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const zakelijkeOpties = ['Bedrijfsfeest', 'Beurs / Congres', 'Netwerkevent', 'Festival / Markt', 'Anders'];
-  const particuliereOpties = ['Bruiloft', 'Verjaardag', 'Jubileum', 'Tuinfeest / Buurtfeest', 'Anders'];
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      const x = (event.clientX / window.innerWidth - 0.5) * 40;
+      const y = (event.clientY / window.innerHeight - 0.5) * 40;
+
+      beanRefs.current.forEach((bean, index) => {
+        if (!bean) return;
+        const depth = 0.15 + index * 0.08;
+        bean.style.setProperty('--tx', `${x * depth}px`);
+        bean.style.setProperty('--ty', `${y * depth}px`);
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  const beanPositions = [
+    'left-[-2%] top-[12%] opacity-40 bean-large',
+    'right-[4%] top-[22%] opacity-35 bean-small',
+    'left-[12%] top-[45%] opacity-30 bean-medium',
+    'right-[-2%] top-[52%] opacity-40 bean-medium',
+    'left-[4%] bottom-[12%] opacity-35 bean-small',
+    'right-[12%] bottom-[8%] opacity-30 bean-large',
+    'left-[48%] bottom-[5%] opacity-25 bean-small',
+  ];
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,7 +56,7 @@ const [aanvraagType, setAanvraagType] = useState<'kies' | 'particulier' | 'zakel
     };
 
     try {
-      // 1. Sla de data op in je Supabase database
+      // 1. Sla de gegevens op in de Supabase-database
       const { error } = await supabase
         .from('offerte_aanvragen')
         .insert([aanvraagData]);
@@ -66,16 +91,41 @@ const [aanvraagType, setAanvraagType] = useState<'kies' | 'particulier' | 'zakel
   };
 
   return (
-    <main className="min-h-screen pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+    <main className="relative min-h-screen overflow-hidden pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+      <style>{`
+        .contact-bean {
+          position: absolute;
+          z-index: 0;
+          width: 5rem;
+          height: 5rem;
+          pointer-events: none;
+          filter: blur(3px);
+          transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
+          transform: translate(var(--tx, 0px), var(--ty, 0px)) rotate(var(--rot, 0deg));
+          will-change: transform;
+        }
+
+        .bean-large { width: 8rem; height: 8rem; }
+        .bean-medium { width: 6rem; height: 6rem; }
+        .bean-small { width: 4.5rem; height: 4.5rem; }
+      `}</style>
+
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_10%,rgba(30,15,10,0.45)_150%)] pointer-events-none z-0" />
+      <div className="absolute right-[0%] top-1/2 h-[80%] w-[60%] -translate-y-1/2 rounded-full bg-[#a37042] blur-[160px] opacity-20 pointer-events-none z-0" />
+      {beanPositions.map((position, index) => (
+        <div
+          key={position}
+          ref={(element) => { beanRefs.current[index] = element; }}
+          className={`contact-bean ${position}`}
+          style={{ ['--rot' as any]: `${[-18, 36, -8, 24, 42, -28, 12][index]}deg` }}
+        >
+          <img src="/Boontje.png" alt="" className="h-full w-full object-contain" />
+        </div>
+      ))}
+
       <section data-nav-theme="dark" className="max-w-5xl mx-auto relative z-10">
         
         <div className="text-center mb-16 fade-in-up">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md mb-6">
-            <Star size={16} className="text-[#d4cab4]" />
-            <span className="text-[#d4cab4] uppercase tracking-[0.15em] text-[11px] sm:text-[13px] font-semibold font-sans">
-              Offerte Aanvragen
-            </span>
-          </div>
           <h1 className="text-5xl md:text-7xl font-serif text-[#F5EFE7] mb-4">Contact</h1>
           <p className="text-[#ebdad0] font-sans tracking-[0.15em] uppercase text-xs sm:text-sm opacity-80">
             Laten we samen iets moois brouwen
@@ -95,7 +145,7 @@ const [aanvraagType, setAanvraagType] = useState<'kies' | 'particulier' | 'zakel
             </h2>
             
             <p className="text-[#ebdad0] font-sans text-sm sm:text-base leading-relaxed mb-10 max-w-md mx-auto opacity-90 relative z-10">
-              Bedankt voor je interesse! We hebben je gegevens in goede orde ontvangen en de koffiemachine alvast aangezet. We sturen je zo snel mogelijk een voorstel op maat!
+              Bedankt voor uw interesse! We hebben uw gegevens in goede orde ontvangen en de koffiemachine alvast aangezet. We sturen u zo snel mogelijk een voorstel op maat!
             </p>
             
             <button 
@@ -111,7 +161,7 @@ const [aanvraagType, setAanvraagType] = useState<'kies' | 'particulier' | 'zakel
             
             <div className="lg:col-span-4 space-y-8">
               <div className="glass-card p-8 border border-white/10 bg-white/5 h-full">
-                <h2 className="text-[11px] font-sans font-bold text-[#F5EFE7] tracking-[0.2em] uppercase mb-8">Locatie & Gegevens</h2>
+                <h2 className="mb-8 font-serif text-lg text-[#F5EFE7]">Locatie & Gegevens</h2>
                 <div className="space-y-6">
                   <div className="flex items-start gap-4 text-[#ebdad0]">
                     <MapPin className="text-[#d4cab4] shrink-0 mt-0.5" size={20} />
@@ -121,9 +171,19 @@ const [aanvraagType, setAanvraagType] = useState<'kies' | 'particulier' | 'zakel
                     <Mail className="text-[#d4cab4] shrink-0" size={20} />
                     <a href="mailto:info@bonenbakkie.nl" className="font-sans text-xs tracking-[0.1em] uppercase hover:text-[#d4cab4] transition-colors">INFO@BONENBAKKIE.NL</a>
                   </div>
-                  <div className="flex items-center gap-4 text-[#ebdad0]">
-                    <Phone className="text-[#d4cab4] shrink-0" size={20} />
-                    <a href="tel:+31612345678" className="font-sans text-xs tracking-[0.1em] uppercase hover:text-[#d4cab4] transition-colors">+31 6 123 456 78</a>
+                  <div className="mt-8 border-t border-white/10 pt-8">
+                    <h3 className="mb-5 font-serif text-lg text-[#F5EFE7]">Sociale media</h3>
+                    <div className="flex flex-col gap-3 font-sans text-xs tracking-[0.1em] uppercase">
+                      <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" className="group flex items-center justify-between rounded-xl border border-transparent px-3 py-3 text-[#ebdad0] transition-all duration-300 hover:translate-x-2 hover:border-[#d4cab4]/30 hover:bg-white/10 hover:text-[#d4cab4] hover:shadow-[0_8px_20px_rgba(0,0,0,0.12)]">
+                        <span className="inline-flex items-center gap-3"><Instagram size={18} className="text-[#d4cab4] transition-transform duration-300 group-hover:scale-110" /> Instagram</span><ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+                      </a>
+                      <a href="https://www.facebook.com/" target="_blank" rel="noreferrer" className="group flex items-center justify-between rounded-xl border border-transparent px-3 py-3 text-[#ebdad0] transition-all duration-300 hover:translate-x-2 hover:border-[#d4cab4]/30 hover:bg-white/10 hover:text-[#d4cab4] hover:shadow-[0_8px_20px_rgba(0,0,0,0.12)]">
+                        <span className="inline-flex items-center gap-3"><Facebook size={18} className="text-[#d4cab4] transition-transform duration-300 group-hover:scale-110" /> Facebook</span><ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+                      </a>
+                      <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer" className="group flex items-center justify-between rounded-xl border border-transparent px-3 py-3 text-[#ebdad0] transition-all duration-300 hover:translate-x-2 hover:border-[#d4cab4]/30 hover:bg-white/10 hover:text-[#d4cab4] hover:shadow-[0_8px_20px_rgba(0,0,0,0.12)]">
+                        <span className="inline-flex items-center gap-3"><Linkedin size={18} className="text-[#d4cab4] transition-transform duration-300 group-hover:scale-110" /> LinkedIn</span><ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -133,7 +193,7 @@ const [aanvraagType, setAanvraagType] = useState<'kies' | 'particulier' | 'zakel
               {aanvraagType === 'kies' && (
                 <div className="flex flex-col h-full animate-fade-in-up">
                   <div className="text-center mb-10 bg-white/5 border border-white/10 rounded-[2rem] p-6 glass-card relative">
-                    <h2 className="text-2xl sm:text-3xl font-serif text-[#F5EFE7] mb-2">Voor welk type evenement wil je een offerte?</h2>
+                    <h2 className="text-2xl sm:text-3xl font-serif text-[#F5EFE7] mb-2">Voor welk type evenement wilt u een offerte?</h2>
                     <p className="text-[#d4cab4] font-sans text-[10px] sm:text-xs tracking-[0.15em] uppercase font-semibold mb-6">Maak hieronder een keuze</p>
                     <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 flex justify-center w-full z-10 pointer-events-none">
                       <div className="bg-[#534026] rounded-full p-2.5 border-2 border-[#d4cab4]/30 animate-bounce shadow-[0_0_15px_rgba(212,202,180,0.3)]">
@@ -173,7 +233,7 @@ const [aanvraagType, setAanvraagType] = useState<'kies' | 'particulier' | 'zakel
                       {aanvraagType === 'particulier' ? 'Particuliere Aanvraag' : 'Zakelijke Aanvraag'}
                     </h3>
                     <p className="text-[#ebdad0] font-sans text-sm mt-2 opacity-80">
-                      Vul de onderstaande details in, dan komen we zo snel mogelijk bij je terug met een voorstel op maat.
+                      Vul de onderstaande gegevens in, dan nemen we zo snel mogelijk contact met u op.
                     </p>
                   </div>
 
@@ -184,7 +244,7 @@ const [aanvraagType, setAanvraagType] = useState<'kies' | 'particulier' | 'zakel
                         <label className="block text-[10px] font-sans font-semibold text-[#d4cab4] uppercase tracking-[0.15em] mb-2">
                           {aanvraagType === 'zakelijk' ? 'Naam Contactpersoon' : 'Volledige Naam'}
                         </label>
-                        <input type="text" name="naam" placeholder="Jouw naam" className="w-full bg-white/5 border border-white/10 rounded-lg p-3.5 text-white font-sans text-sm focus:outline-none focus:border-[#d4cab4] transition-colors placeholder:text-white/20" required />
+                        <input type="text" name="naam" placeholder="Uw naam" className="w-full bg-white/5 border border-white/10 rounded-lg p-3.5 text-white font-sans text-sm focus:outline-none focus:border-[#d4cab4] transition-colors placeholder:text-white/20" required />
                       </div>
                       {aanvraagType === 'zakelijk' ? (
                         <div>
@@ -194,7 +254,7 @@ const [aanvraagType, setAanvraagType] = useState<'kies' | 'particulier' | 'zakel
                       ) : (
                         <div>
                           <label className="block text-[10px] font-sans font-semibold text-[#d4cab4] uppercase tracking-[0.15em] mb-2">E-mailadres</label>
-                          <input type="email" name="email" placeholder="jouw@email.nl" className="w-full bg-white/5 border border-white/10 rounded-lg p-3.5 text-white font-sans text-sm focus:outline-none focus:border-[#d4cab4] transition-colors placeholder:text-white/20" required />
+                          <input type="email" name="email" placeholder="uw@email.nl" className="w-full bg-white/5 border border-white/10 rounded-lg p-3.5 text-white font-sans text-sm focus:outline-none focus:border-[#d4cab4] transition-colors placeholder:text-white/20" required />
                         </div>
                       )}
                     </div>
@@ -203,51 +263,13 @@ const [aanvraagType, setAanvraagType] = useState<'kies' | 'particulier' | 'zakel
                       {aanvraagType === 'zakelijk' && (
                         <div>
                           <label className="block text-[10px] font-sans font-semibold text-[#d4cab4] uppercase tracking-[0.15em] mb-2">Zakelijk E-mailadres</label>
-                          <input type="email" name="email" placeholder="jouw@bedrijf.nl" className="w-full bg-white/5 border border-white/10 rounded-lg p-3.5 text-white font-sans text-sm focus:outline-none focus:border-[#d4cab4] transition-colors placeholder:text-white/20" required />
+                          <input type="email" name="email" placeholder="uw@bedrijf.nl" className="w-full bg-white/5 border border-white/10 rounded-lg p-3.5 text-white font-sans text-sm focus:outline-none focus:border-[#d4cab4] transition-colors placeholder:text-white/20" required />
                         </div>
                       )}
                       <div>
                         <label className="block text-[10px] font-sans font-semibold text-[#d4cab4] uppercase tracking-[0.15em] mb-2">Telefoonnummer</label>
                         <input type="tel" name="telefoon" placeholder="+31 6 123 456 78" className="w-full bg-white/5 border border-white/10 rounded-lg p-3.5 text-white font-sans text-sm focus:outline-none focus:border-[#d4cab4] transition-colors placeholder:text-white/20" />
                       </div>
-                      {aanvraagType === 'particulier' && (
-                        <div>
-                          <label className="block text-[10px] font-sans font-semibold text-[#d4cab4] uppercase tracking-[0.15em] mb-2">Aantal verwachte gasten</label>
-                          <select name="aantal_gasten" defaultValue="" className="w-full bg-[#3d2f1b] border border-white/10 rounded-lg p-3.5 text-white font-sans text-sm focus:outline-none focus:border-[#d4cab4] transition-colors appearance-none cursor-pointer">
-                            <option value="" disabled>Selecteer aantal...</option>
-                            <option value="Minder dan 50">Minder dan 50 gasten</option>
-                            <option value="50 - 100">50 - 100 gasten</option>
-                            <option value="100 - 250">100 - 250 gasten</option>
-                            <option value="Meer dan 250">Meer dan 250 gasten</option>
-                          </select>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-5 rounded-xl bg-[#d4cab4]/5 border border-[#d4cab4]/10">
-                      <div>
-                        <label className="block text-[10px] font-sans font-semibold text-[#d4cab4] uppercase tracking-[0.15em] mb-2">Type Gelegenheid</label>
-                        <select name="gelegenheid" defaultValue="" className="w-full bg-[#3d2f1b] border border-white/10 rounded-lg p-3.5 text-white font-sans text-sm focus:outline-none focus:border-[#d4cab4] transition-colors appearance-none cursor-pointer" required>
-                          <option value="" disabled>Kies een gelegenheid...</option>
-                          {aanvraagType === 'zakelijk' 
-                            ? zakelijkeOpties.map(opt => <option key={opt} value={opt}>{opt}</option>)
-                            : particuliereOpties.map(opt => <option key={opt} value={opt}>{opt}</option>)
-                          }
-                        </select>
-                      </div>
-                      {aanvraagType === 'zakelijk' && (
-                        <div>
-                          <label className="block text-[10px] font-sans font-semibold text-[#d4cab4] uppercase tracking-[0.15em] mb-2">Aantal verwachte gasten</label>
-                          <select name="aantal_gasten" defaultValue="" className="w-full bg-[#3d2f1b] border border-white/10 rounded-lg p-3.5 text-white font-sans text-sm focus:outline-none focus:border-[#d4cab4] transition-colors appearance-none cursor-pointer">
-                            <option value="" disabled>Selecteer aantal...</option>
-                            <option value="Minder dan 50">Minder dan 50 gasten</option>
-                            <option value="50 - 100">50 - 100 gasten</option>
-                            <option value="100 - 250">100 - 250 gasten</option>
-                            <option value="250 - 500">250 - 500 gasten</option>
-                            <option value="Meer dan 500">Meer dan 500 gasten</option>
-                          </select>
-                        </div>
-                      )}
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -262,8 +284,9 @@ const [aanvraagType, setAanvraagType] = useState<'kies' | 'particulier' | 'zakel
                     </div>
 
                     <div>
-                      <label className="block text-[10px] font-sans font-semibold text-[#d4cab4] uppercase tracking-[0.15em] mb-2">Details & Extra Wensen</label>
-                      <textarea name="bericht" rows={4} placeholder="Vertel ons meer over het evenement. Zijn er specifieke wensen voor het menu of de tijden?" className="w-full bg-white/5 border border-white/10 rounded-lg p-3.5 text-white font-sans text-sm focus:outline-none focus:border-[#d4cab4] transition-colors placeholder:text-white/20 resize-none"></textarea>
+                      <p className="text-[#ebdad0] font-sans text-sm leading-relaxed opacity-90">
+                        Met de ingevulde gegevens krijgen we een goed beeld van uw wensen. Vervolgens nemen we contact met u op om de mogelijkheden samen te bespreken.
+                      </p>
                     </div>
 
                     <div className="flex items-start gap-3 mt-4">
@@ -275,7 +298,7 @@ const [aanvraagType, setAanvraagType] = useState<'kies' | 'particulier' | 'zakel
                         className="mt-1 shrink-0 cursor-pointer"
                       />
                       <label htmlFor="privacy_akkoord" className="text-[#ebdad0] font-sans text-[10px] sm:text-xs opacity-80 cursor-pointer leading-relaxed">
-                        Ik ga ermee akkoord dat 't Bonenbakkie mijn gegevens veilig opslaat om contact op te nemen over deze offerte.
+                        Ik ga ermee akkoord dat 't Bonenbakkie mijn gegevens veilig opslaat om contact met mij op te nemen over deze aanvraag.
                       </label>
                     </div>
 

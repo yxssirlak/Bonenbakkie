@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Coffee, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 export type MenuCategory = {
   id: string;
@@ -82,12 +82,8 @@ const Menu: React.FC = () => {
         
         {/* Introductie Sectie */}
         <div className="text-center mb-16 animate-fade-in-up">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md mb-6">
-            <Coffee size={16} className="text-[var(--logo-cream)]" />
-            <span className="text-[var(--logo-cream)] uppercase tracking-[0.15em] text-[11px] sm:text-[13px] font-semibold font-sans">Ons Aanbod</span>
-          </div>
           <h1 className="text-5xl md:text-7xl font-serif text-[#f4f1ea] mb-6">
-            Het <span className="text-[#d4cab4]">Menu</span>
+            Het Menu
           </h1>
           <p className="max-w-3xl mx-auto text-[#ebdad0] opacity-90 text-sm sm:text-base leading-relaxed font-sans">
             Wij zijn voorzien van een veelzijdig assortiment met zowel warme als koude dranken. Wij gaan van een traditioneel zwart bakkie tot de nieuwste trends zoals matcha. Naast koemelk serveren wij alternatieven zoals haver en sojamelk, zodat wij kunnen inspelen op de wensen van onze gasten.
@@ -158,13 +154,13 @@ const Menu: React.FC = () => {
           
           <div className="relative z-10 max-w-3xl mx-auto space-y-6">
             <h2 className="text-3xl md:text-4xl font-serif text-[#F5EFE7] mb-6">
-              Jouw evenement, jouw keuze
+              Uw evenement, uw keuze
             </h2>
             <p className="text-[#ebdad0] font-sans text-sm sm:text-base leading-relaxed opacity-90">
-              Verder kunnen wij ook warme stroopwafels verzorgen, een lekkere toevoeging die perfect past bij een kopje koffie.
+              Het is bij ons mogelijk om de menukaart bij een boeking af te stemmen naar uw voorkeur. Wij bieden de flexibiliteit om te kiezen uit ons volledige assortiment of een geselecteerde menukaart. Ook zijn bij ons eigen voorkeuren altijd welkom.
             </p>
             <p className="text-[#ebdad0] font-sans text-sm sm:text-base leading-relaxed opacity-90">
-              Het is bij ons mogelijk om de menukaart bij een boeking af te stemmen naar uw voorkeur. Wij bieden de flexibiliteit om te kiezen uit ons volledige assortiment of een geselecteerde menukaart. Ook zijn bij ons eigen voorkeuren altijd welkom.
+              Verder kunnen wij ook warme stroopwafels verzorgen, een lekkere toevoeging die perfect past bij een kopje koffie.
             </p>
           </div>
         </div>

@@ -42,6 +42,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Use the coffee bean as the site's global pointer. */
+*,
+*::before,
+*::after {
+  cursor: url('/cartoon-cursor.svg') 3 3, auto !important;
+}
+
 @layer base {
   :root {
     --color-brown-dark: #140a07;
@@ -97,6 +104,11 @@
   main {
     position: relative;
     isolation: isolate;
+  }
+
+  .site-footer {
+    isolation: isolate;
+    background: #f4f1ea !important;
   }
 
   /* Ensure titles inside light-themed sections use the brown brand color for readability */

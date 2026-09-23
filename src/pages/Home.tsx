@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Coffee, Award, ChevronDown, Sparkles } from 'lucide-react';
+import { ArrowRight, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 type HomeGalleryImage = {
@@ -12,7 +12,6 @@ type HomeGalleryImage = {
 
 const Home: React.FC = () => {
   const [galleryImages, setGalleryImages] = useState<HomeGalleryImage[]>([]);
-  const [homepageFotos, setHomepageFotos] = useState<HomeGalleryImage[]>([]);
 
   // Parallax refs
   const bokehRef1 = useRef<HTMLDivElement>(null);
@@ -48,12 +47,6 @@ const Home: React.FC = () => {
       }
     } catch { }
 
-    try {
-      const storedHomeFotos = window.localStorage.getItem('bonenbakkie-homepage-fotos');
-      if (storedHomeFotos && storedHomeFotos !== '[]') {
-        setHomepageFotos(JSON.parse(storedHomeFotos));
-      }
-    } catch { }
   }, []);
 
   // Parallax logica
@@ -109,9 +102,6 @@ const Home: React.FC = () => {
     ]);
   }, [galleryImages.length]);
 
-  const foto1 = homepageFotos[0]?.src || '/bonenbakkie1.jpeg';
-  const foto2 = homepageFotos[1]?.src || '/bonenbakkie2.png';
-
   return (
     <main>
       <style>{`
@@ -132,9 +122,10 @@ const Home: React.FC = () => {
           transition: all 0.3s ease-in-out !important;
         }
         
-        .hero-btn:hover {
-          background-color: transparent !important;
+        .coffee-btn.hero-btn:hover {
+          background: transparent !important;
           color: #f4f1ea !important;
+          border-color: #f4f1ea !important;
         }
 
         @keyframes float {
@@ -204,9 +195,9 @@ const Home: React.FC = () => {
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
         
-        {/* DE KOFFIEMACHINE ACHTERGROND IETS NAAR LINKS GESCHOVEN */}
+        {/* De koffiemachine staat verder rechts naast de introductietekst. */}
         <div 
-          className="absolute right-[-10%] md:right-[8%] top-3/4 md:top-1/2 w-[140%] md:w-[65%] h-[115%] z-10 pointer-events-none opacity-40 animate-float"
+          className="absolute right-[-10%] md:right-[-5%] top-3/4 md:top-1/2 w-[140%] md:w-[65%] h-[115%] z-10 pointer-events-none opacity-40 animate-float"
           style={{ 
             backgroundImage: "url('/koffiemachine.png')", 
             backgroundSize: 'contain',
@@ -218,9 +209,9 @@ const Home: React.FC = () => {
 
         <div className="max-w-7xl mx-auto w-full z-20 relative flex flex-col md:flex-row items-center pt-10">
           
-          <div className="w-full md:w-3/5 flex flex-col items-center md:items-start text-center md:text-left relative z-20">
+          <div className="w-full md:w-3/5 flex -translate-y-4 md:-translate-y-6 flex-col items-center md:items-start text-center md:text-left relative z-20">
             <div className="animate-fade-in-up mb-12 flex flex-col items-center md:items-start" style={{ animationDelay: '0.3s' }}>
-              <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-serif text-[#f4f1ea]">
+              <h1 className="text-2xl sm:text-3xl md:text-6xl lg:text-7xl font-serif text-[#f4f1ea]">
                 Mobiele koffiekar  <br />
                 <span className="text-[#d4cab4] opacity-100">'t bonenbakkie</span>
               </h1>
@@ -239,38 +230,6 @@ const Home: React.FC = () => {
               </Link>
             </div>
 
-            <a 
-              href="https://maps.google.com" target="_blank" rel="noreferrer"
-              className="animate-fade-in-up mt-10 flex items-center justify-center md:justify-start gap-4 cursor-pointer group" style={{ animationDelay: '0.9s' }}
-            >
-              <div className="flex gap-1 transition-transform duration-300 group-hover:scale-105">
-                {[1, 2, 3, 4, 5].map((star, i) => (
-                  <span key={i} className="text-[#f4f1ea] text-2xl md:text-3xl leading-none" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.4)' }}>★</span>
-                ))}
-              </div>
-              <div className="text-[#f4f1ea] font-sans text-sm opacity-90 text-left leading-tight group-hover:opacity-100 transition-opacity">
-                <span className="font-bold text-base">5.0/5</span> op Google <br />
-                <span className="underline opacity-70 group-hover:opacity-100 transition-opacity">Lees onze reviews</span>
-              </div>
-            </a>
-          </div>
-
-          {/* RECHTER KANT: FOTO'S NAAR RECHTS GESCHOVEN (translate-x) */}
-          <div className="hidden md:flex w-2/5 justify-end items-center relative h-[500px] mt-12 z-30">
-            <div 
-              className="relative w-full max-w-[420px] h-[480px] animate-fade-in-up translate-x-8 lg:translate-x-16"
-              style={{ animationDelay: '0.9s' }}
-            >
-              {/* Foto 1 (Achtergrond) */}
-              <div className="absolute top-4 right-16 lg:right-24 w-64 h-80 lg:w-72 lg:h-96 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.5)] transform -rotate-6 transition-all duration-500 hover:rotate-0 hover:scale-105 hover:z-40 overflow-hidden z-20">
-                <img src={foto1} alt={homepageFotos[0]?.alt || "Sfeerfoto 1"} className="w-full h-full object-cover" />
-              </div>
-
-              {/* Foto 2 (Voorgrond) */}
-              <div className="absolute bottom-0 right-0 lg:-right-4 w-56 h-56 lg:w-64 lg:h-64 rounded-2xl shadow-[0_25px_50px_rgba(0,0,0,0.6)] transform rotate-6 transition-all duration-500 hover:rotate-0 hover:scale-105 hover:z-40 overflow-hidden z-30">
-                <img src={foto2} alt={homepageFotos[1]?.alt || "Sfeerfoto 2"} className="w-full h-full object-cover" />
-              </div>
-            </div>
           </div>
 
         </div>
@@ -285,62 +244,23 @@ const Home: React.FC = () => {
       <section id="koffiehuisje" data-nav-theme="light" className="w-full bg-[#f4f1ea] py-24 px-4 sm:px-6 lg:px-8 relative z-20 text-[#534026] -mt-10 rounded-t-[3rem] shadow-[0_-20px_40px_rgba(0,0,0,0.2)]">
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="mb-10 flex flex-col items-center text-center">
-            <h2 className="text-4xl md:text-5xl font-serif" style={{ color: '#d4cab4' }}>
+            <h2 className="text-4xl md:text-5xl font-serif text-[#534026]">
               Onze Koffie Kar
             </h2>
             <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[#534026] opacity-90">
-              ‘t bonenbakkie staat voor kwaliteit, gezelligheid en flexibiliteit. Met koffiebonen van een lokale branderij, maken we van ieder kopje iets bijzonders. Buitenom koffie dragen we bij aan een fijne sfeer en een gezellig praatje.
+              ‘t bonenbakkie brengt kwaliteit, gezelligheid en flexibiliteit samen. Met lokale koffiebonen en een flexibel menu maken we van ieder evenement een bijzonder koffiemoment.
             </p>
+            <div className="mt-6 h-px w-24 bg-white" aria-hidden="true" />
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {galleryImages.map((image, index) => (
               <div key={`${image.src}-${index}`} className={`group relative overflow-hidden rounded-[2rem] shadow-[0_20px_45px_rgba(0,0,0,0.16)] ${index === 0 ? 'md:col-span-2 md:row-span-2 h-96 md:h-[32rem]' : 'h-72'}`}>
                 <img src={image.src} alt={image.alt || `Foto ${index + 1} van 't bonenbakkie`} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#120a07]/70 via-transparent to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-left text-[#f4f1ea]">
-                  <p className="text-xl font-semibold">{image.title || 'Onze koffiewagen'}</p>
-                  <p className="mt-1 text-sm opacity-90">{image.description || 'Sfeer en detail'}</p>
-                </div>
               </div>
             ))}
           </div>
 
-          {/* NIEUWE TEKST ONDER DE FOTO'S */}
-          <div className="mt-16 max-w-3xl mx-auto text-center">
-            <p className="text-lg leading-relaxed text-[#534026] opacity-90">
-              Onze koffiekar is volledig flexibel inzetbaar en beweegt mee met uw wensen. Van kleine bijeenkomsten tot grote evenementen passen wij ons moeiteloos aan. Ook het menu kan volledig worden afgestemd op de gelegenheid, zodat de koffiebeleving perfect aansluit bij uw gasten en het moment.
-            </p>
-          </div>
-
-        </div>
-      </section>
-
-      <section className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        <div ref={bokehRef10} className="bean absolute left-[5%] top-[10%] z-0 opacity-40 blur-sm w-16 h-16 pointer-events-none"><img src="/Boontje.png" alt="" className="w-full h-full object-contain" /></div>
-        <div ref={bokehRef11} className="bean absolute right-[8%] top-[15%] z-0 opacity-35 blur-sm w-20 h-20 pointer-events-none"><img src="/Boontje.png" alt="" className="w-full h-full object-contain" /></div>
-        <div ref={bokehRef12} className="bean absolute left-[12%] bottom-[20%] z-0 opacity-30 blur-sm w-14 h-14 pointer-events-none"><img src="/Boontje.png" alt="" className="w-full h-full object-contain" /></div>
-        <div ref={bokehRef13} className="bean absolute right-[15%] bottom-[15%] z-0 opacity-45 blur-sm w-24 h-24 pointer-events-none"><img src="/Boontje.png" alt="" className="w-full h-full object-contain" /></div>
-        <div ref={bokehRef14} className="bean absolute left-[35%] top-[5%] z-0 opacity-25 blur-sm w-18 h-18 pointer-events-none"><img src="/Boontje.png" alt="" className="w-full h-full object-contain" /></div>
-        <div ref={bokehRef15} className="bean absolute right-[25%] bottom-[8%] z-0 opacity-35 blur-sm w-16 h-16 pointer-events-none"><img src="/Boontje.png" alt="" className="w-full h-full object-contain" /></div>
-        
-        <div className="max-w-6xl mx-auto z-10 relative">
-          <h2 className="section-title text-center mb-16">Waarom 't bonenbakkie?</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { icon: Award, title: 'Premium Kwaliteit', desc: 'Single-origin bonen, deskundig geroosterd en vers gemalen elke dag.' },
-              { icon: Coffee, title: 'Met Liefde Gemaakt', desc: 'Elke shot getrokken met precisie op professionele apparatuur.' },
-              { icon: Sparkles, title: 'Altijd Vers', desc: 'Vers gezet op bestelling. Geen koffie uit een kan. Puur genot in elk kopje.' },
-            ].map((item, i) => (
-              <div key={i} className="glass-card"> 
-                <div className="inline-flex items-center justify-center rounded-xl bg-[var(--logo-cream)] p-3 mb-6">
-                  <item.icon className="w-6 h-6 text-[var(--color-brown-main)]" />
-                </div>
-                <h3 className="text-2xl font-serif mb-3 text-[var(--color-brown-main)]">{item.title}</h3>
-                <p className="opacity-80 text-[var(--logo-cream)] text-sm leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
     </main>

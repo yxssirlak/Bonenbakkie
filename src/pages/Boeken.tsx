@@ -1,99 +1,122 @@
-import React from 'react';
-import { CalendarCheck, Briefcase, PartyPopper, ArrowRight } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import { Briefcase, PartyPopper, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Boeken: React.FC = () => {
+  const beanRefs = useRef<Array<HTMLDivElement | null>>([]);
+
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      const x = (event.clientX / window.innerWidth - 0.5) * 40;
+      const y = (event.clientY / window.innerHeight - 0.5) * 40;
+
+      beanRefs.current.forEach((bean, index) => {
+        if (!bean) return;
+        const depth = 0.2 + index * 0.08;
+        bean.style.setProperty('--tx', `${x * depth}px`);
+        bean.style.setProperty('--ty', `${y * depth}px`);
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  const beanPositions = [
+    'left-[-2%] top-[12%] opacity-50 blur-sm bean-large',
+    'right-[5%] top-[18%] opacity-40 blur-sm bean-medium',
+    'left-[18%] top-[42%] opacity-35 blur-sm bean-small',
+    'right-[14%] top-[48%] opacity-45 blur-sm bean-medium',
+    'left-[6%] bottom-[12%] opacity-40 blur-sm bean-small',
+    'right-[-1%] bottom-[10%] opacity-35 blur-sm bean-large',
+    'left-[46%] bottom-[8%] opacity-30 blur-sm bean-small',
+    'left-[-3%] top-[58%] opacity-35 blur-sm bean-medium',
+    'right-[-3%] top-[68%] opacity-40 blur-sm bean-small',
+    'left-[2%] bottom-[28%] opacity-25 blur-sm bean-small',
+    'right-[8%] bottom-[24%] opacity-30 blur-sm bean-medium',
+  ];
+
   return (
-    <main className="min-h-screen pt-32 pb-20 px-4 sm:px-6 lg:px-8 font-sans">
+    <main className="booking-page relative min-h-screen overflow-hidden pt-32 pb-20 px-4 sm:px-6 lg:px-8 font-sans">
+      <style>{`
+        .booking-bean {
+          position: absolute;
+          z-index: 0;
+          width: 5rem;
+          height: 5rem;
+          pointer-events: none;
+          transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
+          transform: translate(var(--tx, 0px), var(--ty, 0px)) rotate(var(--rot, 0deg));
+          will-change: transform;
+        }
+
+        .bean-large { width: 8rem; height: 8rem; }
+        .bean-medium { width: 6rem; height: 6rem; }
+        .bean-small { width: 4.5rem; height: 4.5rem; }
+      `}</style>
+
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_10%,rgba(30,15,10,0.45)_150%)] pointer-events-none z-0" />
+      <div className="absolute right-[0%] top-1/2 -translate-y-1/2 w-[60%] h-[80%] rounded-full bg-[#a37042] blur-[160px] opacity-25 pointer-events-none z-0" />
+      {beanPositions.map((position, index) => (
+        <div
+          key={position}
+          ref={(element) => { beanRefs.current[index] = element; }}
+          className={`booking-bean ${position}`}
+          style={{ ['--rot' as any]: `${[-12, 45, -8, 22, 12, 30, -18, 18, -28, 42, -16][index]}deg` }}
+        >
+          <img src="/Boontje.png" alt="" className="h-full w-full object-contain" />
+        </div>
+      ))}
+
       <section data-nav-theme="dark" className="max-w-6xl mx-auto relative z-10">
         
         {/* Introductie Sectie */}
         <div className="text-center mb-16 animate-fade-in-up">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md mb-6">
-            <CalendarCheck size={16} className="text-[#d4cab4]" />
-            <span className="text-[#d4cab4] uppercase tracking-[0.15em] text-[11px] sm:text-[13px] font-semibold font-sans">
-              Boeken
-            </span>
-          </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#f8ede2] mb-6">
-            Jouw moment, <br />onze <span className="text-[#d4cab4]">premium koffie</span>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-white mb-6">
+            Boeken
           </h1>
           <p className="text-base sm:text-lg text-[#ebdad0] max-w-2xl mx-auto leading-relaxed font-sans opacity-90">
-            Opzoek naar een sfeervolle koffiekar voor uw evenement? ‘t bonenbakkie serveert koffie en gezelligheid op iedere plek. Wij zijn inzetbaar door heel Nederland en komen graag naar uw locatie. Voor een soepele samenwerking horen wij details van uw evenement graag tijdig.
+            Opzoek naar een sfeervolle koffiekar voor uw evenement? ‘t bonenbakkie serveert koffie en gezelligheid op iedere plek. Wij zijn inzetbaar door heel Nederland en komen graag naar uw locatie. Samen bespreken we de sfeer, het aantal gasten en uw wensen, zodat alles goed aansluit en uw gasten zich welkom voelen.
           </p>
         </div>
 
         {/* Pakketten / Arrangementen */}
-        <div className="grid md:grid-cols-2 gap-8 mb-24">
+        <div className="flex flex-col items-center gap-16 mb-24 text-center">
           
           {/* Particulier */}
-          <div className="glass-card flex flex-col p-8 sm:p-12 border border-white/10 bg-white/5 hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 group animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-            <div className="inline-flex items-center gap-2 rounded-full bg-[#d4cab4]/10 px-4 py-2 text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-bold text-[#d4cab4] mb-8 w-max">
+          <div className="flex w-full max-w-2xl flex-col items-center animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+            <div className="inline-flex items-center gap-2 rounded-full bg-[#d4cab4]/10 px-4 py-2 text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-bold text-white mb-8">
               Voor privé momenten
             </div>
             
-            <PartyPopper className="w-12 h-12 text-[#d4cab4] mb-6 group-hover:scale-110 transition-transform duration-500" />
+            <PartyPopper className="w-12 h-12 text-white mb-6" />
             
             <h3 className="text-3xl font-serif text-[#F5EFE7] mb-4">Particulier</h3>
             
-            <p className="text-[#ebdad0] opacity-80 mb-10 leading-relaxed font-sans text-sm sm:text-base">
-              Perfect voor bruiloften, verjaardagen en familiefeestjes. Een warme, persoonlijke koffiebeleving met aandacht voor sfeer en smaak.
+            <p className="text-white opacity-90 mb-10 leading-relaxed font-sans text-sm sm:text-base max-w-xl">
+              Perfect voor bruiloften, verjaardagen en familiefeestjes. Een warme, persoonlijke koffiebeleving met aandacht voor sfeer en smaak. Van een intiem koffiemoment tot een feestelijke ontvangst: wij zorgen voor vers gezette koffie en een gastvrije uitstraling die past bij uw gezelschap.
             </p>
-            
-            <ul className="space-y-4 mb-12 text-[#ebdad0] font-sans text-sm opacity-90">
-              <li className="flex items-start gap-3">
-                <span className="text-[#d4cab4] mt-0.5 font-bold">•</span> Barista service op locatie
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-[#d4cab4] mt-0.5 font-bold">•</span> Vers gezette koffie, thee en seizoensspecials
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-[#d4cab4] mt-0.5 font-bold">•</span> Een zachte, gastvrije uitstraling voor kleine gezelschappen
-              </li>
-            </ul>
-            
-            <Link 
-  to="/contact" 
-  state={{ formType: 'particulier' }} 
-  className="coffee-btn-outline w-full text-center mt-auto py-4 font-sans font-semibold uppercase tracking-[0.15em] text-[11px] sm:text-[13px] hover:bg-[#d4cab4] hover:text-[#1e0f0a]"
->
-  Vraag offerte aan
-</Link>
+          </div>
+
+          <div className="flex w-full max-w-3xl items-center gap-5 py-2" aria-hidden="true">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#d4cab4]/45 to-[#d4cab4]/70" />
+            <div className="h-2 w-2 rotate-45 border border-[#d4cab4]/70 bg-[#534026]" />
+            <div className="h-px flex-1 bg-gradient-to-l from-transparent via-[#d4cab4]/45 to-[#d4cab4]/70" />
           </div>
 
           {/* Zakelijk */}
-          <div className="glass-card flex flex-col p-8 sm:p-12 border border-white/10 bg-white/5 hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 group animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-            <div className="inline-flex items-center gap-2 rounded-full bg-[#d4cab4]/10 px-4 py-2 text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-bold text-[#d4cab4] mb-8 w-max">
+          <div className="flex w-full max-w-2xl flex-col items-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+            <div className="inline-flex items-center gap-2 rounded-full bg-[#d4cab4]/10 px-4 py-2 text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-bold text-white mb-8">
               Voor bedrijven & events
             </div>
             
-            <Briefcase className="w-12 h-12 text-[#d4cab4] mb-6 group-hover:scale-110 transition-transform duration-500" />
+            <Briefcase className="w-12 h-12 text-white mb-6" />
             
             <h3 className="text-3xl font-serif text-[#F5EFE7] mb-4">Zakelijk</h3>
             
-            <p className="text-[#ebdad0] opacity-80 mb-10 leading-relaxed font-sans text-sm sm:text-base">
-              Geschikt voor bedrijfsfeestjes, markten, festivals en beurzen. Professionele koffie met een toegankelijke én krachtige presentatie.
+            <p className="text-white opacity-90 mb-10 leading-relaxed font-sans text-sm sm:text-base max-w-xl">
+              Geschikt voor bedrijfsfeestjes, markten, festivals en beurzen. Professionele koffie met een toegankelijke én krachtige presentatie. Onze koffiekar brengt energie en beleving naar uw locatie en wordt afgestemd op de planning, uitstraling en omvang van uw zakelijke evenement.
             </p>
-            
-            <ul className="space-y-4 mb-12 text-[#ebdad0] font-sans text-sm opacity-90">
-              <li className="flex items-start gap-3">
-                <span className="text-[#d4cab4] mt-0.5 font-bold">•</span> Snelle service voor grotere groepen
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-[#d4cab4] mt-0.5 font-bold">•</span> Flexibel inzetbaar op evenementen en buitenlocaties
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-[#d4cab4] mt-0.5 font-bold">•</span> Optie voor branding en een representatieve uitstraling
-              </li>
-            </ul>
-            
-            <Link 
-  to="/contact" 
-  state={{ formType: 'zakelijk' }} 
-  className="coffee-btn w-full text-center mt-auto py-4 font-sans font-semibold uppercase tracking-[0.15em] text-[11px] sm:text-[13px] shadow-lg hover:shadow-[0_0_20px_rgba(212,202,180,0.2)]"
->
-  Vraag offerte aan
-</Link>
           </div>
 
         </div>
