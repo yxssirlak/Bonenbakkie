@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Sparkles } from 'lucide-react';
 
 export type MenuCategory = {
@@ -18,6 +18,34 @@ const Menu: React.FC = () => {
   const [categories, setCategories] = useState<MenuCategory[]>([]);
   const [items, setItems] = useState<MenuItem[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>('');
+  const beanRefs = useRef<Array<HTMLDivElement | null>>([]);
+
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      const x = (event.clientX / window.innerWidth - 0.5) * 40;
+      const y = (event.clientY / window.innerHeight - 0.5) * 40;
+
+      beanRefs.current.forEach((bean, index) => {
+        if (!bean) return;
+        const depth = 0.15 + index * 0.08;
+        bean.style.setProperty('--tx', `${x * depth}px`);
+        bean.style.setProperty('--ty', `${y * depth}px`);
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  const beanPositions = [
+    'left-[-2%] top-[10%] opacity-40 bean-large',
+    'right-[4%] top-[18%] opacity-35 bean-small',
+    'left-[12%] top-[42%] opacity-30 bean-medium',
+    'right-[-2%] top-[48%] opacity-40 bean-medium',
+    'left-[5%] bottom-[14%] opacity-35 bean-small',
+    'right-[10%] bottom-[8%] opacity-30 bean-large',
+    'left-[48%] bottom-[5%] opacity-25 bean-small',
+  ];
 
   useEffect(() => {
     const storedCategories = localStorage.getItem('bonenbakkie-menu-categories');
@@ -72,11 +100,37 @@ const Menu: React.FC = () => {
   const filteredItems = items.filter(item => item.categoryId === activeCategory);
 
   return (
-    <main className="min-h-screen pt-32 pb-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      
-      {/* Zachte, gladde achtergrond effecten */}
+    <main className="menu-page relative min-h-screen overflow-hidden pt-32 pb-24 px-4 sm:px-6 lg:px-8">
+      <style>{`
+        .menu-bean {
+          position: absolute;
+          z-index: 0;
+          width: 5rem;
+          height: 5rem;
+          pointer-events: none;
+          filter: blur(3px);
+          transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
+          transform: translate(var(--tx, 0px), var(--ty, 0px)) rotate(var(--rot, 0deg));
+          will-change: transform;
+        }
+
+        .bean-large { width: 8rem; height: 8rem; }
+        .bean-medium { width: 6rem; height: 6rem; }
+        .bean-small { width: 4.5rem; height: 4.5rem; }
+      `}</style>
+
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_10%,rgba(30,15,10,0.45)_150%)] pointer-events-none z-0"></div>
       <div className="absolute right-[0%] top-1/2 transform -translate-y-1/2 w-[60%] h-[80%] bg-[#a37042] rounded-full blur-[160px] opacity-25 pointer-events-none z-0"></div>
+      {beanPositions.map((position, index) => (
+        <div
+          key={position}
+          ref={(element) => { beanRefs.current[index] = element; }}
+          className={`menu-bean ${position}`}
+          style={{ ['--rot' as any]: `${[-18, 36, -8, 24, 42, -28, 12][index]}deg` }}
+        >
+          <img src="/Boontje.png" alt="" className="h-full w-full object-contain" />
+        </div>
+      ))}
 
       <div className="max-w-6xl mx-auto relative z-10">
         
