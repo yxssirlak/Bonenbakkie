@@ -49,6 +49,17 @@
   cursor: url('/cartoon-cursor.svg') 3 3, auto !important;
 }
 
+a,
+button,
+input,
+select,
+textarea,
+label,
+[role='button'],
+[tabindex]:not([tabindex='-1']) {
+  cursor: url('/selectable-cursor.svg') 15 15, pointer !important;
+}
+
 @layer base {
   :root {
     --color-brown-dark: #140a07;
