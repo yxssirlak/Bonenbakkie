@@ -244,9 +244,12 @@ const Home: React.FC = () => {
       <section id="koffiehuisje" data-nav-theme="light" className="w-full bg-[#f4f1ea] py-24 px-4 sm:px-6 lg:px-8 relative z-20 text-[#534026] -mt-10 rounded-t-[3rem] shadow-[0_-20px_40px_rgba(0,0,0,0.2)]">
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="mb-10 flex flex-col items-center text-center">
-            <h2 className="text-4xl md:text-5xl font-serif text-[#856840]">
+            
+            {/* HIER ZIT DE DEFINITIEVE KLEUR FIX MET INLINE STYLE */}
+            <h2 className="text-4xl md:text-5xl font-serif" style={{ color: '#c4a47c' }}>
               Onze Koffie Kar
             </h2>
+            
             <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[#534026] opacity-90">
               ‘t bonenbakkie brengt kwaliteit, gezelligheid en flexibiliteit samen. Met lokale koffiebonen en een flexibel menu maken we van ieder evenement een bijzonder koffiemoment.
             </p>
@@ -263,7 +266,7 @@ const Home: React.FC = () => {
 
         </div>
       </section>
-    </main>
+    </main>  
   );
 };
 

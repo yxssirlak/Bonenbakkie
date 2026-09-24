@@ -127,7 +127,7 @@ const Boeken: React.FC = () => {
           
           <div className="relative z-10">
             <h2 className="text-3xl md:text-4xl font-serif text-[#F5EFE7] mb-6">
-              Interesse in 't Bonenbakkie?
+              Interesse in 't bonenbakkie?
             </h2>
             <p className="text-[#ebdad0] mb-10 max-w-2xl mx-auto font-sans leading-relaxed opacity-90">
               Bij interesse nodigen wij u uit om via onze contactpagina contact op te nemen. Ook hier zal er ruimte zijn om uw wensen te bespreken en eventuele vragen te beantwoorden.

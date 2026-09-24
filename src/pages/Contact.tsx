@@ -193,7 +193,7 @@ const [aanvraagType, setAanvraagType] = useState<'kies' | 'particulier' | 'zakel
               {aanvraagType === 'kies' && (
                 <div className="flex flex-col h-full animate-fade-in-up">
                   <div className="text-center mb-10 bg-white/5 border border-white/10 rounded-[2rem] p-6 glass-card relative">
-                    <h2 className="text-2xl sm:text-3xl font-serif text-[#F5EFE7] mb-2">Voor welk type evenement wilt u een offerte?</h2>
+                    <h2 className="text-2xl sm:text-3xl font-serif text-[#F5EFE7] mb-2">Voor welk type evenement wilt u contact opnemen?</h2>
                     <p className="text-[#d4cab4] font-sans text-[10px] sm:text-xs tracking-[0.15em] uppercase font-semibold mb-6">Maak hieronder een keuze</p>
                     <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 flex justify-center w-full z-10 pointer-events-none">
                       <div className="bg-[#534026] rounded-full p-2.5 border-2 border-[#d4cab4]/30 animate-bounce shadow-[0_0_15px_rgba(212,202,180,0.3)]">
