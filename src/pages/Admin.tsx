@@ -75,7 +75,7 @@ const Admin: React.FC = () => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === 'bonenbakkie2026') { 
+    if (password === 'bonenwagen26') { 
       setIsAuthenticated(true);
     } else {
       alert('Ongeldig wachtwoord');
