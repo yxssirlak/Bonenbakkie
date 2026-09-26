@@ -141,9 +141,8 @@ const Home: React.FC = () => {
 
         .coffee-bg {
           background-image: url('/koffiemachine.png');
-          background-size: 100% !important; /* Lekkere grote machine */
-          /* Met 85% zakt hij mooi naar beneden, zonder afgesneden te worden */
-          background-position: center 100% !important; 
+          background-size: 150% !important; /* Verlaag dit getal om hem smaller/minder breed te maken */
+          background-position: center 30vh !important; 
           background-repeat: no-repeat;
           filter: invert(1) sepia(0.1) saturate(0.2) brightness(1.8) drop-shadow(-15px 20px 25px rgba(0,0,0,0.6));
         }
@@ -151,7 +150,7 @@ const Home: React.FC = () => {
         @media (min-width: 768px) {
           .coffee-bg {
             background-size: 65% !important; 
-            background-position: 110% center !important; 
+            background-position: 100% center !important; 
           }
         }
 
@@ -159,6 +158,7 @@ const Home: React.FC = () => {
           color: #c4a47c !important;
         }
 
+        /* Oude animatie (met de 50% verschuiving) voor de boontjes */
         @keyframes float {
           0%, 100% { transform: translateY(-50%); }
           50% { transform: translateY(calc(-50% - 15px)); }
@@ -167,13 +167,13 @@ const Home: React.FC = () => {
           animation: float 7s ease-in-out infinite;
         }
 
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
+        /* NIEUWE ANIMATIE: speciaal voor de machine, zónder 50% verschuiving! */
+        @keyframes float-bg {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-15px); }
         }
-        .animate-fade-in-up {
-          opacity: 0;
-          animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        .animate-float-bg {
+          animation: float-bg 7s ease-in-out infinite;
         }
 
         .bean {
@@ -226,11 +226,9 @@ const Home: React.FC = () => {
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
         
-        {/* KOFFIEMACHINE ACHTERGROND FIX:
-            We gebruiken inset-0 zodat de div de hele pagina vult. Afsnijden is nu onmogelijk!
-        */}
+        {/* KOFFIEMACHINE: Heeft nu de nieuwe 'animate-float-bg' klasse die NIET afsnijdt! */}
         <div 
-          className="absolute inset-0 w-full h-full z-10 pointer-events-none opacity-25 md:opacity-40 animate-float coffee-bg"
+          className="absolute inset-0 w-full h-full z-10 pointer-events-none opacity-25 md:opacity-40 animate-float-bg coffee-bg"
         />
 
         <div className="max-w-7xl mx-auto w-full z-20 relative flex flex-col md:flex-row items-center md:pt-10">
