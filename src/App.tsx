@@ -106,7 +106,7 @@ const App = () => {
   ];
 
   return (
-    <div className="page-shell flex flex-col min-h-screen">
+  <div className="page-shell flex flex-col min-h-screen bg-[#3d2f1b]">
       <header
         className="fixed w-full z-50 top-0 left-0 transition-all duration-500 ease-out pt-[env(safe-area-inset-top)]"
         style={{

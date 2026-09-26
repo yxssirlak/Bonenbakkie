@@ -199,7 +199,7 @@ const Home: React.FC = () => {
         .bean--small { width: 4.5rem; height: 4.5rem; }
       `}</style>
 
-      <section id="home" className="hero-section min-h-[100dvh] flex flex-col justify-start pt-32 md:justify-center md:pt-0 px-4 sm:px-6 lg:px-16 relative overflow-hidden">
+      <section id="home" className="hero-section min-h-[100dvh] flex flex-col justify-start pt-36 md:justify-center md:pt-0 px-4 sm:px-6 lg:px-16 relative overflow-hidden">
         
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_10%,rgba(30,15,10,0.45)_150%)] pointer-events-none z-0"></div>
         <div className="absolute right-[0%] top-1/2 transform -translate-y-1/2 w-[60%] h-[80%] bg-[#a37042] rounded-full blur-[160px] opacity-25 pointer-events-none z-0"></div>
