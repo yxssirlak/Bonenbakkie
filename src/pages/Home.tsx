@@ -141,10 +141,17 @@ const Home: React.FC = () => {
 
         .coffee-bg {
           background-image: url('/koffiemachine.png');
-          background-size: 150% !important; /* Verlaag dit getal om hem smaller/minder breed te maken */
+          background-size: 150% !important; 
           background-position: center 30vh !important; 
           background-repeat: no-repeat;
           filter: invert(1) sepia(0.1) saturate(0.2) brightness(1.8) drop-shadow(-15px 20px 25px rgba(0,0,0,0.6));
+          /* Dit zorgt ervoor dat de browser de afbeelding 'onthoudt' op de grafische kaart */
+          will-change: transform;
+        }
+
+        /* We halen de doorlopende animatie weg zodat de telefoon niet blijft herberekenen tijdens het scrollen */
+        .animate-float-bg {
+          /* animation: float-bg 7s ease-in-out infinite; */
         }
 
         @media (min-width: 768px) {
@@ -226,9 +233,9 @@ const Home: React.FC = () => {
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
         
-        {/* KOFFIEMACHINE: Heeft nu de nieuwe 'animate-float-bg' klasse die NIET afsnijdt! */}
+        {/* KOFFIEMACHINE ACHTERGROND FIX */}
         <div 
-          className="absolute inset-0 w-full h-full z-10 pointer-events-none opacity-25 md:opacity-40 animate-float-bg coffee-bg"
+          className="absolute inset-0 w-full h-full z-10 pointer-events-none opacity-25 md:opacity-40 coffee-bg transform-gpu"
         />
 
         <div className="max-w-7xl mx-auto w-full z-20 relative flex flex-col md:flex-row items-center md:pt-10">
