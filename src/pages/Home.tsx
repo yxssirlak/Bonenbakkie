@@ -30,7 +30,6 @@ const Home: React.FC = () => {
   const bokehRef14 = useRef<HTMLDivElement>(null);
   const bokehRef15 = useRef<HTMLDivElement>(null);
 
-  // Ophalen van data uit Admin paneel
   useEffect(() => {
     try {
       const storedGallery = window.localStorage.getItem('bonenbakkie-home-gallery');
@@ -46,10 +45,8 @@ const Home: React.FC = () => {
         }
       }
     } catch { }
-
   }, []);
 
-  // Parallax logica
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       const { clientX, clientY } = e;
@@ -105,7 +102,6 @@ const Home: React.FC = () => {
   return (
     <main>
       <style>{`
-        /* Standaard (Mobiele) knop instellingen */
         .hero-btn {
           background-color: #f4f1ea !important;
           color: #534026 !important;
@@ -126,7 +122,6 @@ const Home: React.FC = () => {
           justify-content: center !important;
         }
 
-        /* Computer/Tablet knop instellingen */
         @media (min-width: 768px) {
           .hero-btn {
             padding-top: 18px !important;
@@ -144,7 +139,22 @@ const Home: React.FC = () => {
           border-color: #f4f1ea !important;
         }
 
-        /* 100% GARANTIE FIX VOOR DE TITEL KLEUR ONDERAAN */
+        .coffee-bg {
+          background-image: url('/koffiemachine.png');
+          background-size: 100% !important; /* Lekkere grote machine */
+          /* Met 85% zakt hij mooi naar beneden, zonder afgesneden te worden */
+          background-position: center 100% !important; 
+          background-repeat: no-repeat;
+          filter: invert(1) sepia(0.1) saturate(0.2) brightness(1.8) drop-shadow(-15px 20px 25px rgba(0,0,0,0.6));
+        }
+
+        @media (min-width: 768px) {
+          .coffee-bg {
+            background-size: 65% !important; 
+            background-position: 110% center !important; 
+          }
+        }
+
         #koffiehuisje h2 {
           color: #c4a47c !important;
         }
@@ -182,7 +192,7 @@ const Home: React.FC = () => {
         .bean--small { width: 4.5rem; height: 4.5rem; }
       `}</style>
 
-      <section id="home" className="hero-section min-h-screen flex flex-col justify-center px-4 sm:px-6 lg:px-16 relative overflow-hidden">
+      <section id="home" className="hero-section min-h-[100dvh] flex flex-col justify-start pt-32 md:justify-center md:pt-0 px-4 sm:px-6 lg:px-16 relative overflow-hidden">
         
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_10%,rgba(30,15,10,0.45)_150%)] pointer-events-none z-0"></div>
         <div className="absolute right-[0%] top-1/2 transform -translate-y-1/2 w-[60%] h-[80%] bg-[#a37042] rounded-full blur-[160px] opacity-25 pointer-events-none z-0"></div>
@@ -216,34 +226,28 @@ const Home: React.FC = () => {
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
         
-        {/* De koffiemachine staat verder rechts naast de introductietekst. */}
+        {/* KOFFIEMACHINE ACHTERGROND FIX:
+            We gebruiken inset-0 zodat de div de hele pagina vult. Afsnijden is nu onmogelijk!
+        */}
         <div 
-          className="absolute right-[-10%] md:right-[-5%] top-3/4 md:top-1/2 w-[140%] md:w-[65%] h-[115%] z-10 pointer-events-none opacity-40 animate-float"
-          style={{ 
-            backgroundImage: "url('/koffiemachine.png')", 
-            backgroundSize: 'contain',
-            backgroundPosition: 'center right',
-            backgroundRepeat: 'no-repeat',
-            filter: 'invert(1) sepia(0.1) saturate(0.2) brightness(1.8) drop-shadow(-15px 20px 25px rgba(0,0,0,0.6))' 
-          }}
+          className="absolute inset-0 w-full h-full z-10 pointer-events-none opacity-25 md:opacity-40 animate-float coffee-bg"
         />
 
-        <div className="max-w-7xl mx-auto w-full z-20 relative flex flex-col md:flex-row items-center pt-10">
+        <div className="max-w-7xl mx-auto w-full z-20 relative flex flex-col md:flex-row items-center md:pt-10">
           
-          <div className="w-full md:w-3/5 flex -translate-y-4 md:-translate-y-6 flex-col items-center md:items-start text-center md:text-left relative z-20">
-            <div className="animate-fade-in-up mb-10 flex flex-col items-center md:items-start" style={{ animationDelay: '0.3s' }}>
-              {/* TITEL VERGROOT VOOR MOBIEL (text-4xl of text-5xl ipv text-2xl) */}
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif text-[#f4f1ea] leading-tight">
-                Mobiele koffiekar  <br />
+          <div className="w-full md:w-3/5 flex flex-col items-center md:items-start text-center md:text-left relative z-20">
+            
+            <div className="animate-fade-in-up mb-40 md:mb-8 flex flex-col items-center md:items-start" style={{ animationDelay: '0.3s' }}>
+              <h1 className="text-[2.2rem] sm:text-5xl md:text-6xl lg:text-7xl font-serif text-[#f4f1ea] leading-tight">
+                <span className="whitespace-nowrap">Mobiele koffiekar</span> <br />
                 <span className="text-[#d4cab4] opacity-100">'t bonenbakkie</span>
               </h1>
             </div>
             
-            <p className="animate-fade-in-up max-w-xl text-base md:text-lg leading-relaxed mb-10 text-[#f4f1ea] opacity-80 px-4 md:px-0" style={{ animationDelay: '0.5s' }}>
+            <p className="animate-fade-in-up max-w-xl text-lg md:text-xl leading-relaxed mb-8 md:mb-10 text-[#f4f1ea] opacity-80 px-4 md:px-0" style={{ animationDelay: '0.5s' }}>
               ‘t bonenbakkie brengt heerlijke vers gezette koffie naar uw locatie. Waar wij stilstaan, begint een koffiemoment.
             </p>
             
-            {/* GAP-3 ipv GAP-4 ZORGT VOOR IETS MINDER RUIMTE TUSSEN KNOPPEN OP MOBIEL */}
             <div className="animate-fade-in-up flex flex-col sm:flex-row gap-3 md:gap-4 justify-center md:justify-start items-center w-full px-6 sm:px-0 sm:w-auto" style={{ animationDelay: '0.7s' }}>
               <Link to="/contact" className="coffee-btn hero-btn accent-btn w-full sm:w-auto gap-2">
                 Proef de sfeer <ArrowRight size={16} />
@@ -252,12 +256,11 @@ const Home: React.FC = () => {
                 Ontdek het menu
               </Link>
             </div>
-
           </div>
 
         </div>
 
-        <div className="animate-fade-in-up absolute bottom-12 left-1/2 transform -translate-x-1/2 z-20" style={{ animationDelay: '1.2s' }}>
+        <div className="animate-fade-in-up absolute bottom-12 left-0 w-full flex justify-center z-20" style={{ animationDelay: '1.2s' }}>
           <a href="#koffiehuisje" onClick={handleScrollDown} aria-label="Scroll naar beneden" className="text-[#f4f1ea] opacity-60 hover:opacity-100 transition-opacity duration-300 flex flex-col items-center animate-bounce">
             <ChevronDown size={40} strokeWidth={1} />
           </a>

@@ -108,16 +108,15 @@ const App = () => {
   return (
     <div className="page-shell flex flex-col min-h-screen">
       <header
-        className="fixed w-full z-50 top-0 left-0 transition-all duration-500 ease-out"
+        className="fixed w-full z-50 top-0 left-0 transition-all duration-500 ease-out pt-[env(safe-area-inset-top)]"
         style={{
           transform: `translateY(-${navOffset}px)`,
           opacity: `${Math.max(0, 1 - navOffset / 120)}`,
         }}
       >
-        {/* HIER GEWIJZIGD: px-[2px] zorgt ervoor dat alles strak 2 pixels van de rand staat */}
-        <div className="w-full px-[2px] flex items-center justify-between h-28 relative">
+        <div className="w-full px-4 lg:px-[2px] flex items-center justify-between h-28 relative">
           
-          {/* LINKER KANT (Navigatie) */}
+          {/* LINKER KANT (Navigatie Desktop) */}
           <div className="flex-1 flex justify-start items-center z-20">
             <nav 
               ref={navRef} 
@@ -150,14 +149,6 @@ const App = () => {
                 </NavLink>
               ))}
             </nav>
-            
-            <button 
-              className="lg:hidden p-2 text-white hover:opacity-80 transition-opacity ml-2"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label="Open mobiel menu"
-            >
-              {isMobileMenuOpen ? <X size={32} color="#f4ebd9" /> : <MenuIcon size={32} color="#f4ebd9" />}
-            </button>
           </div>
 
           {/* MIDDEN (Logo) */}
@@ -175,8 +166,8 @@ const App = () => {
             </Link>
           </div>
 
-          {/* RECHTER KANT (Contact Knop) */}
-          <div className="flex-1 flex justify-end items-center z-20">
+          {/* RECHTER KANT (Contact Knop Desktop + Mobiel Menu) */}
+          <div className="flex-1 flex justify-end items-center z-20 gap-4">
             <div className="hidden lg:block">
               <Link 
                 to="/contact" 
@@ -186,18 +177,28 @@ const App = () => {
                 <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
             </div>
+            
+            {/* MOBIEL MENU KNOP (Naar rechts verplaatst en icon iets kleiner gemaakt naar 28) */}
+            <button 
+              className="lg:hidden p-2 text-white hover:opacity-80 transition-opacity"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Open mobiel menu"
+            >
+              {isMobileMenuOpen ? <X size={28} color="#f4ebd9" /> : <MenuIcon size={28} color="#f4ebd9" />}
+            </button>
           </div>
           
         </div>
 
-        <div className={`lg:hidden absolute w-full bg-[#3d2f1b]/95 backdrop-blur-xl transition-all duration-500 overflow-hidden shadow-2xl ${isMobileMenuOpen ? 'max-h-96 py-4 border-b border-white/10' : 'max-h-0 py-0'}`}>
-          <div className="flex flex-col px-8 gap-2 text-center top-nav">
-            <NavLink to="/" end className="text-[#f4ebd9] py-3 text-sm tracking-widest uppercase border-b border-white/5" onClick={() => setIsMobileMenuOpen(false)}>Home</NavLink>
-            <NavLink to="/menu" className="text-[#f4ebd9] py-3 text-sm tracking-widest uppercase border-b border-white/5" onClick={() => setIsMobileMenuOpen(false)}>Menu</NavLink>
-            <NavLink to="/boeken" className="text-[#f4ebd9] py-3 text-sm tracking-widest uppercase border-b border-white/5" onClick={() => setIsMobileMenuOpen(false)}>Boeken</NavLink>
-            <NavLink to="/sfeer" className="text-[#f4ebd9] py-3 text-sm tracking-widest uppercase border-b border-white/5" onClick={() => setIsMobileMenuOpen(false)}>Sfeer</NavLink>
-            <NavLink to="/about" className="text-[#f4ebd9] py-3 text-sm tracking-widest uppercase border-b border-white/5" onClick={() => setIsMobileMenuOpen(false)}>Over ons</NavLink>
-            <NavLink to="/contact" className="text-[#d4cab4] py-3 text-sm tracking-widest uppercase font-bold" onClick={() => setIsMobileMenuOpen(false)}>Contact</NavLink>
+        {/* MOBIEL DROPDOWN MENU - Zelfde strakke lettertype als de knoppen! */}
+        <div className={`lg:hidden absolute top-28 left-0 w-full transition-all duration-500 overflow-hidden shadow-2xl bg-[#f4f1ea] ${isMobileMenuOpen ? 'max-h-[500px] py-4 border-b border-[#534026]/20' : 'max-h-0 py-0'}`}>
+          <div className="flex flex-col px-8 gap-2 text-center">
+            <NavLink to="/" end className="font-sans font-semibold py-3 text-[13px] tracking-[1.5px] uppercase border-b border-[#534026]/20" style={{ color: '#534026' }} onClick={() => setIsMobileMenuOpen(false)}>Home</NavLink>
+            <NavLink to="/menu" className="font-sans font-semibold py-3 text-[13px] tracking-[1.5px] uppercase border-b border-[#534026]/20" style={{ color: '#534026' }} onClick={() => setIsMobileMenuOpen(false)}>Menu</NavLink>
+            <NavLink to="/boeken" className="font-sans font-semibold py-3 text-[13px] tracking-[1.5px] uppercase border-b border-[#534026]/20" style={{ color: '#534026' }} onClick={() => setIsMobileMenuOpen(false)}>Boeken</NavLink>
+            <NavLink to="/sfeer" className="font-sans font-semibold py-3 text-[13px] tracking-[1.5px] uppercase border-b border-[#534026]/20" style={{ color: '#534026' }} onClick={() => setIsMobileMenuOpen(false)}>Sfeer</NavLink>
+            <NavLink to="/about" className="font-sans font-semibold py-3 text-[13px] tracking-[1.5px] uppercase border-b border-[#534026]/20" style={{ color: '#534026' }} onClick={() => setIsMobileMenuOpen(false)}>Over ons</NavLink>
+            <NavLink to="/contact" className="font-sans font-semibold py-3 text-[13px] tracking-[1.5px] uppercase" style={{ color: '#534026' }} onClick={() => setIsMobileMenuOpen(false)}>Contact</NavLink>
           </div>
         </div>
       </header>
