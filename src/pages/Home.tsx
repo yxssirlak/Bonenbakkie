@@ -105,27 +105,48 @@ const Home: React.FC = () => {
   return (
     <main>
       <style>{`
+        /* Standaard (Mobiele) knop instellingen */
         .hero-btn {
           background-color: #f4f1ea !important;
           color: #534026 !important;
           border: 2px solid #f4f1ea !important;
-          padding-top: 18px !important;
-          padding-bottom: 18px !important;
-          padding-left: 46px !important;
-          padding-right: 46px !important;
+          padding-top: 14px !important;
+          padding-bottom: 14px !important;
+          padding-left: 24px !important;
+          padding-right: 24px !important;
           font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
-          font-size: 15px !important;
+          font-size: 13px !important;
           font-weight: 600 !important;
           text-transform: uppercase !important;
-          letter-spacing: 2px !important;
+          letter-spacing: 1.5px !important;
           line-height: 1 !important;
           transition: all 0.3s ease-in-out !important;
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+
+        /* Computer/Tablet knop instellingen */
+        @media (min-width: 768px) {
+          .hero-btn {
+            padding-top: 18px !important;
+            padding-bottom: 18px !important;
+            padding-left: 46px !important;
+            padding-right: 46px !important;
+            font-size: 15px !important;
+            letter-spacing: 2px !important;
+          }
         }
         
         .coffee-btn.hero-btn:hover {
           background: transparent !important;
           color: #f4f1ea !important;
           border-color: #f4f1ea !important;
+        }
+
+        /* 100% GARANTIE FIX VOOR DE TITEL KLEUR ONDERAAN */
+        #koffiehuisje h2 {
+          color: #c4a47c !important;
         }
 
         @keyframes float {
@@ -210,20 +231,22 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto w-full z-20 relative flex flex-col md:flex-row items-center pt-10">
           
           <div className="w-full md:w-3/5 flex -translate-y-4 md:-translate-y-6 flex-col items-center md:items-start text-center md:text-left relative z-20">
-            <div className="animate-fade-in-up mb-12 flex flex-col items-center md:items-start" style={{ animationDelay: '0.3s' }}>
-              <h1 className="text-2xl sm:text-3xl md:text-6xl lg:text-7xl font-serif text-[#f4f1ea]">
+            <div className="animate-fade-in-up mb-10 flex flex-col items-center md:items-start" style={{ animationDelay: '0.3s' }}>
+              {/* TITEL VERGROOT VOOR MOBIEL (text-4xl of text-5xl ipv text-2xl) */}
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif text-[#f4f1ea] leading-tight">
                 Mobiele koffiekar  <br />
                 <span className="text-[#d4cab4] opacity-100">'t bonenbakkie</span>
               </h1>
             </div>
             
-            <p className="animate-fade-in-up max-w-xl text-lg leading-relaxed mb-10 text-[#f4f1ea] opacity-80" style={{ animationDelay: '0.5s' }}>
+            <p className="animate-fade-in-up max-w-xl text-base md:text-lg leading-relaxed mb-10 text-[#f4f1ea] opacity-80 px-4 md:px-0" style={{ animationDelay: '0.5s' }}>
               ‘t bonenbakkie brengt heerlijke vers gezette koffie naar uw locatie. Waar wij stilstaan, begint een koffiemoment.
             </p>
             
-            <div className="animate-fade-in-up flex flex-col sm:flex-row gap-4 justify-center md:justify-start items-center w-full sm:w-auto" style={{ animationDelay: '0.7s' }}>
-              <Link to="/contact" className="coffee-btn hero-btn accent-btn w-full sm:w-auto">
-                Proef de sfeer <ArrowRight size={18} />
+            {/* GAP-3 ipv GAP-4 ZORGT VOOR IETS MINDER RUIMTE TUSSEN KNOPPEN OP MOBIEL */}
+            <div className="animate-fade-in-up flex flex-col sm:flex-row gap-3 md:gap-4 justify-center md:justify-start items-center w-full px-6 sm:px-0 sm:w-auto" style={{ animationDelay: '0.7s' }}>
+              <Link to="/contact" className="coffee-btn hero-btn accent-btn w-full sm:w-auto gap-2">
+                Proef de sfeer <ArrowRight size={16} />
               </Link>
               <Link to="/menu" className="coffee-btn hero-btn accent-btn w-full sm:w-auto">
                 Ontdek het menu
@@ -245,8 +268,7 @@ const Home: React.FC = () => {
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="mb-10 flex flex-col items-center text-center">
             
-            {/* HIER ZIT DE DEFINITIEVE KLEUR FIX MET INLINE STYLE */}
-            <h2 className="text-4xl md:text-5xl font-serif" style={{ color: '#c4a47c' }}>
+            <h2 className="text-4xl md:text-5xl font-serif">
               Onze Koffie Kar
             </h2>
             
@@ -266,7 +288,7 @@ const Home: React.FC = () => {
 
         </div>
       </section>
-    </main>  
+    </main>
   );
 };
 
