@@ -13,6 +13,28 @@
     <!-- Vervang je huidige description door deze kortere versie in index.html -->
     <meta name="description" content="Huur mobiele koffiekar 't bonenbakkie voor heerlijke verse koffie op uw locatie. Perfect voor elk evenement in Nederland." />
 
+    <!-- JSON-LD Schema Markup voor Google -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FoodEstablishment",
+      "name": "'t bonenbakkie",
+      "description": "Mobiele koffiekar voor heerlijke vers gezette koffie op locatie. Voor particuliere en zakelijke evenementen.",
+      "url": "https://www.bonenbakkie.nl",
+      "logo": "https://www.bonenbakkie.nl/Logo_bonenbakkie.jpeg",
+      "founders": [
+        {
+          "@type": "Person",
+          "name": "Quinn"
+        },
+        {
+          "@type": "Person",
+          "name": "Renske"
+        }
+      ]
+    }
+    </script>
+
     <!-- Open Graph (voor mooie linkjes als je het deelt op bijv. WhatsApp of Facebook) -->
     <meta property="og:title" content="Mobiele koffiekar 't bonenbakkie" />
     <meta property="og:description" content="'t bonenbakkie brengt heerlijke vers gezette koffie naar uw locatie. Waar wij stilstaan, begint een koffiemoment." />
@@ -25,7 +47,9 @@
     <meta name="twitter:image" content="/Logo_bonenbakkie.jpeg" />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <h1>Mobiele koffiekar 't bonenbakkie</h1>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
