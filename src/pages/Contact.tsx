@@ -93,7 +93,7 @@ const [aanvraagType, setAanvraagType] = useState<'kies' | 'particulier' | 'zakel
 
   return (
     <main className="page-transition relative min-h-screen overflow-hidden pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-      
+
       <Helmet>
         <title>Contact & Offerte | Mobiele koffiekar 't bonenbakkie</title>
         <meta name="description" content="Neem contact op met 't bonenbakkie voor een onvergetelijk koffiemoment op uw locatie. Vraag direct een vrijblijvende offerte aan voor uw zakelijke of privé evenement." />
@@ -305,7 +305,7 @@ const [aanvraagType, setAanvraagType] = useState<'kies' | 'particulier' | 'zakel
                         className="mt-1 shrink-0 cursor-pointer"
                       />
                       <label htmlFor="privacy_akkoord" className="text-[#ebdad0] font-sans text-[10px] sm:text-xs opacity-80 cursor-pointer leading-relaxed">
-                        Ik ga ermee akkoord dat 't Bonenbakkie mijn gegevens veilig opslaat om contact met mij op te nemen over deze aanvraag.
+                        Ik ga ermee akkoord dat 't Bonenbakkie mijn gegevens uitsluitend opslaat om contact op te nemen over deze aanvraag.
                       </label>
                     </div>
 
