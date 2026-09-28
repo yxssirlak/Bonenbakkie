@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { Helmet} from 'react-helmet-async';
 
 type HomeGalleryImage = {
   id: number;
@@ -124,6 +125,12 @@ const Home: React.FC = () => {
 
   return (
     <main style={{ opacity: 0, animation: 'pageFadeIn 0.5s ease-out forwards' }}>
+
+      <Helmet>
+        <title>Mobiele koffiekar 't bonenbakkie | Koffie op Locatie</title>
+        <meta name="description" content="'t bonenbakkie brengt heerlijke vers gezette koffie naar uw locatie. Boek onze mobiele koffiekar voor evenementen, feesten en zakelijke bijeenkomsten door heel Nederland." />
+      </Helmet>
+      
       <style>{`
         .hero-btn {
           background-color: #f4f1ea !important;

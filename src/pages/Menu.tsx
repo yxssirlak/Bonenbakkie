@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Sparkles } from 'lucide-react';
+import { Helmet} from 'react-helmet-async';
 
 export type MenuCategory = {
   id: string;
@@ -101,6 +102,11 @@ const Menu: React.FC = () => {
 
   return (
     <main className="menu-page relative min-h-screen overflow-hidden pt-32 pb-24 px-4 sm:px-6 lg:px-8" style={{ opacity: 0, animation: 'pageFadeIn 0.5s ease-out forwards' }}>
+      <Helmet>
+        <title>Menu | Mobiele koffiekar 't bonenbakkie</title>
+        <meta name="description" content="Ontdek het veelzijdige menu van 't bonenbakkie. Van traditionele espresso en cappuccino tot ijskoffie, matcha en verse stroopwafels op uw evenement." />
+      </Helmet>
+
       <style>{`
         .menu-bean {
           position: absolute;

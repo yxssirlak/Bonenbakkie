@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Coffee } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 
 const About: React.FC = () => {
   const beanRefs = useRef<Array<HTMLDivElement | null>>([]);
@@ -30,9 +31,15 @@ const About: React.FC = () => {
     'right-[12%] bottom-[8%] opacity-30 bean-large',
     'left-[48%] bottom-[6%] opacity-25 bean-small',
   ];
-
+  
   return (
+    
     <main className="relative min-h-screen overflow-hidden pt-32 pb-20 px-4 sm:px-6 lg:px-8 font-sans" style={{ opacity: 0, animation: 'pageFadeIn 0.5s ease-out forwards' }}>
+      <Helmet>
+        <title>Over Ons | Mobiele koffiekar 't bonenbakkie</title>
+        <meta name="description" content="Lees meer over Quinn en Renske, de oprichters achter 't bonenbakkie. Van beste vriendinnen tot een mobiele koffiekar vol sfeer en kwaliteit." />
+      </Helmet>
+      
       <style>{`
         @keyframes pageFadeIn {
           0% { opacity: 0; }

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Briefcase, PartyPopper, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { Helmet} from 'react-helmet-async';
 
 const Boeken: React.FC = () => {
   const beanRefs = useRef<Array<HTMLDivElement | null>>([]);
@@ -38,6 +39,11 @@ const Boeken: React.FC = () => {
 
   return (
     <main className="booking-page relative min-h-screen overflow-hidden pt-32 pb-20 px-4 sm:px-6 lg:px-8 font-sans" style={{ opacity: 0, animation: 'pageFadeIn 0.5s ease-out forwards' }}>
+      <Helmet>
+        <title>Boeken | Mobiele koffiekar 't bonenbakkie</title>
+        <meta name="description" content="Huur 't bonenbakkie voor uw evenement. Wij verzorgen premium koffie en een gastvrije sfeer op bruiloften, bedrijfsfeesten en markten. Bekijk onze arrangementen." />
+      </Helmet>
+
       <style>{`
         @keyframes pageFadeIn {
           0% { opacity: 0; }

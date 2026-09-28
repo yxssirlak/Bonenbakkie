@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Mail, MapPin, Send, Instagram, Facebook, Linkedin, PartyPopper, Briefcase, ArrowLeft, ArrowDown, ArrowRight } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import confetti from 'canvas-confetti'; // Confetti animatie toegevoegd!
+import { Helmet} from 'react-helmet-async';
 
 const Contact: React.FC = () => {
   const location = useLocation();
@@ -92,6 +93,12 @@ const [aanvraagType, setAanvraagType] = useState<'kies' | 'particulier' | 'zakel
 
   return (
     <main className="page-transition relative min-h-screen overflow-hidden pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+      
+      <Helmet>
+        <title>Contact & Offerte | Mobiele koffiekar 't bonenbakkie</title>
+        <meta name="description" content="Neem contact op met 't bonenbakkie voor een onvergetelijk koffiemoment op uw locatie. Vraag direct een vrijblijvende offerte aan voor uw zakelijke of privé evenement." />
+      </Helmet>
+
       <style>{`
         .contact-bean {
           position: absolute;

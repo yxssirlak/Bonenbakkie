@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Heart } from 'lucide-react';
+import { Helmet} from 'react-helmet-async';
+
 
 type GalleryImage = {
   id: number | string;
@@ -102,6 +104,11 @@ const Sfeer: React.FC = () => {
 
   return (
     <main className="relative min-h-screen overflow-hidden pt-32 pb-20 px-4 sm:px-6 lg:px-8" style={{ opacity: 0, animation: 'pageFadeIn 0.5s ease-out forwards' }}>
+      <Helmet>
+        <title>Sfeerimpressie | Mobiele koffiekar 't bonenbakkie</title>
+        <meta name="description" content="Proef de sfeer van 't bonenbakkie. Bekijk de beelden van onze stijlvolle mobiele koffiewagen in actie en de gezelligheid die wij meebrengen naar elke locatie." />
+      </Helmet>
+      
       <style>{`
         @keyframes pageFadeIn {
           0% { opacity: 0; }
