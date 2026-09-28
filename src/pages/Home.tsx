@@ -326,7 +326,7 @@ const Home: React.FC = () => {
           <div className="w-full md:w-3/5 flex flex-col items-center md:items-start text-center md:text-left relative z-20">
             
             <div className="animate-fade-in-up mb-40 md:mb-8 flex flex-col items-center md:items-start" style={{ animationDelay: '0.3s' }}>
-              <h1 className="text-[2.2rem] sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-serif text-[#f4f1ea] leading-tight">
+              <h1 className="text-[2.8rem] sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-serif text-[#f4f1ea] leading-tight">
                 <span className="whitespace-nowrap">Mobiele koffiekar</span> <br />
                 <span className="text-[#d4cab4] opacity-100">'t bonenbakkie</span>
               </h1>
