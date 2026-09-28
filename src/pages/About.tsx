@@ -32,8 +32,13 @@ const About: React.FC = () => {
   ];
 
   return (
-    <main className="relative min-h-screen overflow-hidden pt-32 pb-20 px-4 sm:px-6 lg:px-8 font-sans">
+    <main className="relative min-h-screen overflow-hidden pt-32 pb-20 px-4 sm:px-6 lg:px-8 font-sans" style={{ opacity: 0, animation: 'pageFadeIn 0.5s ease-out forwards' }}>
       <style>{`
+        @keyframes pageFadeIn {
+          0% { opacity: 0; }
+          100% { opacity: 1; }
+        }
+        
         .about-bean {
           position: absolute;
           z-index: 0;

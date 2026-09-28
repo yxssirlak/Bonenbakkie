@@ -29,6 +29,15 @@ const Home: React.FC = () => {
   const bokehRef13 = useRef<HTMLDivElement>(null);
   const bokehRef14 = useRef<HTMLDivElement>(null);
   const bokehRef15 = useRef<HTMLDivElement>(null);
+  const bokehRef16 = useRef<HTMLDivElement>(null);
+  const bokehRef17 = useRef<HTMLDivElement>(null);
+  const bokehRef18 = useRef<HTMLDivElement>(null);
+  const bokehRef19 = useRef<HTMLDivElement>(null);
+  const bokehRef20 = useRef<HTMLDivElement>(null);
+  const bokehRef21 = useRef<HTMLDivElement>(null);
+  const bokehRef22 = useRef<HTMLDivElement>(null);
+  const bokehRef23 = useRef<HTMLDivElement>(null);
+  const bokehRef24 = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     try {
@@ -53,9 +62,9 @@ const Home: React.FC = () => {
       const x = (clientX / window.innerWidth - 0.5) * 40;
       const y = (clientY / window.innerHeight - 0.5) * 40;
 
-      const m1 = 1.0; const m2 = 0.85; const m3 = 0.65;
-      const m4 = 0.5; const m5 = 0.4; const m6 = 0.3;
-      const m7 = 0.2; const m8 = 0.15; const m9 = 0.1;
+      const m1 = 1.8;   const m2 = 0.5;   const m3 = 1.2;
+      const m4 = 0.8;   const m5 = 0.15;  const m6 = 0.3;
+      const m7 = 0.1;   const m8 = 0.6;   const m9 = 0.25;
 
       if (bokehRef1.current) { bokehRef1.current.style.setProperty('--tx', `${x * m1}px`); bokehRef1.current.style.setProperty('--ty', `${y * m1}px`); }
       if (bokehRef2.current) { bokehRef2.current.style.setProperty('--tx', `${x * m2}px`); bokehRef2.current.style.setProperty('--ty', `${y * m2}px`); }
@@ -67,8 +76,8 @@ const Home: React.FC = () => {
       if (bokehRef8.current) { bokehRef8.current.style.setProperty('--tx', `${x * m8}px`); bokehRef8.current.style.setProperty('--ty', `${y * m8}px`); }
       if (bokehRef9.current) { bokehRef9.current.style.setProperty('--tx', `${x * m9}px`); bokehRef9.current.style.setProperty('--ty', `${y * m9}px`); }
 
-      const m10 = 0.25; const m11 = 0.35; const m12 = 0.2;
-      const m13 = 0.3; const m14 = 0.22; const m15 = 0.28;
+      const m10 = 1.5;  const m11 = 0.35; const m12 = 0.9;
+      const m13 = 0.2;  const m14 = 0.65; const m15 = 0.4;
 
       if (bokehRef10.current) { bokehRef10.current.style.setProperty('--tx', `${x * m10}px`); bokehRef10.current.style.setProperty('--ty', `${y * m10}px`); }
       if (bokehRef11.current) { bokehRef11.current.style.setProperty('--tx', `${x * m11}px`); bokehRef11.current.style.setProperty('--ty', `${y * m11}px`); }
@@ -76,6 +85,20 @@ const Home: React.FC = () => {
       if (bokehRef13.current) { bokehRef13.current.style.setProperty('--tx', `${x * m13}px`); bokehRef13.current.style.setProperty('--ty', `${y * m13}px`); }
       if (bokehRef14.current) { bokehRef14.current.style.setProperty('--tx', `${x * m14}px`); bokehRef14.current.style.setProperty('--ty', `${y * m14}px`); }
       if (bokehRef15.current) { bokehRef15.current.style.setProperty('--tx', `${x * m15}px`); bokehRef15.current.style.setProperty('--ty', `${y * m15}px`); }
+    
+      const m16 = 1.1;  const m17 = 0.05; const m18 = 0.95;
+      const m19 = 0.7;  const m20 = 1.4;  const m21 = 0.12;
+      const m22 = 0.3;  const m23 = 0.75; const m24 = 0.02;
+
+      if (bokehRef16.current) { bokehRef16.current.style.setProperty('--tx', `${x * m16}px`); bokehRef16.current.style.setProperty('--ty', `${y * m16}px`); }
+      if (bokehRef17.current) { bokehRef17.current.style.setProperty('--tx', `${x * m17}px`); bokehRef17.current.style.setProperty('--ty', `${y * m17}px`); }
+      if (bokehRef18.current) { bokehRef18.current.style.setProperty('--tx', `${x * m18}px`); bokehRef18.current.style.setProperty('--ty', `${y * m18}px`); }
+      if (bokehRef19.current) { bokehRef19.current.style.setProperty('--tx', `${x * m19}px`); bokehRef19.current.style.setProperty('--ty', `${y * m19}px`); }
+      if (bokehRef20.current) { bokehRef20.current.style.setProperty('--tx', `${x * m20}px`); bokehRef20.current.style.setProperty('--ty', `${y * m20}px`); }
+      if (bokehRef21.current) { bokehRef21.current.style.setProperty('--tx', `${x * m21}px`); bokehRef21.current.style.setProperty('--ty', `${y * m21}px`); }
+      if (bokehRef22.current) { bokehRef22.current.style.setProperty('--tx', `${x * m22}px`); bokehRef22.current.style.setProperty('--ty', `${y * m22}px`); }
+      if (bokehRef23.current) { bokehRef23.current.style.setProperty('--tx', `${x * m23}px`); bokehRef23.current.style.setProperty('--ty', `${y * m23}px`); }
+      if (bokehRef24.current) { bokehRef24.current.style.setProperty('--tx', `${x * m24}px`); bokehRef24.current.style.setProperty('--ty', `${y * m24}px`); }
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -100,7 +123,7 @@ const Home: React.FC = () => {
   }, [galleryImages.length]);
 
   return (
-    <main>
+    <main style={{ opacity: 0, animation: 'pageFadeIn 0.5s ease-out forwards' }}>
       <style>{`
         .hero-btn {
           background-color: #f4f1ea !important;
@@ -156,13 +179,14 @@ const Home: React.FC = () => {
 
         @media (min-width: 768px) {
           .coffee-bg {
-            background-size: 65% !important; 
-            background-position: 100% center !important; 
+            /* 55% voor de breedte, 'auto' voor de hoogte. 
+               Dit garandeert dat de originele verhouding intact blijft en de lijnen scherp ogen! */
+            background-size: 55% auto !important; 
+            background-position: 95% center !important; 
           }
         }
-
         #koffiehuisje h2 {
-          color: #c4a47c !important;
+          color: #534026 !important;
         }
 
         /* Oude animatie (met de 50% verschuiving) voor de boontjes */
@@ -179,8 +203,17 @@ const Home: React.FC = () => {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-15px); }
         }
+        
+        /* Standaard (mobiel) zetten we hem uit tegen de lag */
         .animate-float-bg {
-          animation: float-bg 7s ease-in-out infinite;
+          animation: none;
+        }
+
+        /* Vanaf tablets en PC's (min-width: 768px) zetten we de zweef-animatie weer AAN! */
+        @media (min-width: 768px) {
+          .animate-float-bg {
+            animation: float-bg 7s ease-in-out infinite;
+          }
         }
 
         .bean {
@@ -197,6 +230,11 @@ const Home: React.FC = () => {
         .bean--large { width: 8rem; height: 8rem; }
         .bean--med { width: 6rem; height: 6rem; }
         .bean--small { width: 4.5rem; height: 4.5rem; }
+
+        @keyframes pageFadeIn {
+          0% { opacity: 0; }
+          100% { opacity: 1; }
+        }
       `}</style>
 
       <section id="home" className="hero-section min-h-[100dvh] flex flex-col justify-start pt-36 md:justify-center md:pt-0 px-4 sm:px-6 lg:px-16 relative overflow-hidden">
@@ -220,22 +258,67 @@ const Home: React.FC = () => {
         <div ref={bokehRef5} className="bean absolute left-[38%] top-[35%] z-20 opacity-50 blur-sm bean--small" style={{ ['--rot' as any]: '12deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        <div ref={bokehRef6} className="bean absolute left-[55%] top-[12%] z-10 opacity-45 blur-sm bean--small animate-float" style={{ ['--rot' as any]: '-6deg' }}>
+        <div ref={bokehRef6} className="bean absolute left-[55%] top-[12%] z-10 opacity-45 blur-sm bean--small" style={{ ['--rot' as any]: '-6deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        <div ref={bokehRef7} className="bean absolute right-[2%] bottom-[8%] z-10 opacity-40 blur-sm bean--small animate-float" style={{ ['--rot' as any]: '30deg' }}>
+        <div ref={bokehRef7} className="bean absolute right-[2%] bottom-[8%] z-10 opacity-40 blur-sm bean--small" style={{ ['--rot' as any]: '30deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        <div ref={bokehRef8} className="bean absolute left-[20%] top-[45%] z-10 opacity-35 blur-sm bean--med animate-float" style={{ ['--rot' as any]: '3deg' }}>
+        <div ref={bokehRef8} className="bean absolute left-[20%] top-[45%] z-10 opacity-35 blur-sm bean--med" style={{ ['--rot' as any]: '3deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        <div ref={bokehRef9} className="bean absolute left-[70%] top-[40%] z-10 opacity-30 blur-sm bean--med animate-float" style={{ ['--rot' as any]: '-18deg' }}>
+        <div ref={bokehRef9} className="bean absolute left-[70%] top-[40%] z-10 opacity-30 blur-sm bean--med" style={{ ['--rot' as any]: '-18deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        
+        <div ref={bokehRef10} className="bean absolute left-[82%] top-[20%] z-10 opacity-35 blur-[2px] bean--small" style={{ ['--rot' as any]: '75deg' }}>
+          <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
+        </div>
+        <div ref={bokehRef11} className="bean absolute left-[12%] bottom-[35%] z-20 opacity-45 blur-sm bean--med" style={{ ['--rot' as any]: '-45deg' }}>
+          <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
+        </div>
+        <div ref={bokehRef12} className="bean absolute left-[45%] top-[2%] z-10 opacity-30 blur-[3px] bean--large" style={{ ['--rot' as any]: '105deg' }}>
+          <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
+        </div>
+        <div ref={bokehRef13} className="bean absolute right-[12%] bottom-[50%] z-10 opacity-40 blur-[2px] bean--small" style={{ ['--rot' as any]: '-20deg' }}>
+          <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
+        </div>
+        <div ref={bokehRef14} className="bean absolute right-[28%] top-[60%] z-20 opacity-35 blur-sm bean--med" style={{ ['--rot' as any]: '55deg' }}>
+          <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
+        </div>
+        <div ref={bokehRef15} className="bean absolute left-[4%] top-[65%] z-10 opacity-50 blur-[3px] bean--small" style={{ ['--rot' as any]: '-70deg' }}>
+          <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
+        </div>
+        <div ref={bokehRef16} className="bean absolute left-[25%] top-[75%] z-10 opacity-30 blur-[2px] bean--small" style={{ ['--rot' as any]: '15deg' }}>
+          <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
+        </div>
+        <div ref={bokehRef17} className="bean absolute right-[35%] top-[10%] z-20 opacity-45 blur-sm bean--med" style={{ ['--rot' as any]: '-35deg' }}>
+          <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
+        </div>
+        <div ref={bokehRef18} className="bean absolute right-[3%] top-[45%] z-10 opacity-40 blur-[3px] bean--small" style={{ ['--rot' as any]: '85deg' }}>
+          <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
+        </div>
+        <div ref={bokehRef19} className="bean absolute left-[65%] bottom-[15%] z-30 opacity-55 blur-[1px] bean--med" style={{ ['--rot' as any]: '-115deg' }}>
+          <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
+        </div>
+        <div ref={bokehRef20} className="bean absolute left-[15%] top-[25%] z-10 opacity-25 blur-[4px] bean--small" style={{ ['--rot' as any]: '40deg' }}>
+          <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
+        </div>
+        <div ref={bokehRef21} className="bean absolute right-[22%] top-[35%] z-20 opacity-50 blur-sm bean--small" style={{ ['--rot' as any]: '-90deg' }}>
+          <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
+        </div>
+        <div ref={bokehRef22} className="bean absolute left-[50%] bottom-[5%] z-10 opacity-35 blur-[2px] bean--small" style={{ ['--rot' as any]: '10deg' }}>
+          <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
+        </div>
+        <div ref={bokehRef23} className="bean absolute right-[45%] bottom-[25%] z-10 opacity-40 blur-[3px] bean--med" style={{ ['--rot' as any]: '-160deg' }}>
+          <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
+        </div>
+        <div ref={bokehRef24} className="bean absolute left-[85%] bottom-[50%] z-20 opacity-60 blur-sm bean--small" style={{ ['--rot' as any]: '130deg' }}>
+          <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
+        </div>
+
         {/* KOFFIEMACHINE ACHTERGROND FIX */}
         <div 
-          className="absolute inset-0 w-full h-full z-10 pointer-events-none opacity-25 md:opacity-40 coffee-bg transform-gpu"
+          className="absolute inset-0 w-full h-full z-10 pointer-events-none opacity-25 md:opacity-40 coffee-bg animate-float-bg transform-gpu"
         />
 
         <div className="max-w-7xl mx-auto w-full z-20 relative flex flex-col md:flex-row items-center md:pt-10">
@@ -243,7 +326,7 @@ const Home: React.FC = () => {
           <div className="w-full md:w-3/5 flex flex-col items-center md:items-start text-center md:text-left relative z-20">
             
             <div className="animate-fade-in-up mb-40 md:mb-8 flex flex-col items-center md:items-start" style={{ animationDelay: '0.3s' }}>
-              <h1 className="text-[2.2rem] sm:text-5xl md:text-6xl lg:text-7xl font-serif text-[#f4f1ea] leading-tight">
+              <h1 className="text-[2.2rem] sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-serif text-[#f4f1ea] leading-tight">
                 <span className="whitespace-nowrap">Mobiele koffiekar</span> <br />
                 <span className="text-[#d4cab4] opacity-100">'t bonenbakkie</span>
               </h1>
@@ -278,7 +361,7 @@ const Home: React.FC = () => {
             
             <h2 className="text-4xl md:text-5xl font-serif">
               Onze Koffie Kar
-            </h2>
+            </h2> 
             
             <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[#534026] opacity-90">
               ‘t bonenbakkie brengt kwaliteit, gezelligheid en flexibiliteit samen. Met lokale koffiebonen en een flexibel menu maken we van ieder evenement een bijzonder koffiemoment.

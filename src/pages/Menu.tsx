@@ -100,7 +100,7 @@ const Menu: React.FC = () => {
   const filteredItems = items.filter(item => item.categoryId === activeCategory);
 
   return (
-    <main className="menu-page relative min-h-screen overflow-hidden pt-32 pb-24 px-4 sm:px-6 lg:px-8">
+    <main className="menu-page relative min-h-screen overflow-hidden pt-32 pb-24 px-4 sm:px-6 lg:px-8" style={{ opacity: 0, animation: 'pageFadeIn 0.5s ease-out forwards' }}>
       <style>{`
         .menu-bean {
           position: absolute;
@@ -112,6 +112,25 @@ const Menu: React.FC = () => {
           transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
           transform: translate(var(--tx, 0px), var(--ty, 0px)) rotate(var(--rot, 0deg));
           will-change: transform;
+        }
+          @keyframes pageFadeIn {
+          0% { opacity: 0; }
+          100% { opacity: 1; }
+        }
+          @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-fade-in-up {
+          opacity: 0;
+          animation: fadeInUp 0.8s ease-out forwards;
         }
 
         .bean-large { width: 8rem; height: 8rem; }

@@ -91,7 +91,7 @@ const [aanvraagType, setAanvraagType] = useState<'kies' | 'particulier' | 'zakel
   };
 
   return (
-    <main className="relative min-h-screen overflow-hidden pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+    <main className="page-transition relative min-h-screen overflow-hidden pt-32 pb-20 px-4 sm:px-6 lg:px-8">
       <style>{`
         .contact-bean {
           position: absolute;
