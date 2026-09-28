@@ -242,77 +242,77 @@ const Home: React.FC = () => {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_10%,rgba(30,15,10,0.45)_150%)] pointer-events-none z-0"></div>
         <div className="absolute right-[0%] top-1/2 transform -translate-y-1/2 w-[60%] h-[80%] bg-[#a37042] rounded-full blur-[160px] opacity-25 pointer-events-none z-0"></div>
 
-        {/* BOKEH / BEAN EFFECTS */}
+        {/* BOKEH / BEAN EFFECTS - Enkele blijven op mobiel, de meeste zijn hidden md:block */}
         <div ref={bokehRef1} className="bean absolute left-[-2%] bottom-[10%] z-30 opacity-60 blur-sm bean--large" style={{ ['--rot' as any]: '-12deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        <div ref={bokehRef2} className="bean absolute right-[5%] top-[15%] z-30 opacity-50 blur-sm bean--med" style={{ ['--rot' as any]: '45deg' }}>
+        <div ref={bokehRef2} className="bean hidden md:block absolute right-[5%] top-[15%] z-30 opacity-50 blur-sm bean--med" style={{ ['--rot' as any]: '45deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
         <div ref={bokehRef3} className="bean absolute left-[10%] top-[8%] z-20 opacity-55 blur-sm bean--small" style={{ ['--rot' as any]: '-8deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        <div ref={bokehRef4} className="bean absolute right-[18%] bottom-[25%] z-20 opacity-45 blur-sm bean--med" style={{ ['--rot' as any]: '22deg' }}>
+        <div ref={bokehRef4} className="bean hidden md:block absolute right-[18%] bottom-[25%] z-20 opacity-45 blur-sm bean--med" style={{ ['--rot' as any]: '22deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        <div ref={bokehRef5} className="bean absolute left-[38%] top-[35%] z-20 opacity-50 blur-sm bean--small" style={{ ['--rot' as any]: '12deg' }}>
+        <div ref={bokehRef5} className="bean hidden md:block absolute left-[38%] top-[35%] z-20 opacity-50 blur-sm bean--small" style={{ ['--rot' as any]: '12deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        <div ref={bokehRef6} className="bean absolute left-[55%] top-[12%] z-10 opacity-45 blur-sm bean--small" style={{ ['--rot' as any]: '-6deg' }}>
+        <div ref={bokehRef6} className="bean hidden md:block absolute left-[55%] top-[12%] z-10 opacity-45 blur-sm bean--small" style={{ ['--rot' as any]: '-6deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        <div ref={bokehRef7} className="bean absolute right-[2%] bottom-[8%] z-10 opacity-40 blur-sm bean--small" style={{ ['--rot' as any]: '30deg' }}>
+        <div ref={bokehRef7} className="bean hidden md:block absolute right-[2%] bottom-[8%] z-10 opacity-40 blur-sm bean--small" style={{ ['--rot' as any]: '30deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        <div ref={bokehRef8} className="bean absolute left-[20%] top-[45%] z-10 opacity-35 blur-sm bean--med" style={{ ['--rot' as any]: '3deg' }}>
+        <div ref={bokehRef8} className="bean hidden md:block absolute left-[20%] top-[45%] z-10 opacity-35 blur-sm bean--med" style={{ ['--rot' as any]: '3deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
         <div ref={bokehRef9} className="bean absolute left-[70%] top-[40%] z-10 opacity-30 blur-sm bean--med" style={{ ['--rot' as any]: '-18deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        <div ref={bokehRef10} className="bean absolute left-[82%] top-[20%] z-10 opacity-35 blur-[2px] bean--small" style={{ ['--rot' as any]: '75deg' }}>
+        <div ref={bokehRef10} className="bean hidden md:block absolute left-[82%] top-[20%] z-10 opacity-35 blur-[2px] bean--small" style={{ ['--rot' as any]: '75deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        <div ref={bokehRef11} className="bean absolute left-[12%] bottom-[35%] z-20 opacity-45 blur-sm bean--med" style={{ ['--rot' as any]: '-45deg' }}>
+        <div ref={bokehRef11} className="bean hidden md:block absolute left-[12%] bottom-[35%] z-20 opacity-45 blur-sm bean--med" style={{ ['--rot' as any]: '-45deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        <div ref={bokehRef12} className="bean absolute left-[45%] top-[2%] z-10 opacity-30 blur-[3px] bean--large" style={{ ['--rot' as any]: '105deg' }}>
+        <div ref={bokehRef12} className="bean hidden md:block absolute left-[45%] top-[2%] z-10 opacity-30 blur-[3px] bean--large" style={{ ['--rot' as any]: '105deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        <div ref={bokehRef13} className="bean absolute right-[12%] bottom-[50%] z-10 opacity-40 blur-[2px] bean--small" style={{ ['--rot' as any]: '-20deg' }}>
+        <div ref={bokehRef13} className="bean hidden md:block absolute right-[12%] bottom-[50%] z-10 opacity-40 blur-[2px] bean--small" style={{ ['--rot' as any]: '-20deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
         <div ref={bokehRef14} className="bean absolute right-[28%] top-[60%] z-20 opacity-35 blur-sm bean--med" style={{ ['--rot' as any]: '55deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        <div ref={bokehRef15} className="bean absolute left-[4%] top-[65%] z-10 opacity-50 blur-[3px] bean--small" style={{ ['--rot' as any]: '-70deg' }}>
+        <div ref={bokehRef15} className="bean hidden md:block absolute left-[4%] top-[65%] z-10 opacity-50 blur-[3px] bean--small" style={{ ['--rot' as any]: '-70deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        <div ref={bokehRef16} className="bean absolute left-[25%] top-[75%] z-10 opacity-30 blur-[2px] bean--small" style={{ ['--rot' as any]: '15deg' }}>
+        <div ref={bokehRef16} className="bean hidden md:block absolute left-[25%] top-[75%] z-10 opacity-30 blur-[2px] bean--small" style={{ ['--rot' as any]: '15deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        <div ref={bokehRef17} className="bean absolute right-[35%] top-[10%] z-20 opacity-45 blur-sm bean--med" style={{ ['--rot' as any]: '-35deg' }}>
+        <div ref={bokehRef17} className="bean hidden md:block absolute right-[35%] top-[10%] z-20 opacity-45 blur-sm bean--med" style={{ ['--rot' as any]: '-35deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        <div ref={bokehRef18} className="bean absolute right-[3%] top-[45%] z-10 opacity-40 blur-[3px] bean--small" style={{ ['--rot' as any]: '85deg' }}>
+        <div ref={bokehRef18} className="bean hidden md:block absolute right-[3%] top-[45%] z-10 opacity-40 blur-[3px] bean--small" style={{ ['--rot' as any]: '85deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        <div ref={bokehRef19} className="bean absolute left-[65%] bottom-[15%] z-30 opacity-55 blur-[1px] bean--med" style={{ ['--rot' as any]: '-115deg' }}>
+        <div ref={bokehRef19} className="bean hidden md:block absolute left-[65%] bottom-[15%] z-30 opacity-55 blur-[1px] bean--med" style={{ ['--rot' as any]: '-115deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        <div ref={bokehRef20} className="bean absolute left-[15%] top-[25%] z-10 opacity-25 blur-[4px] bean--small" style={{ ['--rot' as any]: '40deg' }}>
+        <div ref={bokehRef20} className="bean hidden md:block absolute left-[15%] top-[25%] z-10 opacity-25 blur-[4px] bean--small" style={{ ['--rot' as any]: '40deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        <div ref={bokehRef21} className="bean absolute right-[22%] top-[35%] z-20 opacity-50 blur-sm bean--small" style={{ ['--rot' as any]: '-90deg' }}>
+        <div ref={bokehRef21} className="bean hidden md:block absolute right-[22%] top-[35%] z-20 opacity-50 blur-sm bean--small" style={{ ['--rot' as any]: '-90deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
         <div ref={bokehRef22} className="bean absolute left-[50%] bottom-[5%] z-10 opacity-35 blur-[2px] bean--small" style={{ ['--rot' as any]: '10deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        <div ref={bokehRef23} className="bean absolute right-[45%] bottom-[25%] z-10 opacity-40 blur-[3px] bean--med" style={{ ['--rot' as any]: '-160deg' }}>
+        <div ref={bokehRef23} className="bean hidden md:block absolute right-[45%] bottom-[25%] z-10 opacity-40 blur-[3px] bean--med" style={{ ['--rot' as any]: '-160deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
-        <div ref={bokehRef24} className="bean absolute left-[85%] bottom-[50%] z-20 opacity-60 blur-sm bean--small" style={{ ['--rot' as any]: '130deg' }}>
+        <div ref={bokehRef24} className="bean hidden md:block absolute left-[85%] bottom-[50%] z-20 opacity-60 blur-sm bean--small" style={{ ['--rot' as any]: '130deg' }}>
           <img src="/Boontje.png" alt="Koffieboon" className="w-full h-full object-contain" />
         </div>
 
