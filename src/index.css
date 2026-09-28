@@ -339,15 +339,4 @@ label,
 .fade-in-up {
   animation: fade-in-up 0.6s ease-out;
 
-@keyframes fadePage {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-.page-transition {
-  /* Start onzichtbaar */
-  opacity: 0; 
-  /* Fade in 0.5 seconden naar 100% zichtbaar */
-  animation: fadePage 0.5s ease-out forwards;
-}
 }
