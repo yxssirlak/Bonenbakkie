@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { CheckCircle, Trash2, Plus, Image as ImageIcon, Coffee, Home, Lock, LayoutTemplate } from 'lucide-react';
+import {
+  authenticateGalleryAdmin,
+  deleteGalleryImage,
+  fetchGallery,
+  GalleryImage,
+  GalleryName,
+  importGalleryImage,
+  uploadGalleryImage,
+} from '../gallery';
 
 // --- STANDAARD DATA (FALLBACKS) ---
 const defaultCats = [
@@ -73,12 +82,13 @@ const Admin: React.FC = () => {
   const [newGalleryTitle, setNewGalleryTitle] = useState('');
   const [newGalleryDesc, setNewGalleryDesc] = useState('');
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === 'bonenwagen26') { 
+    try {
+      await authenticateGalleryAdmin(password);
       setIsAuthenticated(true);
-    } else {
-      alert('Ongeldig wachtwoord');
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Inloggen is mislukt.');
     }
   };
 
@@ -96,37 +106,77 @@ const Admin: React.FC = () => {
       if (storedItems && storedItems !== '[]') setItems(JSON.parse(storedItems));
       else setItems(defaultItems);
 
-      if (storedHome && storedHome !== '[]') setHomeImages(JSON.parse(storedHome));
-      else setHomeImages(defaultHomeGallery);
+      let cancelled = false;
+      const loadGallery = async () => {
+        const legacyGalleries: Array<{ name: GalleryName; raw: string | null; fallback: GalleryImage[] }> = [
+          { name: 'home', raw: storedHome, fallback: defaultHomeGallery.map((image) => ({ ...image, gallery: 'home' })) },
+          { name: 'sfeer', raw: storedSfeer, fallback: [] },
+          { name: 'homepage_fotos', raw: storedHomepageFotos, fallback: defaultHomepageFotos.map((image) => ({ ...image, gallery: 'homepage_fotos' })) },
+        ];
 
-      if (storedSfeer && storedSfeer !== '[]') setSfeerImages(JSON.parse(storedSfeer));
-      else setSfeerImages([]);
-      
-      if (storedHomepageFotos && storedHomepageFotos !== '[]') setHomepageFotos(JSON.parse(storedHomepageFotos));
-      else setHomepageFotos(defaultHomepageFotos);
+        try {
+          let remoteImages = await fetchGallery(['home', 'sfeer', 'homepage_fotos']);
+          for (const gallery of legacyGalleries) {
+            const localImages: GalleryImage[] = gallery.raw && gallery.raw !== '[]'
+              ? JSON.parse(gallery.raw).map((image: Omit<GalleryImage, 'gallery'>) => ({
+                ...image,
+                id: `legacy-${gallery.name}-${image.id}`,
+                gallery: gallery.name,
+              }))
+              : gallery.raw === null ? gallery.fallback : [];
 
-      setIsLoaded(true);
+            for (const image of localImages) {
+              if (remoteImages.some((remoteImage) => remoteImage.id === image.id)) continue;
+              await importGalleryImage(password, gallery.name, image);
+            }
+          }
+          remoteImages = await fetchGallery(['home', 'sfeer', 'homepage_fotos']);
+          if (!cancelled) {
+            setHomeImages(remoteImages.filter((image) => image.gallery === 'home'));
+            setSfeerImages(remoteImages.filter((image) => image.gallery === 'sfeer'));
+            setHomepageFotos(remoteImages.filter((image) => image.gallery === 'homepage_fotos'));
+            localStorage.removeItem('bonenbakkie-home-gallery');
+            localStorage.removeItem('bonenbakkie-sfeer-gallery');
+            localStorage.removeItem('bonenbakkie-homepage-fotos');
+          }
+        } catch (error) {
+          if (!cancelled) {
+            alert(error instanceof Error ? error.message : 'Galerijfoto’s laden is mislukt.');
+          }
+        } finally {
+          if (!cancelled) setIsLoaded(true);
+        }
+      };
+
+      setIsLoaded(false);
+      void loadGallery();
+      return () => { cancelled = true; };
     }
-  }, [isAuthenticated]);
+    return undefined;
+  }, [isAuthenticated, password]);
 
   useEffect(() => {
     if (isAuthenticated && isLoaded) {
       localStorage.setItem('bonenbakkie-menu-categories', JSON.stringify(categories));
       localStorage.setItem('bonenbakkie-menu-items', JSON.stringify(items));
-      localStorage.setItem('bonenbakkie-home-gallery', JSON.stringify(homeImages));
-      localStorage.setItem('bonenbakkie-sfeer-gallery', JSON.stringify(sfeerImages));
-      localStorage.setItem('bonenbakkie-homepage-fotos', JSON.stringify(homepageFotos));
     }
-  }, [categories, items, homeImages, sfeerImages, homepageFotos, isAuthenticated, isLoaded]);
+  }, [categories, items, isAuthenticated, isLoaded]);
 
   // Helper functie om een bestand naar Base64 string om te zetten
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, setBase64String: (val: string) => void) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type) || file.size > 10 * 1024 * 1024) {
+        alert('Gebruik een JPG-, PNG-, WEBP- of GIF-afbeelding van maximaal 10 MB.');
+        e.target.value = '';
+        setBase64String('');
+        return;
+      }
       const reader = new FileReader();
       reader.onloadend = () => {
-        setBase64String(reader.result as string);
+        if (typeof reader.result === 'string') setBase64String(reader.result);
       };
+      reader.onerror = () => alert('De afbeelding kon niet worden gelezen.');
       reader.readAsDataURL(file);
     } else {
       setBase64String('');
@@ -173,34 +223,42 @@ const Admin: React.FC = () => {
     setItems(items.filter(i => i.id !== id));
   };
 
-  const handleAddImage = (e: React.FormEvent) => {
+  const handleAddImage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newGalleryImgBase64) {
       alert('Selecteer eerst een afbeelding om te uploaden.');
       return;
     }
-    const newImg = {
-      id: Date.now().toString(),
-      src: newGalleryImgBase64,
-      alt: newGalleryTitle || 'Foto',
-      title: newGalleryTitle,
-      description: newGalleryDesc,
-    };
+    const gallery: GalleryName = activeTab === 'home' ? 'home' : activeTab === 'sfeer' ? 'sfeer' : 'homepage_fotos';
+    try {
+      const savedImage = await uploadGalleryImage(password, gallery, {
+        src: newGalleryImgBase64,
+        alt: newGalleryTitle || 'Foto',
+        title: newGalleryTitle,
+        description: newGalleryDesc,
+      });
+      if (gallery === 'home') setHomeImages((images) => [...images, savedImage]);
+      else if (gallery === 'sfeer') setSfeerImages((images) => [...images, savedImage]);
+      else setHomepageFotos((images) => [...images, savedImage]);
 
-    if (activeTab === 'home') setHomeImages([...homeImages, newImg]);
-    else if (activeTab === 'sfeer') setSfeerImages([...sfeerImages, newImg]);
-    else if (activeTab === 'homepage_fotos') setHomepageFotos([...homepageFotos, newImg]);
-
-    setNewGalleryImgBase64('');
-    setNewGalleryTitle('');
-    setNewGalleryDesc('');
-    if (galleryFileRef.current) galleryFileRef.current.value = '';
+      setNewGalleryImgBase64('');
+      setNewGalleryTitle('');
+      setNewGalleryDesc('');
+      if (galleryFileRef.current) galleryFileRef.current.value = '';
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'De foto kon niet worden opgeslagen.');
+    }
   };
 
-  const handleDeleteImage = (id: string) => {
-    if (activeTab === 'home') setHomeImages(homeImages.filter(i => i.id !== id));
-    else if (activeTab === 'sfeer') setSfeerImages(sfeerImages.filter(i => i.id !== id));
-    else if (activeTab === 'homepage_fotos') setHomepageFotos(homepageFotos.filter(i => i.id !== id));
+  const handleDeleteImage = async (id: string) => {
+    try {
+      await deleteGalleryImage(password, id);
+      if (activeTab === 'home') setHomeImages((images) => images.filter((image) => image.id !== id));
+      else if (activeTab === 'sfeer') setSfeerImages((images) => images.filter((image) => image.id !== id));
+      else if (activeTab === 'homepage_fotos') setHomepageFotos((images) => images.filter((image) => image.id !== id));
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'De foto kon niet worden verwijderd.');
+    }
   };
 
   if (!isAuthenticated) {

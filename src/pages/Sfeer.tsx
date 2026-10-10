@@ -1,13 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Heart } from 'lucide-react';
-
-type GalleryImage = {
-  id: number | string;
-  src: string;
-  alt: string;
-  title?: string;
-  description?: string;
-};
+import { fetchGallery, GalleryImage } from '../gallery';
 
 type GalleryCollection = {
   id: number;
@@ -60,26 +53,39 @@ const Sfeer: React.FC = () => {
   ];
 
   useEffect(() => {
-    try {
-      const storedSfeerImages = window.localStorage.getItem('bonenbakkie-sfeer-gallery');
-      const storedImages = storedSfeerImages ? JSON.parse(storedSfeerImages) as GalleryImage[] : [];
+    let cancelled = false;
+    const loadGallery = async () => {
       const fallbackImages: GalleryImage[] = [
-        { id: 'fallback-1', src: '/bonenbakkie1.jpeg', alt: "'t bonenbakkie koffiewagen" },
-        { id: 'fallback-2', src: '/bonenbakkie2.png', alt: "Interieur van 't bonenbakkie" },
-        { id: 'fallback-3', src: '/Logo_bonenbakkie.jpeg', alt: "Logo van 't bonenbakkie" },
+        { id: 'fallback-1', gallery: 'sfeer', src: '/bonenbakkie1.jpeg', alt: "'t bonenbakkie koffiewagen" },
+        { id: 'fallback-2', gallery: 'sfeer', src: '/bonenbakkie2.png', alt: "Interieur van 't bonenbakkie" },
+        { id: 'fallback-3', gallery: 'sfeer', src: '/Logo_bonenbakkie.jpeg', alt: "Logo van 't bonenbakkie" },
       ];
-      setCarouselImages(storedImages.filter((image) => image.src).length ? storedImages.filter((image) => image.src) : fallbackImages);
 
-      const stored = window.localStorage.getItem('bonenbakkie-gallery-collections');
-      if (stored) {
-        const parsed = JSON.parse(stored) as GalleryCollection[];
-        if (parsed.length) {
-          setCollections(parsed);
-        }
+      try {
+        const images = await fetchGallery(['sfeer']);
+        if (!cancelled) setCarouselImages(images.length ? images : fallbackImages);
+      } catch (error) {
+        console.error('Sfeergalerij laden is mislukt:', error);
+        if (!cancelled) setCarouselImages(fallbackImages);
       }
-    } catch {
-      // fallback to empty state
-    }
+
+      if (cancelled) return;
+      try {
+        const stored = window.localStorage.getItem('bonenbakkie-gallery-collections');
+        if (stored) {
+          const parsed = JSON.parse(stored) as GalleryCollection[];
+          if (parsed.length) {
+            setCollections(parsed);
+          }
+        }
+      } catch (error) {
+        console.error('Sfeercollecties laden is mislukt:', error);
+      }
+    };
+    void loadGallery();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const showPreviousSlide = () => {

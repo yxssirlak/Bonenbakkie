@@ -1,17 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
-type HomeGalleryImage = {
-  id: number;
-  src: string;
-  alt: string;
-  title?: string;
-  description?: string;
-};
+import { fetchGallery, GalleryImage } from '../gallery';
 
 const Home: React.FC = () => {
-  const [galleryImages, setGalleryImages] = useState<HomeGalleryImage[]>([]);
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
 
   // Parallax refs
   const bokehRef1 = useRef<HTMLDivElement>(null);
@@ -31,20 +24,25 @@ const Home: React.FC = () => {
   const bokehRef15 = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    try {
-      const storedGallery = window.localStorage.getItem('bonenbakkie-home-gallery');
-      if (storedGallery) {
-        const parsed = JSON.parse(storedGallery) as HomeGalleryImage[];
-        const images = parsed.filter((item) => item.src).map((item) => ({
-          ...item,
-          title: item.title || 'Onze koffiewagen',
-          description: item.description || 'Sfeer en detail',
-        }));
-        if (images.length) {
-          setGalleryImages(images);
-        }
-      }
-    } catch { }
+    let cancelled = false;
+    const fallbackImages: GalleryImage[] = [
+      { id: 'fallback-home-1', gallery: 'home', src: '/bonenbakkie1.jpeg', alt: "'t bonenbakkie koffiewagen", title: 'Onze koffiewagen', description: 'In actie op locatie' },
+      { id: 'fallback-home-2', gallery: 'home', src: '/bonenbakkie2.png', alt: "Interieur van 't bonenbakkie", title: 'Sfeer binnenin', description: 'Een warm en stijlvol interieur' },
+      { id: 'fallback-home-3', gallery: 'home', src: '/Logo_bonenbakkie.jpeg', alt: 'Logo van het mobiele koffiehuisje', title: 'Ons merk', description: 'Karakter en identiteit' },
+    ];
+
+    fetchGallery(['home', 'sfeer'])
+      .then((images) => {
+        if (!cancelled) setGalleryImages(images.length ? images : fallbackImages);
+      })
+      .catch((error: unknown) => {
+        console.error('Homepage galerij laden is mislukt:', error);
+        if (!cancelled) setGalleryImages(fallbackImages);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -89,15 +87,6 @@ const Home: React.FC = () => {
       element.scrollIntoView({ behavior: 'smooth' });
     }
   };
-
-  useEffect(() => {
-    if (galleryImages.length) return;
-    setGalleryImages([
-      { id: 1, src: '/bonenbakkie1.jpeg', alt: "'t bonenbakkie koffiewagen", title: 'Onze koffiewagen', description: 'In actie op locatie' },
-      { id: 2, src: '/bonenbakkie2.png', alt: "Interieur van 't bonenbakkie", title: 'Sfeer binnenin', description: 'Een warm en stijlvol interieur' },
-      { id: 3, src: '/Logo_bonenbakkie.jpeg', alt: 'Logo van het mobiele koffiehuisje', title: 'Ons merk', description: 'Karakter en identiteit' },
-    ]);
-  }, [galleryImages.length]);
 
   return (
     <main>
@@ -162,7 +151,7 @@ const Home: React.FC = () => {
         }
 
         #koffiehuisje h2 {
-          color: #c4a47c !important;
+          color: #534026 !important;
         }
 
         /* Oude animatie (met de 50% verschuiving) voor de boontjes */
