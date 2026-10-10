@@ -66,7 +66,7 @@ export function importGalleryImage(
 export function uploadGalleryImage(
   password: string,
   gallery: GalleryName,
-  image: Omit<GalleryImage, 'gallery'>,
+  image: Omit<GalleryImage, 'gallery' | 'id'> & { id?: string },
 ): Promise<GalleryImage> {
   return uploadImageFile(password, gallery, image);
 }
@@ -74,7 +74,7 @@ export function uploadGalleryImage(
 async function uploadImageFile(
   password: string,
   gallery: GalleryName,
-  image: Omit<GalleryImage, 'gallery'>,
+  image: Omit<GalleryImage, 'gallery' | 'id'> & { id?: string },
 ): Promise<GalleryImage> {
   const match = /^data:(image\/(?:jpeg|png|webp|gif));base64,([A-Za-z0-9+/]+=*)$/.exec(image.src);
   if (!match) throw new Error('De afbeeldingsgegevens zijn ongeldig.');

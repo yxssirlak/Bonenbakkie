@@ -123,7 +123,8 @@ const Admin: React.FC = () => {
                 id: `legacy-${gallery.name}-${image.id}`,
                 gallery: gallery.name,
               }))
-              : gallery.raw === null ? gallery.fallback : [];
+              : remoteImages.some((image) => image.gallery === gallery.name) ? []
+                : gallery.fallback;
 
             for (const image of localImages) {
               if (remoteImages.some((remoteImage) => remoteImage.id === image.id)) continue;
