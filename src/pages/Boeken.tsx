@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Briefcase, PartyPopper, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { Helmet} from 'react-helmet-async';
 
 const Boeken: React.FC = () => {
   const beanRefs = useRef<Array<HTMLDivElement | null>>([]);
@@ -37,8 +38,34 @@ const Boeken: React.FC = () => {
   ];
 
   return (
-    <main className="booking-page relative min-h-screen overflow-hidden pt-32 pb-20 px-4 sm:px-6 lg:px-8 font-sans">
+    <main className="booking-page relative min-h-screen overflow-hidden pt-32 pb-20 px-4 sm:px-6 lg:px-8 font-sans" style={{ opacity: 0, animation: 'pageFadeIn 0.5s ease-out forwards' }}>
+      <Helmet>
+        <title>Boeken | Mobiele koffiekar 't bonenbakkie</title>
+        <meta name="description" content="Huur 't bonenbakkie voor uw evenement. Wij verzorgen premium koffie en een gastvrije sfeer op bruiloften, bedrijfsfeesten en markten. Bekijk onze arrangementen." />
+      </Helmet>
+
       <style>{`
+        @keyframes pageFadeIn {
+          0% { opacity: 0; }
+          100% { opacity: 1; }
+        }
+        
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-fade-in-up {
+          opacity: 0;
+          animation: fadeInUp 0.8s ease-out forwards;
+        }
+
         .booking-bean {
           position: absolute;
           z-index: 0;
@@ -98,7 +125,7 @@ const Boeken: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex w-full max-w-3xl items-center gap-5 py-2" aria-hidden="true">
+          <div className="flex w-full max-w-3xl items-center gap-5 py-2 animate-fade-in-up" style={{ animationDelay: '0.15s' }} aria-hidden="true">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#d4cab4]/45 to-[#d4cab4]/70" />
             <div className="h-2 w-2 rotate-45 border border-[#d4cab4]/70 bg-[#534026]" />
             <div className="h-px flex-1 bg-gradient-to-l from-transparent via-[#d4cab4]/45 to-[#d4cab4]/70" />

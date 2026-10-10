@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Mail, MapPin, Send, Instagram, Facebook, Linkedin, PartyPopper, Briefcase, ArrowLeft, ArrowDown, ArrowRight } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import confetti from 'canvas-confetti'; // Confetti animatie toegevoegd!
+import { Helmet} from 'react-helmet-async';
 
 const Contact: React.FC = () => {
   const location = useLocation();
@@ -91,7 +92,13 @@ const [aanvraagType, setAanvraagType] = useState<'kies' | 'particulier' | 'zakel
   };
 
   return (
-    <main className="relative min-h-screen overflow-hidden pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+    <main className="page-transition relative min-h-screen overflow-hidden pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+
+      <Helmet>
+        <title>Contact & Offerte | Mobiele koffiekar 't bonenbakkie</title>
+        <meta name="description" content="Neem contact op met 't bonenbakkie voor een onvergetelijk koffiemoment op uw locatie. Vraag direct een vrijblijvende offerte aan voor uw zakelijke of privé evenement." />
+      </Helmet>
+
       <style>{`
         .contact-bean {
           position: absolute;
@@ -298,7 +305,7 @@ const [aanvraagType, setAanvraagType] = useState<'kies' | 'particulier' | 'zakel
                         className="mt-1 shrink-0 cursor-pointer"
                       />
                       <label htmlFor="privacy_akkoord" className="text-[#ebdad0] font-sans text-[10px] sm:text-xs opacity-80 cursor-pointer leading-relaxed">
-                        Ik ga ermee akkoord dat 't Bonenbakkie mijn gegevens veilig opslaat om contact met mij op te nemen over deze aanvraag.
+                        Ik ga ermee akkoord dat 't Bonenbakkie mijn gegevens uitsluitend opslaat om contact op te nemen over deze aanvraag.
                       </label>
                     </div>
 
