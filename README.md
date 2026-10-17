@@ -14,3 +14,11 @@ using gallery uploads. The function also needs the standard
 On the first admin login after deployment, gallery entries saved in that
 browser's local storage are imported into Supabase. Sfeer gallery uploads are
 shown on both the homepage gallery and the `/sfeer` page.
+
+The admin panel manages the sfeer slideshow and event albums separately. Apply
+the latest migration and deploy `manage-gallery` after pulling changes:
+
+```sh
+npx supabase db push
+npx supabase functions deploy manage-gallery
+```

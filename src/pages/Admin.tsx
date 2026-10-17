@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { CheckCircle, Trash2, Plus, Image as ImageIcon, Coffee, Home, Lock, LayoutTemplate } from 'lucide-react';
+import { CheckCircle, Trash2, Plus, Image as ImageIcon, Coffee, Home, Lock } from 'lucide-react';
 import {
   authenticateGalleryAdmin,
   deleteGalleryImage,
@@ -50,15 +50,24 @@ const defaultHomeGallery = [
   { id: '3', src: '/Logo_bonenbakkie.jpeg', alt: 'Logo van het mobiele koffiehuisje', title: 'Ons merk', description: 'Karakter en identiteit' },
 ];
 
-const defaultHomepageFotos = [
-  { id: '1', src: '/bonenbakkie1.jpeg', alt: "Homepage foto 1", title: 'Homepage Foto 1', description: 'Eerste uitgelichte foto' },
-  { id: '2', src: '/bonenbakkie2.png', alt: "Homepage foto 2", title: 'Homepage Foto 2', description: 'Tweede uitgelichte foto' },
+const defaultSfeerGallery = [
+  { id: '1', src: '/bonenbakkie1.jpeg', alt: "'t bonenbakkie koffiewagen", title: 'Koffie op evenementen', description: 'Sfeer en gezelligheid op locatie' },
+  { id: '2', src: '/bonenbakkie2.png', alt: "Interieur van 't bonenbakkie", title: "Binnen in 't bonenbakkie", description: 'Een warm en stijlvol interieur' },
+  { id: '3', src: '/Logo_bonenbakkie.jpeg', alt: "Logo van 't bonenbakkie", title: "'t bonenbakkie", description: 'Ons mobiele koffiehuisje' },
 ];
+
+type LegacyGalleryCollection = {
+  id: string | number;
+  title: string;
+  description: string;
+  images: Array<Omit<GalleryImage, 'gallery'>>;
+};
 
 const Admin: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
-  const [activeTab, setActiveTab] = useState<'menu' | 'home' | 'sfeer' | 'homepage_fotos'>('menu');
+  const [activeTab, setActiveTab] = useState<'menu' | 'home' | 'sfeer'>('menu');
+  const [activeSfeerSection, setActiveSfeerSection] = useState<'slides' | 'albums'>('slides');
   const [isLoaded, setIsLoaded] = useState(false);
 
   // Refs om de bestandsvelden leeg te maken na uploaden
@@ -75,9 +84,9 @@ const Admin: React.FC = () => {
   const [newItemImgBase64, setNewItemImgBase64] = useState('');
 
   // --- GALERIJ STATES ---
-  const [homeImages, setHomeImages] = useState<any[]>([]);
-  const [sfeerImages, setSfeerImages] = useState<any[]>([]);
-  const [homepageFotos, setHomepageFotos] = useState<any[]>([]); // Nieuwe state voor de 2 homepage foto's
+  const [homeImages, setHomeImages] = useState<GalleryImage[]>([]);
+  const [sfeerImages, setSfeerImages] = useState<GalleryImage[]>([]);
+  const [sfeerAlbumImages, setSfeerAlbumImages] = useState<GalleryImage[]>([]);
   const [newGalleryImgBase64, setNewGalleryImgBase64] = useState('');
   const [newGalleryTitle, setNewGalleryTitle] = useState('');
   const [newGalleryDesc, setNewGalleryDesc] = useState('');
@@ -98,7 +107,7 @@ const Admin: React.FC = () => {
       const storedItems = localStorage.getItem('bonenbakkie-menu-items');
       const storedHome = localStorage.getItem('bonenbakkie-home-gallery');
       const storedSfeer = localStorage.getItem('bonenbakkie-sfeer-gallery');
-      const storedHomepageFotos = localStorage.getItem('bonenbakkie-homepage-fotos');
+      const storedCollections = localStorage.getItem('bonenbakkie-gallery-collections');
 
       if (storedCats && storedCats !== '[]') setCategories(JSON.parse(storedCats));
       else setCategories(defaultCats);
@@ -110,12 +119,12 @@ const Admin: React.FC = () => {
       const loadGallery = async () => {
         const legacyGalleries: Array<{ name: GalleryName; raw: string | null; fallback: GalleryImage[] }> = [
           { name: 'home', raw: storedHome, fallback: defaultHomeGallery.map((image) => ({ ...image, gallery: 'home' })) },
-          { name: 'sfeer', raw: storedSfeer, fallback: [] },
-          { name: 'homepage_fotos', raw: storedHomepageFotos, fallback: defaultHomepageFotos.map((image) => ({ ...image, gallery: 'homepage_fotos' })) },
+          { name: 'sfeer', raw: storedSfeer, fallback: defaultSfeerGallery.map((image) => ({ ...image, gallery: 'sfeer' })) },
+          { name: 'sfeer_album', raw: null, fallback: [] },
         ];
 
         try {
-          let remoteImages = await fetchGallery(['home', 'sfeer', 'homepage_fotos']);
+          let remoteImages = await fetchGallery(['home', 'sfeer', 'sfeer_album']);
           for (const gallery of legacyGalleries) {
             const localImages: GalleryImage[] = gallery.raw && gallery.raw !== '[]'
               ? JSON.parse(gallery.raw).map((image: Omit<GalleryImage, 'gallery'>) => ({
@@ -131,14 +140,33 @@ const Admin: React.FC = () => {
               await importGalleryImage(password, gallery.name, image);
             }
           }
-          remoteImages = await fetchGallery(['home', 'sfeer', 'homepage_fotos']);
+          if (storedCollections) {
+            const collections: unknown = JSON.parse(storedCollections);
+            if (Array.isArray(collections)) {
+              for (const collection of collections as LegacyGalleryCollection[]) {
+                if (typeof collection.title !== 'string' || !Array.isArray(collection.images)) continue;
+                for (const image of collection.images) {
+                  if (typeof image.src !== 'string') continue;
+                  const id = `legacy-album-${collection.id}-${image.id}`;
+                  if (remoteImages.some((remoteImage) => remoteImage.id === id)) continue;
+                  await importGalleryImage(password, 'sfeer_album', {
+                    ...image,
+                    id,
+                    title: collection.title,
+                    description: collection.description,
+                  });
+                }
+              }
+            }
+          }
+          remoteImages = await fetchGallery(['home', 'sfeer', 'sfeer_album']);
           if (!cancelled) {
             setHomeImages(remoteImages.filter((image) => image.gallery === 'home'));
             setSfeerImages(remoteImages.filter((image) => image.gallery === 'sfeer'));
-            setHomepageFotos(remoteImages.filter((image) => image.gallery === 'homepage_fotos'));
+            setSfeerAlbumImages(remoteImages.filter((image) => image.gallery === 'sfeer_album'));
             localStorage.removeItem('bonenbakkie-home-gallery');
             localStorage.removeItem('bonenbakkie-sfeer-gallery');
-            localStorage.removeItem('bonenbakkie-homepage-fotos');
+            localStorage.removeItem('bonenbakkie-gallery-collections');
           }
         } catch (error) {
           if (!cancelled) {
@@ -230,7 +258,13 @@ const Admin: React.FC = () => {
       alert('Selecteer eerst een afbeelding om te uploaden.');
       return;
     }
-    const gallery: GalleryName = activeTab === 'home' ? 'home' : activeTab === 'sfeer' ? 'sfeer' : 'homepage_fotos';
+    if (activeTab === 'sfeer' && activeSfeerSection === 'albums' && !newGalleryTitle.trim()) {
+      alert('Vul een albumnaam in.');
+      return;
+    }
+    const gallery: GalleryName = activeTab === 'home'
+      ? 'home'
+      : activeTab === 'sfeer' && activeSfeerSection === 'albums' ? 'sfeer_album' : 'sfeer';
     try {
       const savedImage = await uploadGalleryImage(password, gallery, {
         src: newGalleryImgBase64,
@@ -240,7 +274,7 @@ const Admin: React.FC = () => {
       });
       if (gallery === 'home') setHomeImages((images) => [...images, savedImage]);
       else if (gallery === 'sfeer') setSfeerImages((images) => [...images, savedImage]);
-      else setHomepageFotos((images) => [...images, savedImage]);
+      else setSfeerAlbumImages((images) => [...images, savedImage]);
 
       setNewGalleryImgBase64('');
       setNewGalleryTitle('');
@@ -255,8 +289,8 @@ const Admin: React.FC = () => {
     try {
       await deleteGalleryImage(password, id);
       if (activeTab === 'home') setHomeImages((images) => images.filter((image) => image.id !== id));
+      else if (activeTab === 'sfeer' && activeSfeerSection === 'albums') setSfeerAlbumImages((images) => images.filter((image) => image.id !== id));
       else if (activeTab === 'sfeer') setSfeerImages((images) => images.filter((image) => image.id !== id));
-      else if (activeTab === 'homepage_fotos') setHomepageFotos((images) => images.filter((image) => image.id !== id));
     } catch (error) {
       alert(error instanceof Error ? error.message : 'De foto kon niet worden verwijderd.');
     }
@@ -303,9 +337,6 @@ const Admin: React.FC = () => {
           </button>
           <button onClick={() => setActiveTab('sfeer')} className={`px-6 py-3 rounded-full font-sans uppercase tracking-[0.15em] text-[11px] sm:text-[12px] font-semibold flex items-center gap-2 transition-all ${activeTab === 'sfeer' ? 'bg-[#f4f1ea] text-[#534026]' : 'bg-white/5 text-[#f4f1ea] hover:bg-white/10'}`}>
             <ImageIcon size={16} /> Sfeer Galerij
-          </button>
-          <button onClick={() => setActiveTab('homepage_fotos')} className={`px-6 py-3 rounded-full font-sans uppercase tracking-[0.15em] text-[11px] sm:text-[12px] font-semibold flex items-center gap-2 transition-all ${activeTab === 'homepage_fotos' ? 'bg-[#f4f1ea] text-[#534026]' : 'bg-white/5 text-[#f4f1ea] hover:bg-white/10'}`}>
-            <LayoutTemplate size={16} /> Home Pagina Foto's
           </button>
         </div>
 
@@ -424,13 +455,41 @@ const Admin: React.FC = () => {
           </div>
         )}
 
-        {/* --- 2. GALERIJ / HOMEPAGE FOTO'S AANPASSEN TAB --- */}
-        {(activeTab === 'home' || activeTab === 'sfeer' || activeTab === 'homepage_fotos') && (
+        {/* --- 2. GALERIJ AANPASSEN TAB --- */}
+        {(activeTab === 'home' || activeTab === 'sfeer') && (
           <div className="space-y-12 animate-fade-in-up">
             <div className="glass-card !bg-white/5 border border-white/10 p-8 rounded-[2rem]">
+              {activeTab === 'sfeer' && (
+                <div className="flex flex-wrap gap-3 mb-8">
+                  <button
+                    type="button"
+                    onClick={() => setActiveSfeerSection('slides')}
+                    className={`px-5 py-3 rounded-full font-sans uppercase tracking-[0.12em] text-[11px] font-semibold transition-all ${activeSfeerSection === 'slides' ? 'bg-[#f4f1ea] text-[#534026]' : 'bg-white/5 text-[#f4f1ea] hover:bg-white/10'}`}
+                  >
+                    Uitgelichte foto's
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveSfeerSection('albums')}
+                    className={`px-5 py-3 rounded-full font-sans uppercase tracking-[0.12em] text-[11px] font-semibold transition-all ${activeSfeerSection === 'albums' ? 'bg-[#f4f1ea] text-[#534026]' : 'bg-white/5 text-[#f4f1ea] hover:bg-white/10'}`}
+                  >
+                    Evenementalbums
+                  </button>
+                </div>
+              )}
               <h2 className="text-2xl font-serif text-[#f4f1ea] mb-6 border-b border-white/10 pb-4">
-                Foto Toevoegen aan {activeTab === 'home' ? 'Home Galerij' : activeTab === 'sfeer' ? 'Sfeer Galerij' : 'Home Pagina'}
+                {activeTab === 'home'
+                  ? 'Foto Toevoegen aan Home Galerij'
+                  : activeSfeerSection === 'albums'
+                    ? 'Foto Toevoegen aan een Evenementalbum'
+                    : "Foto Toevoegen aan Uitgelichte sfeerfoto's"}
               </h2>
+
+              {activeTab === 'sfeer' && activeSfeerSection === 'albums' && (
+                <p className="text-sm text-white/60 -mt-2 mb-6">
+                  Gebruik dezelfde albumnaam voor alle foto's van een evenement. Upload de foto's één voor één.
+                </p>
+              )}
               
               <form onSubmit={handleAddImage} className="grid md:grid-cols-2 gap-6 mb-12">
                 <div className="flex flex-col gap-2 md:col-span-2">
@@ -450,13 +509,13 @@ const Admin: React.FC = () => {
                 </div>
                 
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm text-white/70">Titel (Optioneel)</label>
-                  <input type="text" value={newGalleryTitle} onChange={(e) => setNewGalleryTitle(e.target.value)} placeholder="Bv. Onze koffiewagen" className="bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none" />
+                  <label className="text-sm text-white/70">{activeTab === 'sfeer' && activeSfeerSection === 'albums' ? 'Albumnaam' : 'Titel (Optioneel)'}</label>
+                  <input type="text" value={newGalleryTitle} onChange={(e) => setNewGalleryTitle(e.target.value)} placeholder={activeTab === 'sfeer' && activeSfeerSection === 'albums' ? 'Bv. Bruiloft in Utrecht' : 'Bv. Onze koffiewagen'} className="bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none" />
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm text-white/70">Ondertitel / Beschrijving (Optioneel)</label>
-                  <input type="text" value={newGalleryDesc} onChange={(e) => setNewGalleryDesc(e.target.value)} placeholder="Bv. In actie op locatie" className="bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none" />
+                  <label className="text-sm text-white/70">{activeTab === 'sfeer' && activeSfeerSection === 'albums' ? 'Albumomschrijving (Optioneel)' : 'Ondertitel / Beschrijving (Optioneel)'}</label>
+                  <input type="text" value={newGalleryDesc} onChange={(e) => setNewGalleryDesc(e.target.value)} placeholder={activeTab === 'sfeer' && activeSfeerSection === 'albums' ? 'Bv. Koffie op onze bruiloft' : 'Bv. In actie op locatie'} className="bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none" />
                 </div>
 
                 <div className="md:col-span-2 pt-4">
@@ -467,10 +526,14 @@ const Admin: React.FC = () => {
               </form>
 
               <h3 className="text-xl font-serif text-[#f4f1ea] mb-4">
-                Huidige Foto's in {activeTab === 'home' ? 'Home Galerij' : activeTab === 'sfeer' ? 'Sfeer Galerij' : 'Home Pagina'}
+                {activeTab === 'home'
+                  ? "Huidige foto's in Home Galerij"
+                  : activeSfeerSection === 'albums'
+                    ? "Huidige foto's in Evenementalbums"
+                    : "Huidige foto's in Uitgelichte sfeerfoto's"}
               </h3>
               <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-                {(activeTab === 'home' ? homeImages : activeTab === 'sfeer' ? sfeerImages : homepageFotos).map(img => (
+                {(activeTab === 'home' ? homeImages : activeSfeerSection === 'albums' ? sfeerAlbumImages : sfeerImages).map(img => (
                   <div key={img.id} className="relative group overflow-hidden rounded-xl border border-white/10">
                     <img src={img.src} alt={img.alt} className="w-full h-48 object-cover" />
                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-4">
@@ -484,8 +547,12 @@ const Admin: React.FC = () => {
                     </div>
                   </div>
                 ))}
-                {(activeTab === 'home' ? homeImages : activeTab === 'sfeer' ? sfeerImages : homepageFotos).length === 0 && (
-                  <p className="text-white/50 col-span-full">Nog geen foto's geüpload.</p>
+                {(activeTab === 'home' ? homeImages : activeSfeerSection === 'albums' ? sfeerAlbumImages : sfeerImages).length === 0 && (
+                  <p className="text-white/50 col-span-full">
+                    {activeTab === 'sfeer' && activeSfeerSection === 'slides'
+                      ? 'De standaard sfeerfoto’s worden geladen zodra de galerij is verbonden.'
+                      : "Nog geen foto's geüpload."}
+                  </p>
                 )}
               </div>
             </div>

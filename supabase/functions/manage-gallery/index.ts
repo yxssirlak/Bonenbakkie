@@ -6,7 +6,7 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
-const allowedGalleries = new Set(['home', 'sfeer', 'homepage_fotos']);
+const allowedGalleries = new Set(['home', 'sfeer', 'sfeer_album']);
 const allowedImageTypes = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
 const maxImageSize = 10 * 1024 * 1024;
 
@@ -176,7 +176,7 @@ Deno.serve(async (request) => {
 
     if (body.action === 'cleanup-upload') {
       if (typeof body.storagePath !== 'string'
-        || !/^(home|sfeer|homepage_fotos)\/[0-9a-f-]+\.(jpg|png|webp|gif)$/i.test(body.storagePath)) {
+        || !/^(home|sfeer|sfeer_album)\/[0-9a-f-]+\.(jpg|png|webp|gif)$/i.test(body.storagePath)) {
         return jsonResponse({ error: 'Ongeldig afbeeldingspad.' }, 400);
       }
       const { data: image, error: lookupError } = await supabase
