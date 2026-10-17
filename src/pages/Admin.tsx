@@ -466,7 +466,7 @@ const Admin: React.FC = () => {
                     onClick={() => setActiveSfeerSection('slides')}
                     className={`px-5 py-3 rounded-full font-sans uppercase tracking-[0.12em] text-[11px] font-semibold transition-all ${activeSfeerSection === 'slides' ? 'bg-[#f4f1ea] text-[#534026]' : 'bg-white/5 text-[#f4f1ea] hover:bg-white/10'}`}
                   >
-                    Uitgelichte foto's
+                    Carrousel foto's
                   </button>
                   <button
                     type="button"
@@ -482,7 +482,7 @@ const Admin: React.FC = () => {
                   ? 'Foto Toevoegen aan Home Galerij'
                   : activeSfeerSection === 'albums'
                     ? 'Foto Toevoegen aan een Evenementalbum'
-                    : "Foto Toevoegen aan Uitgelichte sfeerfoto's"}
+                    : "Foto Toevoegen aan Carrousel sfeerfoto's"}
               </h2>
 
               {activeTab === 'sfeer' && activeSfeerSection === 'albums' && (
