@@ -130,7 +130,7 @@ Deno.serve(async (request) => {
       if (typeof body.gallery !== 'string' || !allowedGalleries.has(body.gallery)
         || typeof body.storagePath !== 'string'
         || !body.storagePath.startsWith(`${body.gallery}/`)
-        || !/^[^/]+\/[0-9a-f-]+\.(jpg|png|webp|gif)$/i.test(body.storagePath)
+        || !/^[^\/]+\/[0-9a-f-]+\.(jpg|jpeg|png|webp|gif)$/i.test(body.storagePath)
         || !isRecord(body.image) || typeof body.image.src !== 'string') {
         return jsonResponse({ error: 'Ongeldige galerijfoto.' }, 400);
       }
@@ -176,7 +176,7 @@ Deno.serve(async (request) => {
 
     if (body.action === 'cleanup-upload') {
       if (typeof body.storagePath !== 'string'
-        || !/^(home|sfeer|sfeer_album)\/[0-9a-f-]+\.(jpg|png|webp|gif)$/i.test(body.storagePath)) {
+        || !/^(home|sfeer|sfeer_album)\/[0-9a-f-]+\.(jpg|jpeg|png|webp|gif)$/i.test(body.storagePath)) {
         return jsonResponse({ error: 'Ongeldig afbeeldingspad.' }, 400);
       }
       const { data: image, error: lookupError } = await supabase
