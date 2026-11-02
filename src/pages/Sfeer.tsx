@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { fetchGallery, GalleryImage } from '../gallery';
 
 type GalleryCollection = {
-  id: number;
+  id: string | number;
   title: string;
   description: string;
   images: GalleryImage[];
@@ -57,14 +57,31 @@ const Sfeer: React.FC = () => {
     let cancelled = false;
     const loadGallery = async () => {
       const fallbackImages: GalleryImage[] = [
-        { id: 'fallback-1', gallery: 'sfeer', src: '/bonenbakkie1.jpeg', alt: "'t bonenbakkie koffiewagen" },
-        { id: 'fallback-2', gallery: 'sfeer', src: '/bonenbakkie2.png', alt: "Interieur van 't bonenbakkie" },
-        { id: 'fallback-3', gallery: 'sfeer', src: '/Logo_bonenbakkie.jpeg', alt: "Logo van 't bonenbakkie" },
+        { id: 'fallback-1', gallery: 'sfeer', src: '/bonenbakkie1.jpeg', alt: "'t bonenbakkie koffiewagen", title: 'Koffie op evenementen', description: 'Sfeer en gezelligheid op locatie' },
+        { id: 'fallback-2', gallery: 'sfeer', src: '/bonenbakkie2.png', alt: "Interieur van 't bonenbakkie", title: "Binnen in 't bonenbakkie", description: 'Een warm en stijlvol interieur' },
+        { id: 'fallback-3', gallery: 'sfeer', src: '/Logo_bonenbakkie.jpeg', alt: "Logo van 't bonenbakkie", title: "'t bonenbakkie", description: 'Ons mobiele koffiehuisje' },
       ];
 
+      let remoteCollections: GalleryCollection[] = [];
       try {
-        const images = await fetchGallery(['sfeer']);
-        if (!cancelled) setCarouselImages(images.length ? images : fallbackImages);
+        const images = await fetchGallery(['sfeer', 'sfeer_album']);
+        const slides = images.filter((image) => image.gallery === 'sfeer');
+        if (!cancelled) setCarouselImages(slides.length ? slides : fallbackImages);
+
+        const albums = new Map<string, GalleryCollection>();
+        images.filter((image) => image.gallery === 'sfeer_album').forEach((image) => {
+          const title = image.title?.trim() || 'Evenementen';
+          const collection = albums.get(title) ?? {
+            id: `album-${title}`,
+            title,
+            description: image.description || '',
+            images: [],
+          };
+          collection.images.push(image);
+          albums.set(title, collection);
+        });
+        remoteCollections = Array.from(albums.values());
+        if (!cancelled) setCollections(remoteCollections);
       } catch (error) {
         console.error('Sfeergalerij laden is mislukt:', error);
         if (!cancelled) setCarouselImages(fallbackImages);
@@ -76,7 +93,11 @@ const Sfeer: React.FC = () => {
         if (stored) {
           const parsed = JSON.parse(stored) as GalleryCollection[];
           if (parsed.length) {
-            setCollections(parsed);
+            const remoteTitles = new Set(remoteCollections.map((collection) => collection.title));
+            setCollections([
+              ...remoteCollections,
+              ...parsed.filter((collection) => !remoteTitles.has(collection.title)),
+            ]);
           }
         }
       } catch (error) {

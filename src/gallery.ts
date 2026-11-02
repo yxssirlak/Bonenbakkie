@@ -1,6 +1,6 @@
 import { supabase } from './supabaseClient';
 
-export type GalleryName = 'home' | 'sfeer' | 'homepage_fotos';
+export type GalleryName = 'home' | 'sfeer' | 'sfeer_album';
 
 export type GalleryImage = {
   id: string;
