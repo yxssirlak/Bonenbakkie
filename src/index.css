@@ -89,12 +89,12 @@ label,
   #root,
   .page-shell {
     min-height: 100vh;
-    background-color: #534026 !important;
+    background-color: #3a2a18 !important;
     background-image: radial-gradient(
       circle at 50% 20%,
-      rgba(112, 84, 48, 0.8) 0%,
-      rgba(83, 64, 38, 0.96) 42%,
-      rgba(46, 34, 19, 1) 100%
+      rgba(86, 62, 34, 0.85) 0%,
+      rgba(58, 42, 24, 0.97) 45%,
+      rgba(26, 18, 10, 1) 100%
     ) !important;
     background-attachment: fixed !important;
   }
