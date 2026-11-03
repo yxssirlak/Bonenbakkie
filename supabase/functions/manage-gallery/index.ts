@@ -8,7 +8,9 @@ const corsHeaders = {
 
 const allowedGalleries = new Set(['home', 'sfeer', 'sfeer_album']);
 const allowedImageTypes = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+const allowedSizes = new Set(['small', 'wide', 'tall', 'large']);
 const maxImageSize = 10 * 1024 * 1024;
+const imageColumns = 'id, gallery, src, alt, title, description, size, sort_order';
 
 type GalleryImageInput = {
   id?: string;
@@ -16,7 +18,12 @@ type GalleryImageInput = {
   alt?: string;
   title?: string;
   description?: string;
+  size?: string;
 };
+
+function normalizeSize(size: unknown): string {
+  return typeof size === 'string' && allowedSizes.has(size) ? size : 'small';
+}
 
 function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -65,6 +72,17 @@ Deno.serve(async (request) => {
     }
 
     const supabase = createClient(supabaseUrl, serviceRoleKey);
+    const nextSortOrder = async (gallery: string): Promise<number> => {
+      const { data, error } = await supabase
+        .from('gallery_images')
+        .select('sort_order')
+        .eq('gallery', gallery)
+        .order('sort_order', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return (data?.sort_order ?? -1) + 1;
+    };
     const insertImage = async (gallery: string, image: GalleryImageInput) => {
       if (!allowedGalleries.has(gallery) || !image || typeof image.src !== 'string' || !image.src) {
         return jsonResponse({ error: 'Ongeldige galerijfoto.' }, 400);
@@ -73,7 +91,7 @@ Deno.serve(async (request) => {
       const id = typeof image.id === 'string' && image.id ? image.id : crypto.randomUUID();
       const { data: existing, error: lookupError } = await supabase
         .from('gallery_images')
-        .select('id, gallery, src, alt, title, description')
+        .select(imageColumns)
         .eq('id', id)
         .maybeSingle();
       if (lookupError) throw lookupError;
@@ -93,11 +111,13 @@ Deno.serve(async (request) => {
         alt: typeof image.alt === 'string' ? image.alt : '',
         title: typeof image.title === 'string' ? image.title : '',
         description: typeof image.description === 'string' ? image.description : '',
+        size: normalizeSize(image.size),
+        sort_order: await nextSortOrder(gallery),
       };
       const { data, error: insertError } = await supabase
         .from('gallery_images')
         .insert(record)
-        .select('id, gallery, src, alt, title, description')
+        .select(imageColumns)
         .single();
       if (insertError) throw insertError;
 
@@ -138,7 +158,7 @@ Deno.serve(async (request) => {
       const id = typeof body.image.id === 'string' && body.image.id ? body.image.id : crypto.randomUUID();
       const { data: existing, error: lookupError } = await supabase
         .from('gallery_images')
-        .select('id, gallery, src, alt, title, description')
+        .select(imageColumns)
         .eq('id', id)
         .maybeSingle();
       if (lookupError) throw lookupError;
@@ -164,11 +184,13 @@ Deno.serve(async (request) => {
         alt: typeof body.image.alt === 'string' ? body.image.alt : '',
         title: typeof body.image.title === 'string' ? body.image.title : '',
         description: typeof body.image.description === 'string' ? body.image.description : '',
+        size: normalizeSize(body.image.size),
+        sort_order: await nextSortOrder(body.gallery),
       };
       const { data, error: insertError } = await supabase
         .from('gallery_images')
         .insert(record)
-        .select('id, gallery, src, alt, title, description')
+        .select(imageColumns)
         .single();
       if (insertError) throw insertError;
       return jsonResponse({ data });
@@ -189,6 +211,90 @@ Deno.serve(async (request) => {
       const { error: removeError } = await supabase.storage.from('site-gallery').remove([body.storagePath]);
       if (removeError) throw removeError;
       return jsonResponse({ data: { deleted: true } });
+    }
+
+    if (body.action === 'update') {
+      if (typeof body.id !== 'string' || !body.id || !isRecord(body.changes)) {
+        return jsonResponse({ error: 'Ongeldige wijziging.' }, 400);
+      }
+      const changes: Record<string, string> = {};
+      for (const field of ['title', 'description', 'alt'] as const) {
+        const value = body.changes[field];
+        if (typeof value === 'string') changes[field] = value.slice(0, 500);
+      }
+      if (body.changes.size !== undefined) {
+        if (typeof body.changes.size !== 'string' || !allowedSizes.has(body.changes.size)) {
+          return jsonResponse({ error: 'Ongeldig formaat.' }, 400);
+        }
+        changes.size = body.changes.size;
+      }
+      if (!Object.keys(changes).length) return jsonResponse({ error: 'Geen wijzigingen opgegeven.' }, 400);
+      const { data, error: updateError } = await supabase
+        .from('gallery_images')
+        .update(changes)
+        .eq('id', body.id)
+        .select(imageColumns)
+        .maybeSingle();
+      if (updateError) throw updateError;
+      if (!data) return jsonResponse({ error: 'De foto bestaat niet meer.' }, 404);
+      return jsonResponse({ data });
+    }
+
+    if (body.action === 'update-album') {
+      if (typeof body.title !== 'string' || !body.title.trim()
+        || typeof body.newTitle !== 'string' || !body.newTitle.trim()
+        || typeof body.description !== 'string') {
+        return jsonResponse({ error: 'Ongeldig album.' }, 400);
+      }
+      const { error: albumError } = await supabase
+        .from('gallery_images')
+        .update({
+          title: body.newTitle.trim().slice(0, 120),
+          alt: body.newTitle.trim().slice(0, 120),
+          description: body.description.slice(0, 500),
+        })
+        .eq('gallery', 'sfeer_album')
+        .eq('title', body.title);
+      if (albumError) throw albumError;
+      return jsonResponse({ data: { updated: true } });
+    }
+
+    if (body.action === 'delete-album') {
+      if (typeof body.title !== 'string' || !body.title.trim()) {
+        return jsonResponse({ error: 'Ongeldig album.' }, 400);
+      }
+      const { data: albumImages, error: albumLookupError } = await supabase
+        .from('gallery_images')
+        .select('id, storage_path')
+        .eq('gallery', 'sfeer_album')
+        .eq('title', body.title);
+      if (albumLookupError) throw albumLookupError;
+      const paths = (albumImages ?? []).map((image) => image.storage_path).filter((path): path is string => !!path);
+      if (paths.length) {
+        const { error: removeError } = await supabase.storage.from('site-gallery').remove(paths);
+        if (removeError) throw removeError;
+      }
+      const { error: albumDeleteError } = await supabase
+        .from('gallery_images')
+        .delete()
+        .eq('gallery', 'sfeer_album')
+        .eq('title', body.title);
+      if (albumDeleteError) throw albumDeleteError;
+      return jsonResponse({ data: { deleted: true } });
+    }
+
+    if (body.action === 'reorder') {
+      if (!Array.isArray(body.ids) || body.ids.length > 500 || !body.ids.every((id) => typeof id === 'string' && id)) {
+        return jsonResponse({ error: 'Ongeldige volgorde.' }, 400);
+      }
+      for (const [index, id] of (body.ids as string[]).entries()) {
+        const { error: orderError } = await supabase
+          .from('gallery_images')
+          .update({ sort_order: index })
+          .eq('id', id);
+        if (orderError) throw orderError;
+      }
+      return jsonResponse({ data: { reordered: true } });
     }
 
     if (body.action === 'delete') {

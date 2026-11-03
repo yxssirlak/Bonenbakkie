@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Heart } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
-import { fetchGallery, GalleryImage } from '../gallery';
+import { fetchGallery, groupAlbums, subscribeToGallery, GalleryImage } from '../gallery';
 
 type GalleryCollection = {
   id: string | number;
@@ -55,60 +55,40 @@ const Sfeer: React.FC = () => {
 
   useEffect(() => {
     let cancelled = false;
-    const loadGallery = async () => {
-      const fallbackImages: GalleryImage[] = [
-        { id: 'fallback-1', gallery: 'sfeer', src: '/bonenbakkie1.jpeg', alt: "'t bonenbakkie koffiewagen", title: 'Koffie op evenementen', description: 'Sfeer en gezelligheid op locatie' },
-        { id: 'fallback-2', gallery: 'sfeer', src: '/bonenbakkie2.png', alt: "Interieur van 't bonenbakkie", title: "Binnen in 't bonenbakkie", description: 'Een warm en stijlvol interieur' },
-        { id: 'fallback-3', gallery: 'sfeer', src: '/Logo_bonenbakkie.jpeg', alt: "Logo van 't bonenbakkie", title: "'t bonenbakkie", description: 'Ons mobiele koffiehuisje' },
-      ];
+    const fallbackImages: GalleryImage[] = [
+      { id: 'fallback-1', gallery: 'sfeer', src: '/bonenbakkie1.jpeg', alt: "'t bonenbakkie koffiewagen" },
+      { id: 'fallback-2', gallery: 'sfeer', src: '/bonenbakkie2.png', alt: "Interieur van 't bonenbakkie" },
+      { id: 'fallback-3', gallery: 'sfeer', src: '/Logo_bonenbakkie.jpeg', alt: "Logo van 't bonenbakkie" },
+    ];
 
-      let remoteCollections: GalleryCollection[] = [];
+    const loadGallery = async () => {
       try {
         const images = await fetchGallery(['sfeer', 'sfeer_album']);
+        if (cancelled) return;
         const slides = images.filter((image) => image.gallery === 'sfeer');
-        if (!cancelled) setCarouselImages(slides.length ? slides : fallbackImages);
-
-        const albums = new Map<string, GalleryCollection>();
-        images.filter((image) => image.gallery === 'sfeer_album').forEach((image) => {
-          const title = image.title?.trim() || 'Evenementen';
-          const collection = albums.get(title) ?? {
-            id: `album-${title}`,
-            title,
-            description: image.description || '',
-            images: [],
-          };
-          collection.images.push(image);
-          albums.set(title, collection);
-        });
-        remoteCollections = Array.from(albums.values());
-        if (!cancelled) setCollections(remoteCollections);
+        setCarouselImages(slides.length ? slides : fallbackImages);
+        setCollections(
+          groupAlbums(images.filter((image) => image.gallery === 'sfeer_album')).map((album) => ({
+            id: `album-${album.title}`,
+            ...album,
+          })),
+        );
       } catch (error) {
         console.error('Sfeergalerij laden is mislukt:', error);
-        if (!cancelled) setCarouselImages(fallbackImages);
-      }
-
-      if (cancelled) return;
-      try {
-        const stored = window.localStorage.getItem('bonenbakkie-gallery-collections');
-        if (stored) {
-          const parsed = JSON.parse(stored) as GalleryCollection[];
-          if (parsed.length) {
-            const remoteTitles = new Set(remoteCollections.map((collection) => collection.title));
-            setCollections([
-              ...remoteCollections,
-              ...parsed.filter((collection) => !remoteTitles.has(collection.title)),
-            ]);
-          }
-        }
-      } catch (error) {
-        console.error('Sfeercollecties laden is mislukt:', error);
+        if (!cancelled) setCarouselImages((current) => (current.length ? current : fallbackImages));
       }
     };
     void loadGallery();
+    const unsubscribe = subscribeToGallery(() => { void loadGallery(); });
     return () => {
       cancelled = true;
+      unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    setActiveSlide((current) => (current >= carouselImages.length ? 0 : current));
+  }, [carouselImages.length]);
 
   const showPreviousSlide = () => {
     setActiveSlide((current) => (current - 1 + carouselImages.length) % carouselImages.length);
@@ -261,16 +241,9 @@ const Sfeer: React.FC = () => {
                   {collection.images.map((item, index) => (
                     <div key={item.id} className="glass-card overflow-hidden group p-2 border border-white/10 bg-white/5">
                       <div className="relative overflow-hidden rounded-[1.5rem] h-full w-full">
-                        <img src={item.src} alt={item.alt} className={`w-full object-cover transition-transform duration-700 group-hover:scale-110 ${index % 2 === 0 ? 'h-72' : 'h-64'}`} />
+                        <img src={item.src} alt={item.alt || collection.title} loading="lazy" className={`w-full object-cover transition-transform duration-700 group-hover:scale-110 ${index % 2 === 0 ? 'h-72' : 'h-64'}`} />
                         <div className="absolute inset-0 bg-[#140a07]/0 group-hover:bg-[#140a07]/40 transition-colors duration-500 flex items-center justify-center opacity-0 group-hover:opacity-100">
                           <Heart className="text-[#d4cab4] w-10 h-10 transform scale-50 group-hover:scale-100 transition-transform duration-500" />
-                        </div>
-                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#140a07]/90 to-transparent p-5 text-[#f4f1ea]">
-                          <p className="font-sans font-semibold uppercase tracking-[0.15em] text-[10px] sm:text-[11px] text-[#d4cab4] opacity-90 mb-2">
-                            {collection.title}
-                          </p>
-                          <h3 className="text-xl font-serif text-[#F5EFE7]">{item.title || collection.title}</h3>
-                          <p className="mt-1 text-sm opacity-90 text-[#ebdad0] font-sans">{item.description || collection.description}</p>
                         </div>
                       </div>
                     </div>
@@ -280,17 +253,8 @@ const Sfeer: React.FC = () => {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-24">
-            <div className="glass-card overflow-hidden group p-2 border border-white/10 bg-white/5 fade-in-up">
-              <div className="relative overflow-hidden rounded-[1.5rem] h-full w-full">
-                <img src="/bonenbakkie1.jpeg" alt="Voorbeeld foto" className="h-72 w-full object-cover" />
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#140a07]/90 to-transparent p-5 text-[#f4f1ea]">
-                  <p className="font-sans font-semibold uppercase tracking-[0.15em] text-[10px] sm:text-[11px] text-[#d4cab4] opacity-90 mb-2">Sfeer</p>
-                  <h3 className="text-xl font-serif text-[#F5EFE7]">Nog geen albums beschikbaar</h3>
-                  <p className="mt-1 text-sm opacity-90 text-[#ebdad0] font-sans">Gebruik de instellingenpagina om albums en foto's toe te voegen.</p>
-                </div>
-              </div>
-            </div>
+          <div className="mb-24 rounded-[2rem] border border-white/10 bg-white/5 p-10 text-center text-[#ebdad0] fade-in-up">
+            Binnenkort vind je hier albums van onze evenementen.
           </div>
         )}
 

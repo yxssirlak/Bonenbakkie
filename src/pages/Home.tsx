@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { fetchGallery, GalleryImage } from '../gallery';
+import { fetchGallery, subscribeToGallery, GalleryImage } from '../gallery';
+import PhotoCollage from '../components/PhotoCollage';
 
 const Home: React.FC = () => {
   const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
@@ -36,22 +37,27 @@ const Home: React.FC = () => {
   useEffect(() => {
     let cancelled = false;
     const fallbackImages: GalleryImage[] = [
-      { id: 'fallback-home-1', gallery: 'home', src: '/bonenbakkie1.jpeg', alt: "'t bonenbakkie koffiewagen", title: 'Onze koffiewagen', description: 'In actie op locatie' },
-      { id: 'fallback-home-2', gallery: 'home', src: '/bonenbakkie2.png', alt: "Interieur van 't bonenbakkie", title: 'Sfeer binnenin', description: 'Een warm en stijlvol interieur' },
-      { id: 'fallback-home-3', gallery: 'home', src: '/Logo_bonenbakkie.jpeg', alt: 'Logo van het mobiele koffiehuisje', title: 'Ons merk', description: 'Karakter en identiteit' },
+      { id: 'fallback-home-1', gallery: 'home', src: '/bonenbakkie1.jpeg', alt: "'t bonenbakkie koffiewagen", title: 'Onze koffiewagen', description: 'In actie op locatie', size: 'large' },
+      { id: 'fallback-home-2', gallery: 'home', src: '/bonenbakkie2.png', alt: "Interieur van 't bonenbakkie", title: 'Sfeer binnenin', description: 'Een warm en stijlvol interieur', size: 'tall' },
+      { id: 'fallback-home-3', gallery: 'home', src: '/Logo_bonenbakkie.jpeg', alt: 'Logo van het mobiele koffiehuisje', title: 'Ons merk', description: 'Karakter en identiteit', size: 'small' },
     ];
 
-    fetchGallery(['home', 'sfeer'])
-      .then((images) => {
-        if (!cancelled) setGalleryImages(images.length ? images : fallbackImages);
-      })
-      .catch((error: unknown) => {
-        console.error('Homepage galerij laden is mislukt:', error);
-        if (!cancelled) setGalleryImages(fallbackImages);
-      });
+    const load = () => {
+      fetchGallery(['home'])
+        .then((images) => {
+          if (!cancelled) setGalleryImages(images.length ? images : fallbackImages);
+        })
+        .catch((error: unknown) => {
+          console.error('Homepage galerij laden is mislukt:', error);
+          if (!cancelled) setGalleryImages((current) => (current.length ? current : fallbackImages));
+        });
+    };
+    load();
+    const unsubscribe = subscribeToGallery(load);
 
     return () => {
       cancelled = true;
+      unsubscribe();
     };
   }, []);
 
@@ -365,13 +371,7 @@ const Home: React.FC = () => {
             <div className="mt-6 h-px w-24 bg-white" aria-hidden="true" />
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {galleryImages.map((image, index) => (
-              <div key={`${image.src}-${index}`} className={`group relative overflow-hidden rounded-[2rem] shadow-[0_20px_45px_rgba(0,0,0,0.16)] ${index === 0 ? 'md:col-span-2 md:row-span-2 h-96 md:h-[32rem]' : 'h-72'}`}>
-                <img src={image.src} alt={image.alt || `Foto ${index + 1} van 't bonenbakkie`} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              </div>
-            ))}
-          </div>
+          <PhotoCollage images={galleryImages} />
 
         </div>
       </section>

@@ -1,565 +1,767 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { CheckCircle, Trash2, Plus, Image as ImageIcon, Coffee, Home, Lock } from 'lucide-react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  ChevronDown,
+  Coffee,
+  Eye,
+  EyeOff,
+  Home,
+  Images,
+  Loader2,
+  Lock,
+  Plus,
+  Sparkles,
+  Trash2,
+  Upload,
+} from 'lucide-react';
 import {
   authenticateGalleryAdmin,
+  deleteAlbum,
   deleteGalleryImage,
   fetchGallery,
   GalleryImage,
   GalleryName,
-  importGalleryImage,
-  uploadGalleryImage,
+  groupAlbums,
+  PhotoSize,
+  reorderGallery,
+  updateAlbum,
+  updateGalleryImage,
+  uploadGalleryFile,
+  validateImageFile,
 } from '../gallery';
+import { DEFAULT_MENU, fetchMenu, MenuData, MenuItem, saveMenu, uploadMenuImage } from '../menu';
+import Dropdown from '../components/Dropdown';
+import PhotoCollage, { PHOTO_SIZES } from '../components/PhotoCollage';
 
-// --- STANDAARD DATA (FALLBACKS) ---
-const defaultCats = [
-  { id: '1', name: 'Warme Dranken' },
-  { id: '2', name: 'Koude Dranken' },
-  { id: '3', name: 'Lekkernijen' },
-  { id: '4', name: "Extra's" },
-  { id: '5', name: 'Soorten Melk' }
+type TabId = 'menu' | 'home' | 'sfeer' | 'events';
+
+const TABS: Array<{ id: TabId; label: string; icon: React.ReactNode }> = [
+  { id: 'menu', label: 'Menu', icon: <Coffee size={16} /> },
+  { id: 'home', label: 'Home collage', icon: <Home size={16} /> },
+  { id: 'sfeer', label: 'Carrousel', icon: <Sparkles size={16} /> },
+  { id: 'events', label: 'Evenementen', icon: <Images size={16} /> },
 ];
 
-const defaultItems = [
-  { id: '101', categoryId: '1', name: 'Espresso', description: 'Een krachtige, pure shot van onze premium bonen.' },
-  { id: '102', categoryId: '1', name: 'Koffie', description: 'De klassieke, vertrouwde filterkoffie.' },
-  { id: '103', categoryId: '1', name: 'Cappuccino', description: 'Rijke espresso met perfect opgeschuimde volle melk.' },
-  { id: '104', categoryId: '1', name: 'Flat White', description: 'Dubbele ristretto met zacht microschuim.' },
-  { id: '105', categoryId: '1', name: 'Koffie Verkeerd', description: 'Een milde koffie met veel warme melk.' },
-  { id: '106', categoryId: '1', name: 'Latte Machiato', description: 'Warme melk en melkschuim met een shot espresso.' },
-  { id: '107', categoryId: '1', name: 'Thee', description: 'Keuze uit diverse theesmaken.' },
-  { id: '108', categoryId: '1', name: 'Munthee', description: 'Verse, verwarmende munthee.' },
-  { id: '109', categoryId: '1', name: 'Gemberthee', description: 'Kruidige thee met verse gember.' },
-  { id: '201', categoryId: '2', name: 'IJskoffie', description: 'Verfrissende ijskoude koffie.' },
-  { id: '202', categoryId: '2', name: 'Matcha', description: 'Koude matcha latte met ijs.' },
-  { id: '203', categoryId: '2', name: 'Limonade', description: 'Huisgemaakte, frisse limonade.' },
-  { id: '301', categoryId: '3', name: 'Stroopwafel', description: 'Heerlijk voor bij de warme koffie.' },
-  { id: '401', categoryId: '4', name: 'Karamel', description: 'Voeg een vleugje karamelsiroop toe.' },
-  { id: '402', categoryId: '4', name: 'Vanille', description: 'Voeg een vleugje vanillesiroop toe.' },
-  { id: '403', categoryId: '4', name: 'Aarbei', description: 'Voeg een vleugje aardbeiensiroop toe.' },
-  { id: '404', categoryId: '4', name: 'Hazelnoot', description: 'Voeg een vleugje hazelnootsiroop toe.' },
-  { id: '405', categoryId: '4', name: 'Slagroom', description: 'Een flinke toef verse slagroom.' },
-  { id: '501', categoryId: '5', name: 'Volle Koemelk', description: 'De klassieke, romige keuze.' },
-  { id: '502', categoryId: '5', name: 'Havermelk', description: 'Plantaardig, mild en romig.' },
-  { id: '503', categoryId: '5', name: 'Sojamelk', description: 'Plantaardig en vol van smaak.' },
-  { id: '504', categoryId: '5', name: 'Kokosmelk', description: 'Plantaardig met een tropisch vleugje.' },
-];
+const NEW_ALBUM = '__new__';
 
-const defaultHomeGallery = [
-  { id: '1', src: '/bonenbakkie1.jpeg', alt: "'t bonenbakkie koffiewagen", title: 'Onze koffiewagen', description: 'In actie op locatie' },
-  { id: '2', src: '/bonenbakkie2.png', alt: "Interieur van 't bonenbakkie", title: 'Sfeer binnenin', description: 'Een warm en stijlvol interieur' },
-  { id: '3', src: '/Logo_bonenbakkie.jpeg', alt: 'Logo van het mobiele koffiehuisje', title: 'Ons merk', description: 'Karakter en identiteit' },
-];
+// Donker thema voor het hele paneel: licht gekleurde utilities worden hier omgezet.
+const ADMIN_DARK_CSS = `
+.admin-dark .text-\\[\\#534026\\] { color: #d4cab4; }
+.admin-dark .text-\\[\\#534026\\]\\/80, .admin-dark .text-\\[\\#534026\\]\\/70 { color: rgba(244,241,234,0.7); }
+.admin-dark .bg-white\\/60 { background-color: rgba(255,255,255,0.05); }
+.admin-dark .bg-white\\/70 { background-color: rgba(255,255,255,0.07); }
+.admin-dark .bg-white\\/80 { background-color: rgba(255,255,255,0.08); }
+.admin-dark .bg-white\\/90, .admin-dark .bg-white\\/90.text-\\[\\#534026\\] { color: #534026; }
+.admin-dark .border-\\[\\#534026\\]\\/15 { border-color: rgba(255,255,255,0.1); }
+.admin-dark .border-\\[\\#534026\\]\\/30 { border-color: rgba(212,202,180,0.3); }
+.admin-dark .bg-\\[\\#534026\\]\\/10 { background-color: rgba(255,255,255,0.08); }
+.admin-dark .bg-\\[\\#534026\\] { background-color: #7a5c35; }
+.admin-dark .text-red-700:not(.bg-white\\/90) { color: #fca5a5; }
+.admin-dark input:not([type=file]) { color: #f4f1ea; }
+.admin-dark input::placeholder { color: rgba(244,241,234,0.4); }
+.admin-dark input:focus { border-color: #d4cab4; box-shadow: 0 0 0 2px rgba(212,202,180,0.2); }
+.admin-dark button:disabled { opacity: 0.4; }
+.admin-dark input[type=file] { color: rgba(244,241,234,0.7); }
+.admin-dark input[type=file]::file-selector-button { color: #f4f1ea; background-color: rgba(255,255,255,0.12); }
+`;
 
-const defaultSfeerGallery = [
-  { id: '1', src: '/bonenbakkie1.jpeg', alt: "'t bonenbakkie koffiewagen", title: 'Koffie op evenementen', description: 'Sfeer en gezelligheid op locatie' },
-  { id: '2', src: '/bonenbakkie2.png', alt: "Interieur van 't bonenbakkie", title: "Binnen in 't bonenbakkie", description: 'Een warm en stijlvol interieur' },
-  { id: '3', src: '/Logo_bonenbakkie.jpeg', alt: "Logo van 't bonenbakkie", title: "'t bonenbakkie", description: 'Ons mobiele koffiehuisje' },
-];
+const inputClass =
+  'w-full rounded-xl border border-[#534026]/30 bg-white/70 px-4 py-2.5 text-[#1e0f0a] placeholder:text-[#534026]/50 outline-none transition focus:border-[#534026] focus:ring-2 focus:ring-[#534026]/20';
+const buttonClass =
+  'inline-flex items-center justify-center gap-2 rounded-xl bg-[#534026] px-5 py-2.5 font-medium text-[#f4f1ea] transition hover:bg-[#3d2e1b] active:scale-95 disabled:cursor-not-allowed disabled:opacity-50';
+const cardClass = 'rounded-3xl border border-[#534026]/15 bg-white/60 p-5 shadow-sm sm:p-6';
 
-type LegacyGalleryCollection = {
-  id: string | number;
-  title: string;
-  description: string;
-  images: Array<Omit<GalleryImage, 'gallery'>>;
-};
+const errorMessage = (error: unknown, fallback: string) => (error instanceof Error ? error.message : fallback);
+
+const SizePicker: React.FC<{ value: PhotoSize; onChange: (size: PhotoSize) => void; compact?: boolean }> = ({ value, onChange, compact }) => (
+  <div className="flex flex-wrap gap-2">
+    {PHOTO_SIZES.map((size) => (
+      <button
+        key={size.value}
+        type="button"
+        onClick={() => onChange(size.value)}
+        className={`flex items-center gap-2 rounded-xl border px-3 py-1.5 text-sm transition active:scale-95 ${
+          value === size.value
+            ? 'border-[#534026] bg-[#534026] text-[#f4f1ea]'
+            : 'border-[#534026]/30 bg-white/80 text-[#534026] hover:border-[#534026]'
+        }`}
+      >
+        <span
+          className="grid gap-px"
+          style={{ gridTemplateColumns: `repeat(${size.cols}, 0.4rem)`, gridTemplateRows: `repeat(${size.rows}, 0.4rem)` }}
+        >
+          {Array.from({ length: size.cols * size.rows }).map((_, index) => (
+            <span key={index} className="rounded-[2px] bg-current opacity-70" />
+          ))}
+        </span>
+        {!compact && size.label}
+      </button>
+    ))}
+  </div>
+);
 
 const Admin: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
-  const [activeTab, setActiveTab] = useState<'menu' | 'home' | 'sfeer'>('menu');
-  const [activeSfeerSection, setActiveSfeerSection] = useState<'slides' | 'albums'>('slides');
+  const [loginError, setLoginError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabId>('menu');
   const [isLoaded, setIsLoaded] = useState(false);
+  const [toast, setToast] = useState<{ type: 'ok' | 'error'; text: string } | null>(null);
+  const toastTimer = useRef<number | undefined>(undefined);
 
-  // Refs om de bestandsvelden leeg te maken na uploaden
-  const menuFileRef = useRef<HTMLInputElement>(null);
-  const galleryFileRef = useRef<HTMLInputElement>(null);
-
-  // --- MENU STATES ---
-  const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
-  const [items, setItems] = useState<any[]>([]);
+  const [menu, setMenu] = useState<MenuData>(DEFAULT_MENU);
+  const [menuStatus, setMenuStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const menuTimer = useRef<number | undefined>(undefined);
+  const latestMenu = useRef<MenuData>(DEFAULT_MENU);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [newItemCat, setNewItemCat] = useState('');
   const [newItemName, setNewItemName] = useState('');
   const [newItemDesc, setNewItemDesc] = useState('');
-  const [newItemImgBase64, setNewItemImgBase64] = useState('');
+  const [newItemImage, setNewItemImage] = useState<File | null>(null);
+  const menuFileRef = useRef<HTMLInputElement>(null);
 
-  // --- GALERIJ STATES ---
-  const [homeImages, setHomeImages] = useState<GalleryImage[]>([]);
-  const [sfeerImages, setSfeerImages] = useState<GalleryImage[]>([]);
-  const [sfeerAlbumImages, setSfeerAlbumImages] = useState<GalleryImage[]>([]);
-  const [newGalleryImgBase64, setNewGalleryImgBase64] = useState('');
-  const [newGalleryTitle, setNewGalleryTitle] = useState('');
-  const [newGalleryDesc, setNewGalleryDesc] = useState('');
+  const [images, setImages] = useState<GalleryImage[]>([]);
+  const [busy, setBusy] = useState(false);
+  const [homeFiles, setHomeFiles] = useState<File[]>([]);
+  const [homeSize, setHomeSize] = useState<PhotoSize>('small');
+  const homeFileRef = useRef<HTMLInputElement>(null);
+  const [slideFiles, setSlideFiles] = useState<File[]>([]);
+  const slideFileRef = useRef<HTMLInputElement>(null);
+  const [albumChoice, setAlbumChoice] = useState(NEW_ALBUM);
+  const [albumTitle, setAlbumTitle] = useState('');
+  const [albumDesc, setAlbumDesc] = useState('');
+  const [albumFiles, setAlbumFiles] = useState<File[]>([]);
+  const albumFileRef = useRef<HTMLInputElement>(null);
+  const [openAlbum, setOpenAlbum] = useState<string | null>(null);
+  const [albumEdits, setAlbumEdits] = useState<Record<string, { title: string; description: string }>>({});
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const notify = useCallback((type: 'ok' | 'error', text: string) => {
+    window.clearTimeout(toastTimer.current);
+    setToast({ type, text });
+    toastTimer.current = window.setTimeout(() => setToast(null), 3500);
+  }, []);
+
+  const homeImages = images.filter((image) => image.gallery === 'home');
+  const slideImages = images.filter((image) => image.gallery === 'sfeer');
+  const albums = groupAlbums(images.filter((image) => image.gallery === 'sfeer_album'));
+
+  const reloadGallery = useCallback(async () => {
+    setImages(await fetchGallery(['home', 'sfeer', 'sfeer_album']));
+  }, []);
+
+  const handleLogin = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setLoginError('');
+    setIsLoggingIn(true);
     try {
       await authenticateGalleryAdmin(password);
       setIsAuthenticated(true);
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'Inloggen is mislukt.');
+      setLoginError(errorMessage(error, 'Inloggen is mislukt.'));
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
   useEffect(() => {
-    if (isAuthenticated) {
-      const storedCats = localStorage.getItem('bonenbakkie-menu-categories');
-      const storedItems = localStorage.getItem('bonenbakkie-menu-items');
-      const storedHome = localStorage.getItem('bonenbakkie-home-gallery');
-      const storedSfeer = localStorage.getItem('bonenbakkie-sfeer-gallery');
-      const storedCollections = localStorage.getItem('bonenbakkie-gallery-collections');
-
-      if (storedCats && storedCats !== '[]') setCategories(JSON.parse(storedCats));
-      else setCategories(defaultCats);
-
-      if (storedItems && storedItems !== '[]') setItems(JSON.parse(storedItems));
-      else setItems(defaultItems);
-
-      let cancelled = false;
-      const loadGallery = async () => {
-        const legacyGalleries: Array<{ name: GalleryName; raw: string | null; fallback: GalleryImage[] }> = [
-          { name: 'home', raw: storedHome, fallback: defaultHomeGallery.map((image) => ({ ...image, gallery: 'home' })) },
-          { name: 'sfeer', raw: storedSfeer, fallback: defaultSfeerGallery.map((image) => ({ ...image, gallery: 'sfeer' })) },
-          { name: 'sfeer_album', raw: null, fallback: [] },
-        ];
-
-        try {
-          let remoteImages = await fetchGallery(['home', 'sfeer', 'sfeer_album']);
-          for (const gallery of legacyGalleries) {
-            const localImages: GalleryImage[] = gallery.raw && gallery.raw !== '[]'
-              ? JSON.parse(gallery.raw).map((image: Omit<GalleryImage, 'gallery'>) => ({
-                ...image,
-                id: `legacy-${gallery.name}-${image.id}`,
-                gallery: gallery.name,
-              }))
-              : remoteImages.some((image) => image.gallery === gallery.name) ? []
-                : gallery.fallback;
-
-            for (const image of localImages) {
-              if (remoteImages.some((remoteImage) => remoteImage.id === image.id)) continue;
-              await importGalleryImage(password, gallery.name, image);
-            }
+    if (!isAuthenticated) return undefined;
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const remoteMenu = await fetchMenu();
+        let initial = remoteMenu;
+        if (!initial) {
+          // Eerste keer: neem het oude lokaal opgeslagen menu over, anders de standaard.
+          try {
+            const cats = JSON.parse(localStorage.getItem('bonenbakkie-menu-categories') ?? 'null');
+            const items = JSON.parse(localStorage.getItem('bonenbakkie-menu-items') ?? 'null');
+            if (Array.isArray(cats) && cats.length && Array.isArray(items)) initial = { categories: cats, items };
+          } catch {
+            initial = null;
           }
-          if (storedCollections) {
-            const collections: unknown = JSON.parse(storedCollections);
-            if (Array.isArray(collections)) {
-              for (const collection of collections as LegacyGalleryCollection[]) {
-                if (typeof collection.title !== 'string' || !Array.isArray(collection.images)) continue;
-                for (const image of collection.images) {
-                  if (typeof image.src !== 'string') continue;
-                  const id = `legacy-album-${collection.id}-${image.id}`;
-                  if (remoteImages.some((remoteImage) => remoteImage.id === id)) continue;
-                  await importGalleryImage(password, 'sfeer_album', {
-                    ...image,
-                    id,
-                    title: collection.title,
-                    description: collection.description,
-                  });
-                }
-              }
-            }
-          }
-          remoteImages = await fetchGallery(['home', 'sfeer', 'sfeer_album']);
-          if (!cancelled) {
-            setHomeImages(remoteImages.filter((image) => image.gallery === 'home'));
-            setSfeerImages(remoteImages.filter((image) => image.gallery === 'sfeer'));
-            setSfeerAlbumImages(remoteImages.filter((image) => image.gallery === 'sfeer_album'));
-            localStorage.removeItem('bonenbakkie-home-gallery');
-            localStorage.removeItem('bonenbakkie-sfeer-gallery');
-            localStorage.removeItem('bonenbakkie-gallery-collections');
-          }
-        } catch (error) {
-          if (!cancelled) {
-            alert(error instanceof Error ? error.message : 'Galerijfoto’s laden is mislukt.');
-          }
-        } finally {
-          if (!cancelled) setIsLoaded(true);
         }
-      };
-
-      setIsLoaded(false);
-      void loadGallery();
-      return () => { cancelled = true; };
-    }
-    return undefined;
-  }, [isAuthenticated, password]);
-
-  useEffect(() => {
-    if (isAuthenticated && isLoaded) {
-      localStorage.setItem('bonenbakkie-menu-categories', JSON.stringify(categories));
-      localStorage.setItem('bonenbakkie-menu-items', JSON.stringify(items));
-    }
-  }, [categories, items, isAuthenticated, isLoaded]);
-
-  // Helper functie om een bestand naar Base64 string om te zetten
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, setBase64String: (val: string) => void) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type) || file.size > 10 * 1024 * 1024) {
-        alert('Gebruik een JPG-, PNG-, WEBP- of GIF-afbeelding van maximaal 10 MB.');
-        e.target.value = '';
-        setBase64String('');
-        return;
+        const loaded = initial ?? DEFAULT_MENU;
+        if (!cancelled) {
+          latestMenu.current = loaded;
+          setMenu(loaded);
+          setNewItemCat(loaded.categories[0]?.id ?? '');
+        }
+        await reloadGallery();
+      } catch (error) {
+        if (!cancelled) notify('error', errorMessage(error, 'Laden is mislukt.'));
+      } finally {
+        if (!cancelled) setIsLoaded(true);
       }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (typeof reader.result === 'string') setBase64String(reader.result);
-      };
-      reader.onerror = () => alert('De afbeelding kon niet worden gelezen.');
-      reader.readAsDataURL(file);
-    } else {
-      setBase64String('');
-    }
-  };
+    };
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthenticated, reloadGallery, notify]);
 
-  const handleAddCategory = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newCategoryName.trim()) return;
-    const newCat = { id: Date.now().toString(), name: newCategoryName };
-    setCategories([...categories, newCat]);
+  useEffect(() => () => {
+    window.clearTimeout(menuTimer.current);
+    window.clearTimeout(toastTimer.current);
+  }, []);
+
+  const flushMenu = useCallback(async () => {
+    setMenuStatus('saving');
+    try {
+      await saveMenu(password, latestMenu.current);
+      setMenuStatus('saved');
+    } catch (error) {
+      setMenuStatus('error');
+      notify('error', errorMessage(error, 'Menu opslaan is mislukt.'));
+    }
+  }, [password, notify]);
+
+  // Elke menuwijziging wordt (kort gebundeld) direct naar de website gepusht.
+  const commitMenu = useCallback((next: MenuData) => {
+    latestMenu.current = next;
+    setMenu(next);
+    setMenuStatus('saving');
+    window.clearTimeout(menuTimer.current);
+    menuTimer.current = window.setTimeout(() => { void flushMenu(); }, 700);
+  }, [flushMenu]);
+
+  const addCategory = () => {
+    const name = newCategoryName.trim();
+    if (!name) return;
+    const id = `cat-${Date.now()}`;
+    commitMenu({ ...menu, categories: [...menu.categories, { id, name }] });
+    if (!newItemCat) setNewItemCat(id);
     setNewCategoryName('');
   };
 
-  const handleDeleteCategory = (id: string) => {
-    if (window.confirm('Weet je zeker dat je deze categorie (en alle items erin) wilt verwijderen?')) {
-      setCategories(categories.filter(c => c.id !== id));
-      setItems(items.filter(i => i.categoryId !== id));
-    }
+  const deleteCategory = (id: string) => {
+    if (!window.confirm('Categorie en alle bijbehorende items verwijderen?')) return;
+    const categories = menu.categories.filter((category) => category.id !== id);
+    commitMenu({ categories, items: menu.items.filter((item) => item.categoryId !== id) });
+    if (newItemCat === id) setNewItemCat(categories[0]?.id ?? '');
   };
 
-  const handleAddItem = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newItemName || !newItemCat) {
-      alert('Vul in ieder geval een naam en categorie in.');
+  const addItem = async () => {
+    const name = newItemName.trim();
+    if (!name || !newItemCat) {
+      notify('error', 'Kies een categorie en vul een naam in.');
       return;
     }
-    const newItem = {
-      id: Date.now().toString(),
-      categoryId: newItemCat,
-      name: newItemName,
-      description: newItemDesc,
-      imageUrl: newItemImgBase64,
-    };
-    setItems([...items, newItem]);
-    
-    setNewItemName('');
-    setNewItemDesc('');
-    setNewItemImgBase64('');
-    if (menuFileRef.current) menuFileRef.current.value = '';
-  };
-
-  const handleDeleteItem = (id: string) => {
-    setItems(items.filter(i => i.id !== id));
-  };
-
-  const handleAddImage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newGalleryImgBase64) {
-      alert('Selecteer eerst een afbeelding om te uploaden.');
-      return;
-    }
-    if (activeTab === 'sfeer' && activeSfeerSection === 'albums' && !newGalleryTitle.trim()) {
-      alert('Vul een albumnaam in.');
-      return;
-    }
-    const gallery: GalleryName = activeTab === 'home'
-      ? 'home'
-      : activeTab === 'sfeer' && activeSfeerSection === 'albums' ? 'sfeer_album' : 'sfeer';
+    setBusy(true);
     try {
-      const savedImage = await uploadGalleryImage(password, gallery, {
-        src: newGalleryImgBase64,
-        alt: newGalleryTitle || 'Foto',
-        title: newGalleryTitle,
-        description: newGalleryDesc,
+      const imageUrl = newItemImage ? await uploadMenuImage(password, newItemImage) : undefined;
+      const item: MenuItem = { id: `item-${Date.now()}`, categoryId: newItemCat, name, description: newItemDesc.trim(), imageUrl };
+      commitMenu({ ...menu, items: [...menu.items, item] });
+      setNewItemName('');
+      setNewItemDesc('');
+      setNewItemImage(null);
+      if (menuFileRef.current) menuFileRef.current.value = '';
+    } catch (error) {
+      notify('error', errorMessage(error, 'Item toevoegen is mislukt.'));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const updateItem = (id: string, changes: Partial<MenuItem>) => {
+    commitMenu({ ...menu, items: menu.items.map((item) => (item.id === id ? { ...item, ...changes } : item)) });
+  };
+
+  const setItemImage = async (id: string, file: File) => {
+    const problem = validateImageFile(file);
+    if (problem) {
+      notify('error', problem);
+      return;
+    }
+    setBusy(true);
+    try {
+      const imageUrl = await uploadMenuImage(password, file);
+      commitMenu({
+        ...latestMenu.current,
+        items: latestMenu.current.items.map((item) => (item.id === id ? { ...item, imageUrl } : item)),
       });
-      if (gallery === 'home') setHomeImages((images) => [...images, savedImage]);
-      else if (gallery === 'sfeer') setSfeerImages((images) => [...images, savedImage]);
-      else setSfeerAlbumImages((images) => [...images, savedImage]);
-
-      setNewGalleryImgBase64('');
-      setNewGalleryTitle('');
-      setNewGalleryDesc('');
-      if (galleryFileRef.current) galleryFileRef.current.value = '';
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'De foto kon niet worden opgeslagen.');
+      notify('error', errorMessage(error, 'Foto uploaden is mislukt.'));
+    } finally {
+      setBusy(false);
     }
   };
 
-  const handleDeleteImage = async (id: string) => {
+  const pickFiles = (event: React.ChangeEvent<HTMLInputElement>, set: (files: File[]) => void) => {
+    const files = Array.from(event.target.files ?? []);
+    const problem = files.map(validateImageFile).find(Boolean);
+    if (problem) {
+      notify('error', problem);
+      event.target.value = '';
+      set([]);
+      return;
+    }
+    set(files);
+  };
+
+  const runGalleryAction = async (action: () => Promise<unknown>, success?: string) => {
+    setBusy(true);
     try {
-      await deleteGalleryImage(password, id);
-      if (activeTab === 'home') setHomeImages((images) => images.filter((image) => image.id !== id));
-      else if (activeTab === 'sfeer' && activeSfeerSection === 'albums') setSfeerAlbumImages((images) => images.filter((image) => image.id !== id));
-      else if (activeTab === 'sfeer') setSfeerImages((images) => images.filter((image) => image.id !== id));
+      await action();
+      await reloadGallery();
+      if (success) notify('ok', success);
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'De foto kon niet worden verwijderd.');
+      notify('error', errorMessage(error, 'Er is iets misgegaan.'));
+    } finally {
+      setBusy(false);
     }
   };
+
+  const uploadMany = async (files: File[], gallery: GalleryName, meta: { title?: string; description?: string; size?: PhotoSize }) => {
+    for (const file of files) {
+      await uploadGalleryFile(password, gallery, file, {
+        alt: meta.title || file.name.replace(/\.[^.]+$/, ''),
+        title: meta.title,
+        description: meta.description,
+        size: meta.size,
+      });
+    }
+  };
+
+  const uploadHome = () => runGalleryAction(async () => {
+    await uploadMany(homeFiles, 'home', { size: homeSize });
+    setHomeFiles([]);
+    if (homeFileRef.current) homeFileRef.current.value = '';
+  }, 'Foto’s toegevoegd aan de collage.');
+
+  const uploadSlides = () => runGalleryAction(async () => {
+    await uploadMany(slideFiles, 'sfeer', {});
+    setSlideFiles([]);
+    if (slideFileRef.current) slideFileRef.current.value = '';
+  }, 'Foto’s toegevoegd aan de carrousel.');
+
+  const uploadAlbum = () => {
+    const isNew = albumChoice === NEW_ALBUM;
+    const title = (isNew ? albumTitle : albumChoice).trim();
+    if (!title) {
+      notify('error', 'Geef het album een naam.');
+      return Promise.resolve();
+    }
+    const existing = albums.find((album) => album.title === title);
+    const description = isNew ? albumDesc.trim() : existing?.description ?? '';
+    return runGalleryAction(async () => {
+      await uploadMany(albumFiles, 'sfeer_album', { title, description });
+      setAlbumFiles([]);
+      setAlbumTitle('');
+      setAlbumDesc('');
+      setAlbumChoice(title);
+      setOpenAlbum(title);
+      if (albumFileRef.current) albumFileRef.current.value = '';
+    }, isNew ? `Album “${title}” aangemaakt.` : `Foto’s toegevoegd aan “${title}”.`);
+  };
+
+  const moveHomeImage = (index: number, direction: -1 | 1) => {
+    const target = index + direction;
+    if (target < 0 || target >= homeImages.length) return;
+    const ids = homeImages.map((image) => image.id);
+    [ids[index], ids[target]] = [ids[target], ids[index]];
+    setImages((current) => [
+      ...current.filter((image) => image.gallery !== 'home'),
+      ...ids.map((id) => homeImages.find((image) => image.id === id) as GalleryImage),
+    ]);
+    void runGalleryAction(() => reorderGallery(password, ids));
+  };
+
+  const removeImage = (id: string) => {
+    if (!window.confirm('Deze foto verwijderen?')) return;
+    void runGalleryAction(() => deleteGalleryImage(password, id), 'Foto verwijderd.');
+  };
+
+  const changeSize = (image: GalleryImage, size: PhotoSize) => {
+    setImages((current) => current.map((item) => (item.id === image.id ? { ...item, size } : item)));
+    void runGalleryAction(() => updateGalleryImage(password, image.id, { size }));
+  };
+
+  const albumOptions = [
+    { value: NEW_ALBUM, label: 'Nieuw album', hint: 'Maak een nieuw album aan' },
+    ...albums.map((album) => ({ value: album.title, label: album.title, hint: `${album.images.length} foto’s` })),
+  ];
+
+  const MenuSaveStatus = () => (
+    <span className="inline-flex items-center gap-2 text-sm text-[#534026]">
+      {menuStatus === 'saving' && (<><Loader2 size={14} className="animate-spin" /> Opslaan…</>)}
+      {menuStatus === 'saved' && (<><Check size={14} className="text-green-700" /> Live op de website</>)}
+      {menuStatus === 'error' && <span className="text-red-700">Opslaan mislukt</span>}
+    </span>
+  );
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#1e0f0a] flex items-center justify-center px-4">
-        <form onSubmit={handleLogin} className="glass-card !bg-white/5 !backdrop-blur-xl border border-white/10 p-8 max-w-md w-full rounded-3xl">
-          <div className="flex justify-center mb-6">
-            <div className="p-4 bg-[var(--logo-cream)] rounded-full text-[var(--color-brown-main)]">
-              <Lock size={32} />
+      <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#1e0f0a] px-4">
+        <style>{`@keyframes loginShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}`}</style>
+        <div className="pointer-events-none absolute left-1/2 top-1/2 h-[32rem] w-[32rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#7a5c35]/20 blur-3xl" />
+        <form
+          onSubmit={handleLogin}
+          key={loginError}
+          style={loginError ? { animation: 'loginShake 0.4s ease-in-out' } : undefined}
+          className="fade-in-up relative w-full max-w-sm rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 shadow-[0_30px_80px_rgba(0,0,0,0.5)] backdrop-blur-xl sm:p-10"
+        >
+          <div className="mb-8 flex flex-col items-center gap-3 text-center">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full border border-[#d4cab4]/30 bg-[#d4cab4]/10 text-[#d4cab4]">
+              <Lock size={26} />
             </div>
+            <h1 className="font-serif text-3xl">Beheer</h1>
+            <p className="text-sm text-[#f4f1ea]/60">Log in om menu, foto's en albums te beheren.</p>
           </div>
-          <h2 className="text-2xl font-serif text-center text-[#f4f1ea] mb-8">Admin Login</h2>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Wachtwoord"
-            className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white mb-6 focus:outline-none focus:border-[#d4cab4]"
-          />
-          <button type="submit" className="w-full bg-[#f4f1ea] text-[#534026] font-sans uppercase tracking-[0.15em] text-[13px] font-bold py-3 rounded-xl hover:bg-white transition-colors">
+          <div className="relative">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(event) => { setPassword(event.target.value); if (loginError) setLoginError(''); }}
+              placeholder="Wachtwoord"
+              autoComplete="current-password"
+              className="w-full rounded-xl border border-white/10 bg-black/25 py-3 pl-4 pr-12 text-[#f4f1ea] placeholder:text-[#f4f1ea]/40 outline-none transition focus:border-[#d4cab4] focus:ring-2 focus:ring-[#d4cab4]/20"
+              autoFocus
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((current) => !current)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-2 text-[#d4cab4]/70 transition hover:text-[#d4cab4]"
+              aria-label={showPassword ? 'Verberg wachtwoord' : 'Toon wachtwoord'}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
+          <p className={`overflow-hidden text-sm text-red-300 transition-all duration-300 ${loginError ? 'mt-3 max-h-10 opacity-100' : 'max-h-0 opacity-0'}`}>{loginError}</p>
+          <button
+            type="submit"
+            disabled={!password || isLoggingIn}
+            className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-[#d4cab4] px-5 py-3 font-medium text-[#1e0f0a] transition hover:bg-[#e6dec9] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {isLoggingIn && <Loader2 size={16} className="animate-spin" />}
             Inloggen
           </button>
         </form>
-      </div>
+      </main>
     );
   }
 
-  return (
-    <main className="min-h-screen bg-[#1e0f0a] pt-32 pb-24 px-4 sm:px-6 lg:px-8 relative">
-      <div className="max-w-6xl mx-auto relative z-10">
-        <h1 className="text-4xl md:text-5xl font-serif text-[#f4f1ea] mb-10 text-center">
-          Beheerpaneel
-        </h1>
+  const activeIndex = TABS.findIndex((tab) => tab.id === activeTab);
 
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
-          <button onClick={() => setActiveTab('menu')} className={`px-6 py-3 rounded-full font-sans uppercase tracking-[0.15em] text-[11px] sm:text-[12px] font-semibold flex items-center gap-2 transition-all ${activeTab === 'menu' ? 'bg-[#f4f1ea] text-[#534026]' : 'bg-white/5 text-[#f4f1ea] hover:bg-white/10'}`}>
-            <Coffee size={16} /> Menu Beheren
-          </button>
-          <button onClick={() => setActiveTab('home')} className={`px-6 py-3 rounded-full font-sans uppercase tracking-[0.15em] text-[11px] sm:text-[12px] font-semibold flex items-center gap-2 transition-all ${activeTab === 'home' ? 'bg-[#f4f1ea] text-[#534026]' : 'bg-white/5 text-[#f4f1ea] hover:bg-white/10'}`}>
-            <Home size={16} /> Home Galerij
-          </button>
-          <button onClick={() => setActiveTab('sfeer')} className={`px-6 py-3 rounded-full font-sans uppercase tracking-[0.15em] text-[11px] sm:text-[12px] font-semibold flex items-center gap-2 transition-all ${activeTab === 'sfeer' ? 'bg-[#f4f1ea] text-[#534026]' : 'bg-white/5 text-[#f4f1ea] hover:bg-white/10'}`}>
-            <ImageIcon size={16} /> Sfeer Galerij
-          </button>
+  return (
+    <main className="admin-dark min-h-screen bg-[#1e0f0a] px-4 pb-24 pt-28 text-[#f4f1ea] sm:px-6">
+      <style>{ADMIN_DARK_CSS}</style>
+      <div className="mx-auto max-w-5xl">
+        <h1 className="mb-2 font-serif text-3xl text-[#534026]">Beheerpaneel</h1>
+        <p className="mb-6 text-sm text-[#534026]/80">Elke tab hoort bij een pagina op de website. Wijzigingen staan direct live.</p>
+
+        <div className="relative mb-8 grid grid-cols-2 rounded-2xl bg-[#534026]/10 p-1 sm:grid-cols-4">
+          <div
+            className="absolute bottom-1 top-1 hidden rounded-xl bg-[#534026] shadow transition-transform duration-300 ease-out sm:block"
+            style={{ width: 'calc((100% - 0.5rem) / 4)', transform: `translateX(${activeIndex * 100}%)` }}
+          />
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setActiveTab(tab.id)}
+              className={`relative z-10 flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors duration-300 ${
+                activeTab === tab.id ? 'bg-[#534026] text-[#f4f1ea] sm:bg-transparent' : 'text-[#534026] hover:text-[#1e0f0a]'
+              }`}
+            >
+              {tab.icon}
+              {tab.label}
+            </button>
+          ))}
         </div>
 
-        {/* --- 1. MENU AANPASSEN TAB --- */}
-        {activeTab === 'menu' && (
-          <div className="space-y-12 animate-fade-in-up">
-            
-            <div className="glass-card !bg-white/5 border border-white/10 p-8 rounded-[2rem]">
-              <h2 className="text-2xl font-serif text-[#f4f1ea] mb-6 border-b border-white/10 pb-4">1. Menu Tabs (Categorieën)</h2>
-              <form onSubmit={handleAddCategory} className="flex flex-col sm:flex-row gap-4 mb-8">
-                <input
-                  type="text"
-                  placeholder="Bv. Koude Drankjes"
-                  value={newCategoryName}
-                  onChange={(e) => setNewCategoryName(e.target.value)}
-                  className="flex-grow bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#d4cab4]"
-                />
-                <button type="submit" className="bg-[#f4f1ea] text-[#534026] px-6 py-3 rounded-xl font-sans uppercase tracking-[0.15em] text-[11px] sm:text-[13px] font-semibold flex items-center justify-center gap-2 hover:bg-white transition-colors">
-                  <Plus size={18} /> Toevoegen
-                </button>
-              </form>
+        {!isLoaded ? (
+          <div className="flex justify-center py-20 text-[#534026]"><Loader2 className="animate-spin" /></div>
+        ) : (
+          <div key={activeTab} className="fade-in-up space-y-6">
+            {activeTab === 'menu' && (
+              <>
+                <div className="flex justify-end"><MenuSaveStatus /></div>
 
-              <div className="flex flex-wrap gap-3">
-                {categories.map(cat => (
-                  <div key={cat.id} className="bg-black/30 border border-white/10 px-4 py-2 rounded-full flex items-center gap-3 text-[#f4f1ea]">
-                    <span className="font-sans uppercase tracking-widest text-[11px] font-semibold">{cat.name}</span>
-                    <button onClick={() => handleDeleteCategory(cat.id)} className="text-red-400 hover:text-red-300">
-                      <Trash2 size={16} />
-                    </button>
+                <section className={cardClass}>
+                  <h2 className="mb-4 font-serif text-xl text-[#534026]">Categorieën</h2>
+                  <div className="mb-4 flex flex-wrap gap-2">
+                    {menu.categories.map((category) => (
+                      <span key={category.id} className="inline-flex items-center gap-2 rounded-full bg-[#534026]/10 py-1.5 pl-4 pr-2 text-sm">
+                        {category.name}
+                        <button type="button" onClick={() => deleteCategory(category.id)} className="rounded-full p-1 text-[#534026] transition hover:bg-red-100 hover:text-red-700" aria-label={`Verwijder ${category.name}`}>
+                          <Trash2 size={14} />
+                        </button>
+                      </span>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
+                  <div className="flex gap-2">
+                    <input value={newCategoryName} onChange={(event) => setNewCategoryName(event.target.value)} onKeyDown={(event) => event.key === 'Enter' && addCategory()} placeholder="Nieuwe categorie" className={inputClass} />
+                    <button type="button" onClick={addCategory} className={buttonClass}><Plus size={16} /> Toevoegen</button>
+                  </div>
+                </section>
 
-            <div className="glass-card !bg-white/5 border border-white/10 p-8 rounded-[2rem]">
-              <h2 className="text-2xl font-serif text-[#f4f1ea] mb-6 border-b border-white/10 pb-4">2. Items Toevoegen</h2>
-              
-              {categories.length === 0 ? (
-                <p className="text-white/50">Maak eerst een categorie aan hierboven voordat je items kunt toevoegen.</p>
-              ) : (
-                <form onSubmit={handleAddItem} className="grid md:grid-cols-2 gap-6 mb-12">
-                  <div className="flex flex-col gap-2">
-                    <label className="text-sm text-white/70">Kies Categorie</label>
-                    <select value={newItemCat} onChange={(e) => setNewItemCat(e.target.value)} className="bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none">
-                      <option value="" disabled>Selecteer een tab...</option>
-                      {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
-                    </select>
-                  </div>
-                  
-                  <div className="flex flex-col gap-2">
-                    <label className="text-sm text-white/70">Naam Item</label>
-                    <input type="text" value={newItemName} onChange={(e) => setNewItemName(e.target.value)} placeholder="Bv. Iced Caramel Latte" className="bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none" />
-                  </div>
-
-                  <div className="flex flex-col gap-2 md:col-span-2">
-                    <label className="text-sm text-white/70">Beschrijving (Optioneel)</label>
-                    <textarea value={newItemDesc} onChange={(e) => setNewItemDesc(e.target.value)} placeholder="Wat zit erin?" className="bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none h-24" />
-                  </div>
-
-                  <div className="flex flex-col gap-2 md:col-span-2">
-                    <label className="text-sm text-white/70">Foto Uploaden (Optioneel)</label>
-                    <input 
-                      type="file" 
-                      accept="image/*"
-                      ref={menuFileRef}
-                      onChange={(e) => handleFileUpload(e, setNewItemImgBase64)}
-                      className="bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[11px] file:uppercase file:tracking-widest file:font-semibold file:bg-[#f4f1ea] file:text-[#534026] hover:file:bg-white transition-colors cursor-pointer" 
+                <section className={cardClass}>
+                  <h2 className="mb-4 font-serif text-xl text-[#534026]">Nieuw item</h2>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <Dropdown
+                      value={newItemCat}
+                      onChange={setNewItemCat}
+                      placeholder="Kies categorie"
+                      options={menu.categories.map((category) => ({ value: category.id, label: category.name }))}
                     />
-                    {newItemImgBase64 && (
-                      <div className="mt-3">
-                        <img src={newItemImgBase64} alt="Preview" className="w-24 h-24 object-cover rounded-xl border border-white/10" />
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="md:col-span-2 pt-4">
-                    <button type="submit" className="w-full bg-[#f4f1ea] text-[#534026] px-6 py-4 rounded-xl font-sans uppercase tracking-[0.15em] text-[11px] sm:text-[13px] font-semibold flex items-center justify-center gap-2 hover:bg-white transition-colors">
-                      <CheckCircle size={18} /> Item Opslaan
+                    <input value={newItemName} onChange={(event) => setNewItemName(event.target.value)} placeholder="Naam" className={inputClass} />
+                    <input value={newItemDesc} onChange={(event) => setNewItemDesc(event.target.value)} placeholder="Omschrijving" className={`${inputClass} sm:col-span-2`} />
+                    <input
+                      ref={menuFileRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      onChange={(event) => {
+                        const file = event.target.files?.[0] ?? null;
+                        const problem = file ? validateImageFile(file) : null;
+                        if (problem) {
+                          notify('error', problem);
+                          event.target.value = '';
+                          setNewItemImage(null);
+                        } else {
+                          setNewItemImage(file);
+                        }
+                      }}
+                      className="text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-[#534026]/10 file:px-3 file:py-2 file:text-[#534026]"
+                    />
+                    <button type="button" onClick={() => void addItem()} disabled={busy} className={buttonClass}>
+                      {busy ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />} Item toevoegen
                     </button>
                   </div>
-                </form>
-              )}
+                </section>
 
-              <h3 className="text-xl font-serif text-[#f4f1ea] mb-4">Huidige Items</h3>
-              <div className="space-y-4">
-                {categories.map(cat => {
-                  const catItems = items.filter(i => i.categoryId === cat.id);
-                  if (catItems.length === 0) return null;
+                {menu.categories.map((category) => {
+                  const categoryItems = menu.items.filter((item) => item.categoryId === category.id);
                   return (
-                    <div key={cat.id} className="mb-6">
-                      <h4 className="text-[#d4cab4] font-bold uppercase tracking-widest text-sm mb-3">{cat.name}</h4>
-                      <div className="grid sm:grid-cols-2 gap-4">
-                        {catItems.map(item => (
-                          <div key={item.id} className="bg-black/20 border border-white/10 p-4 rounded-xl flex justify-between items-center group">
-                            <div className="flex items-center gap-4">
-                              {item.imageUrl ? (
-                                <img src={item.imageUrl} className="w-12 h-12 rounded-lg object-cover" alt="preview" />
-                              ) : (
-                                <div className="w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center text-white/20"><Coffee size={20} /></div>
+                    <section key={category.id} className={cardClass}>
+                      <h2 className="mb-4 font-serif text-xl text-[#534026]">{category.name}</h2>
+                      {categoryItems.length === 0 && <p className="text-sm text-[#534026]/70">Nog geen items.</p>}
+                      <div className="space-y-3">
+                        {categoryItems.map((item) => (
+                          <div key={item.id} className="grid gap-2 rounded-2xl bg-white/70 p-3 sm:grid-cols-[1fr_1.5fr_auto] sm:items-center">
+                            <input defaultValue={item.name} onBlur={(event) => event.target.value !== item.name && updateItem(item.id, { name: event.target.value })} className={inputClass} />
+                            <input defaultValue={item.description} onBlur={(event) => event.target.value !== item.description && updateItem(item.id, { description: event.target.value })} className={inputClass} />
+                            <div className="flex items-center gap-2">
+                              {item.imageUrl && <img src={item.imageUrl} alt="" className="h-10 w-10 rounded-lg object-cover" />}
+                              <label className="cursor-pointer rounded-lg bg-[#534026]/10 px-3 py-2 text-xs text-[#534026] transition hover:bg-white/15 active:scale-95">
+                                {item.imageUrl ? 'Wijzig foto' : 'Foto toevoegen'}
+                                <input
+                                  type="file"
+                                  accept="image/jpeg,image/png,image/webp,image/gif"
+                                  className="hidden"
+                                  onChange={(event) => {
+                                    const file = event.target.files?.[0];
+                                    event.target.value = '';
+                                    if (file) void setItemImage(item.id, file);
+                                  }}
+                                />
+                              </label>
+                              {item.imageUrl && (
+                                <button type="button" onClick={() => updateItem(item.id, { imageUrl: undefined })} className="text-xs text-[#534026] underline">
+                                  foto weg
+                                </button>
                               )}
-                              <div>
-                                <p className="text-[#f4f1ea] font-bold">{item.name}</p>
-                              </div>
+                              <button type="button" onClick={() => commitMenu({ ...menu, items: menu.items.filter((other) => other.id !== item.id) })} className="rounded-lg p-2 text-red-700 transition hover:bg-red-100" aria-label={`Verwijder ${item.name}`}>
+                                <Trash2 size={16} />
+                              </button>
                             </div>
-                            <button onClick={() => handleDeleteItem(item.id)} className="text-red-400 opacity-50 group-hover:opacity-100 transition-opacity p-2">
-                              <Trash2 size={20} />
-                            </button>
                           </div>
                         ))}
                       </div>
-                    </div>
+                    </section>
                   );
                 })}
-              </div>
-            </div>
-          </div>
-        )}
+              </>
+            )}
 
-        {/* --- 2. GALERIJ AANPASSEN TAB --- */}
-        {(activeTab === 'home' || activeTab === 'sfeer') && (
-          <div className="space-y-12 animate-fade-in-up">
-            <div className="glass-card !bg-white/5 border border-white/10 p-8 rounded-[2rem]">
-              {activeTab === 'sfeer' && (
-                <div className="flex flex-wrap gap-3 mb-8">
-                  <button
-                    type="button"
-                    onClick={() => setActiveSfeerSection('slides')}
-                    className={`px-5 py-3 rounded-full font-sans uppercase tracking-[0.12em] text-[11px] font-semibold transition-all ${activeSfeerSection === 'slides' ? 'bg-[#f4f1ea] text-[#534026]' : 'bg-white/5 text-[#f4f1ea] hover:bg-white/10'}`}
-                  >
-                    Carrousel foto's
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveSfeerSection('albums')}
-                    className={`px-5 py-3 rounded-full font-sans uppercase tracking-[0.12em] text-[11px] font-semibold transition-all ${activeSfeerSection === 'albums' ? 'bg-[#f4f1ea] text-[#534026]' : 'bg-white/5 text-[#f4f1ea] hover:bg-white/10'}`}
-                  >
-                    Evenementalbums
-                  </button>
-                </div>
-              )}
-              <h2 className="text-2xl font-serif text-[#f4f1ea] mb-6 border-b border-white/10 pb-4">
-                {activeTab === 'home'
-                  ? 'Foto Toevoegen aan Home Galerij'
-                  : activeSfeerSection === 'albums'
-                    ? 'Foto Toevoegen aan een Evenementalbum'
-                    : "Foto Toevoegen aan Carrousel sfeerfoto's"}
-              </h2>
+            {activeTab === 'home' && (
+              <>
+                <section className={cardClass}>
+                  <h2 className="mb-1 font-serif text-xl text-[#534026]">Foto’s voor de homepage</h2>
+                  <p className="mb-4 text-sm text-[#534026]/80">Kies een formaat en upload. Je kunt het formaat en de volgorde hieronder nog aanpassen.</p>
+                  <div className="space-y-4">
+                    <SizePicker value={homeSize} onChange={setHomeSize} />
+                    <input
+                      ref={homeFileRef}
+                      type="file"
+                      multiple
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      onChange={(event) => pickFiles(event, setHomeFiles)}
+                      className="block text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-[#534026]/10 file:px-3 file:py-2 file:text-[#534026]"
+                    />
+                    <button type="button" onClick={() => void uploadHome()} disabled={busy || homeFiles.length === 0} className={buttonClass}>
+                      {busy ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />} {homeFiles.length > 1 ? `${homeFiles.length} foto’s uploaden` : 'Foto uploaden'}
+                    </button>
+                  </div>
+                </section>
 
-              {activeTab === 'sfeer' && activeSfeerSection === 'albums' && (
-                <p className="text-sm text-white/60 -mt-2 mb-6">
-                  Gebruik dezelfde albumnaam voor alle foto's van een evenement. Upload de foto's één voor één.
-                </p>
-              )}
-              
-              <form onSubmit={handleAddImage} className="grid md:grid-cols-2 gap-6 mb-12">
-                <div className="flex flex-col gap-2 md:col-span-2">
-                  <label className="text-sm text-white/70">Foto Uploaden</label>
-                  <input 
-                    type="file" 
-                    accept="image/*"
-                    ref={galleryFileRef}
-                    onChange={(e) => handleFileUpload(e, setNewGalleryImgBase64)}
-                    className="bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[11px] file:uppercase file:tracking-widest file:font-semibold file:bg-[#f4f1ea] file:text-[#534026] hover:file:bg-white transition-colors cursor-pointer" 
-                  />
-                  {newGalleryImgBase64 && (
-                    <div className="mt-3">
-                      <img src={newGalleryImgBase64} alt="Preview" className="w-full h-48 object-cover rounded-xl border border-white/10" />
+                <section className={cardClass}>
+                  <h2 className="mb-4 font-serif text-xl text-[#534026]">Voorbeeld van de collage</h2>
+                  {homeImages.length === 0 ? (
+                    <p className="text-sm text-[#534026]/70">Nog geen foto’s. De website toont nu de standaardfoto’s.</p>
+                  ) : (
+                    <PhotoCollage
+                      images={homeImages}
+                      renderOverlay={(image, index) => (
+                        <div className="absolute inset-0 flex flex-col justify-between bg-black/0 p-2 opacity-0 transition duration-300 focus-within:bg-black/40 focus-within:opacity-100 group-hover:bg-black/40 group-hover:opacity-100">
+                          <div className="flex justify-between">
+                            <div className="flex gap-1">
+                              <button type="button" onClick={() => moveHomeImage(index, -1)} disabled={index === 0} className="rounded-lg bg-white/90 p-1.5 text-[#534026] disabled:opacity-40" aria-label="Eerder"><ArrowLeft size={14} /></button>
+                              <button type="button" onClick={() => moveHomeImage(index, 1)} disabled={index === homeImages.length - 1} className="rounded-lg bg-white/90 p-1.5 text-[#534026] disabled:opacity-40" aria-label="Later"><ArrowRight size={14} /></button>
+                            </div>
+                            <button type="button" onClick={() => removeImage(image.id)} className="rounded-lg bg-white/90 p-1.5 text-red-700" aria-label="Verwijderen"><Trash2 size={14} /></button>
+                          </div>
+                          <SizePicker value={image.size ?? 'small'} onChange={(size) => changeSize(image, size)} compact />
+                        </div>
+                      )}
+                    />
+                  )}
+                </section>
+              </>
+            )}
+
+            {activeTab === 'sfeer' && (
+              <>
+                <section className={cardClass}>
+                  <h2 className="mb-1 font-serif text-xl text-[#534026]">Carrousel op de Sfeer-pagina</h2>
+                  <p className="mb-4 text-sm text-[#534026]/80">Deze foto’s schuiven bovenaan de Sfeer-pagina voorbij.</p>
+                  <div className="space-y-4">
+                    <input
+                      ref={slideFileRef}
+                      type="file"
+                      multiple
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      onChange={(event) => pickFiles(event, setSlideFiles)}
+                      className="block text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-[#534026]/10 file:px-3 file:py-2 file:text-[#534026]"
+                    />
+                    <button type="button" onClick={() => void uploadSlides()} disabled={busy || slideFiles.length === 0} className={buttonClass}>
+                      {busy ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />} Uploaden
+                    </button>
+                  </div>
+                </section>
+
+                <section className={cardClass}>
+                  <h2 className="mb-4 font-serif text-xl text-[#534026]">Huidige carrousel ({slideImages.length})</h2>
+                  {slideImages.length === 0 ? (
+                    <p className="text-sm text-[#534026]/70">Nog geen foto’s. De website toont nu de standaardfoto’s.</p>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+                      {slideImages.map((image) => (
+                        <div key={image.id} className="group relative aspect-[4/3] overflow-hidden rounded-2xl">
+                          <img src={image.src} alt={image.alt} className="h-full w-full object-cover" />
+                          <button type="button" onClick={() => removeImage(image.id)} className="absolute right-2 top-2 rounded-lg bg-white/90 p-1.5 text-red-700 opacity-0 transition group-hover:opacity-100 focus:opacity-100" aria-label="Verwijderen">
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      ))}
                     </div>
                   )}
-                </div>
-                
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm text-white/70">{activeTab === 'sfeer' && activeSfeerSection === 'albums' ? 'Albumnaam' : 'Titel (Optioneel)'}</label>
-                  <input type="text" value={newGalleryTitle} onChange={(e) => setNewGalleryTitle(e.target.value)} placeholder={activeTab === 'sfeer' && activeSfeerSection === 'albums' ? 'Bv. Bruiloft in Utrecht' : 'Bv. Onze koffiewagen'} className="bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none" />
-                </div>
+                </section>
+              </>
+            )}
 
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm text-white/70">{activeTab === 'sfeer' && activeSfeerSection === 'albums' ? 'Albumomschrijving (Optioneel)' : 'Ondertitel / Beschrijving (Optioneel)'}</label>
-                  <input type="text" value={newGalleryDesc} onChange={(e) => setNewGalleryDesc(e.target.value)} placeholder={activeTab === 'sfeer' && activeSfeerSection === 'albums' ? 'Bv. Koffie op onze bruiloft' : 'Bv. In actie op locatie'} className="bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none" />
-                </div>
-
-                <div className="md:col-span-2 pt-4">
-                  <button type="submit" className="w-full bg-[#f4f1ea] text-[#534026] px-6 py-4 rounded-xl font-sans uppercase tracking-[0.15em] text-[11px] sm:text-[13px] font-semibold flex items-center justify-center gap-2 hover:bg-white transition-colors">
-                    <Plus size={18} /> Foto Opslaan
-                  </button>
-                </div>
-              </form>
-
-              <h3 className="text-xl font-serif text-[#f4f1ea] mb-4">
-                {activeTab === 'home'
-                  ? "Huidige foto's in Home Galerij"
-                  : activeSfeerSection === 'albums'
-                    ? "Huidige foto's in Evenementalbums"
-                    : "Huidige foto's in Uitgelichte sfeerfoto's"}
-              </h3>
-              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-                {(activeTab === 'home' ? homeImages : activeSfeerSection === 'albums' ? sfeerAlbumImages : sfeerImages).map(img => (
-                  <div key={img.id} className="relative group overflow-hidden rounded-xl border border-white/10">
-                    <img src={img.src} alt={img.alt} className="w-full h-48 object-cover" />
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-4">
-                      <div>
-                        <p className="text-white font-bold truncate">{img.title || 'Geen titel'}</p>
-                        <p className="text-white/70 text-sm truncate">{img.description}</p>
+            {activeTab === 'events' && (
+              <>
+                <section className={cardClass}>
+                  <h2 className="mb-1 font-serif text-xl text-[#534026]">Foto’s uploaden naar een album</h2>
+                  <p className="mb-4 text-sm text-[#534026]/80">Kies een bestaand album of maak een nieuw album. Alle foto’s komen in dat album.</p>
+                  <div className="space-y-3">
+                    <Dropdown value={albumChoice} onChange={setAlbumChoice} options={albumOptions} />
+                    {albumChoice === NEW_ALBUM && (
+                      <div className="fade-in-up grid gap-3 sm:grid-cols-2">
+                        <input value={albumTitle} onChange={(event) => setAlbumTitle(event.target.value)} placeholder="Albumnaam (bijv. Bruiloft Lisa & Tom)" className={inputClass} />
+                        <input value={albumDesc} onChange={(event) => setAlbumDesc(event.target.value)} placeholder="Korte omschrijving" className={inputClass} />
                       </div>
-                      <button onClick={() => handleDeleteImage(img.id)} className="bg-red-500/80 text-white py-2 rounded-lg hover:bg-red-500 font-sans uppercase tracking-widest text-[10px] font-semibold flex items-center justify-center gap-2">
-                        <Trash2 size={14} /> Verwijderen
-                      </button>
-                    </div>
+                    )}
+                    <input
+                      ref={albumFileRef}
+                      type="file"
+                      multiple
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      onChange={(event) => pickFiles(event, setAlbumFiles)}
+                      className="block text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-[#534026]/10 file:px-3 file:py-2 file:text-[#534026]"
+                    />
+                    <button type="button" onClick={() => void uploadAlbum()} disabled={busy || albumFiles.length === 0} className={buttonClass}>
+                      {busy ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />} {albumFiles.length > 1 ? `${albumFiles.length} foto’s uploaden` : 'Uploaden'}
+                    </button>
                   </div>
-                ))}
-                {(activeTab === 'home' ? homeImages : activeSfeerSection === 'albums' ? sfeerAlbumImages : sfeerImages).length === 0 && (
-                  <p className="text-white/50 col-span-full">
-                    {activeTab === 'sfeer' && activeSfeerSection === 'slides'
-                      ? 'De standaard sfeerfoto’s worden geladen zodra de galerij is verbonden.'
-                      : "Nog geen foto's geüpload."}
-                  </p>
-                )}
-              </div>
-            </div>
+                </section>
+
+                {albums.length === 0 && <p className="text-sm text-[#534026]/70">Nog geen albums.</p>}
+                {albums.map((album) => {
+                  const isOpen = openAlbum === album.title;
+                  const edit = albumEdits[album.title] ?? { title: album.title, description: album.description };
+                  return (
+                    <section key={album.title} className={`${cardClass} overflow-hidden`}>
+                      <button type="button" onClick={() => setOpenAlbum(isOpen ? null : album.title)} className="flex w-full items-center justify-between gap-4 text-left">
+                        <span>
+                          <span className="block font-serif text-xl text-[#534026]">{album.title}</span>
+                          <span className="text-sm text-[#534026]/70">{album.images.length} foto’s</span>
+                        </span>
+                        <ChevronDown className={`shrink-0 text-[#534026] transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+                      </button>
+                      <div className={`grid transition-all duration-300 ease-out ${isOpen ? 'mt-5 grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                        <div className="overflow-hidden">
+                          <div className="mb-4 grid gap-2 sm:grid-cols-[1fr_1.5fr_auto]">
+                            <input value={edit.title} onChange={(event) => setAlbumEdits({ ...albumEdits, [album.title]: { ...edit, title: event.target.value } })} className={inputClass} />
+                            <input value={edit.description} onChange={(event) => setAlbumEdits({ ...albumEdits, [album.title]: { ...edit, description: event.target.value } })} placeholder="Omschrijving" className={inputClass} />
+                            <button
+                              type="button"
+                              disabled={busy || !edit.title.trim()}
+                              onClick={() => void runGalleryAction(async () => {
+                                await updateAlbum(password, album.title, edit.title.trim(), edit.description.trim());
+                                setAlbumEdits((current) => {
+                                  const rest = { ...current };
+                                  delete rest[album.title];
+                                  return rest;
+                                });
+                                setOpenAlbum(edit.title.trim());
+                              }, 'Album bijgewerkt.')}
+                              className={buttonClass}
+                            >
+                              Opslaan
+                            </button>
+                          </div>
+                          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+                            {album.images.map((image) => (
+                              <div key={image.id} className="group relative aspect-square overflow-hidden rounded-2xl">
+                                <img src={image.src} alt={image.alt} className="h-full w-full object-cover" />
+                                <button type="button" onClick={() => removeImage(image.id)} className="absolute right-2 top-2 rounded-lg bg-white/90 p-1.5 text-red-700 opacity-0 transition group-hover:opacity-100 focus:opacity-100" aria-label="Verwijderen">
+                                  <Trash2 size={14} />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (window.confirm(`Album “${album.title}” met alle foto’s verwijderen?`)) {
+                                void runGalleryAction(() => deleteAlbum(password, album.title), 'Album verwijderd.');
+                              }
+                            }}
+                            className="mt-4 inline-flex items-center gap-2 text-sm text-red-700 transition hover:underline"
+                          >
+                            <Trash2 size={14} /> Hele album verwijderen
+                          </button>
+                        </div>
+                      </div>
+                    </section>
+                  );
+                })}
+              </>
+            )}
           </div>
         )}
-
       </div>
+
+      {toast && (
+        <div className={`fade-in-up fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-xl px-5 py-3 text-sm shadow-xl ${toast.type === 'ok' ? 'bg-[#534026] text-[#f4f1ea]' : 'bg-red-700 text-white'}`}>
+          {toast.text}
+        </div>
+      )}
     </main>
   );
 };

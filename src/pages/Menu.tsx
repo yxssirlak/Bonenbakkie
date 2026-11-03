@@ -1,24 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Sparkles } from 'lucide-react';
 import { Helmet} from 'react-helmet-async';
-
-export type MenuCategory = {
-  id: string;
-  name: string;
-};
-
-export type MenuItem = {
-  id: string;
-  categoryId: string;
-  name: string;
-  description: string;
-  imageUrl?: string;
-};
+import { DEFAULT_MENU, fetchMenu, subscribeToMenu } from '../menu';
+import type { MenuCategory, MenuData, MenuItem } from '../menu';
 
 const Menu: React.FC = () => {
   const [categories, setCategories] = useState<MenuCategory[]>([]);
   const [items, setItems] = useState<MenuItem[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>('');
+  const [, setIsLoading] = useState(true);
+  const hasLoaded = useRef(false);
   const beanRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   useEffect(() => {
@@ -49,53 +40,30 @@ const Menu: React.FC = () => {
   ];
 
   useEffect(() => {
-    const storedCategories = localStorage.getItem('bonenbakkie-menu-categories');
-    const storedItems = localStorage.getItem('bonenbakkie-menu-items');
-
-    if (storedCategories && storedCategories !== '[]') {
-      const parsedCats = JSON.parse(storedCategories);
-      setCategories(parsedCats);
-      if (parsedCats.length > 0) setActiveCategory(parsedCats[0].id);
-    } else {
-      const defaultCats = [
-        { id: '1', name: 'Warme Dranken' },
-        { id: '2', name: 'Koude Dranken' },
-        { id: '3', name: 'Lekkernijen' },
-        { id: '4', name: "Extra's" },
-        { id: '5', name: 'Soorten Melk' }
-      ];
-      setCategories(defaultCats);
-      setActiveCategory(defaultCats[0].id);
-    }
-
-    if (storedItems && storedItems !== '[]') {
-      setItems(JSON.parse(storedItems));
-    } else {
-      setItems([
-        { id: '101', categoryId: '1', name: 'Espresso', description: 'Een krachtige, pure shot van onze premium bonen.' },
-        { id: '102', categoryId: '1', name: 'Koffie', description: 'De klassieke, vertrouwde filterkoffie.' },
-        { id: '103', categoryId: '1', name: 'Cappuccino', description: 'Rijke espresso met perfect opgeschuimde volle melk.' },
-        { id: '104', categoryId: '1', name: 'Flat White', description: 'Dubbele ristretto met zacht microschuim.' },
-        { id: '105', categoryId: '1', name: 'Koffie Verkeerd', description: 'Een milde koffie met veel warme melk.' },
-        { id: '106', categoryId: '1', name: 'Latte Machiato', description: 'Warme melk en melkschuim met een shot espresso.' },
-        { id: '107', categoryId: '1', name: 'Thee', description: 'Keuze uit diverse theesmaken.' },
-        { id: '108', categoryId: '1', name: 'Munthee', description: 'Verse, verwarmende munthee.' },
-        { id: '109', categoryId: '1', name: 'Gemberthee', description: 'Kruidige thee met verse gember.' },
-        { id: '201', categoryId: '2', name: 'IJskoffie', description: 'Verfrissende ijskoude koffie.' },
-        { id: '202', categoryId: '2', name: 'Matcha', description: 'Koude matcha latte met ijs.' },
-        { id: '203', categoryId: '2', name: 'Limonade', description: 'Huisgemaakte, frisse limonade.' },
-        { id: '301', categoryId: '3', name: 'Stroopwafel', description: 'Heerlijk voor bij de warme koffie.' },
-        { id: '401', categoryId: '4', name: 'Karamel', description: 'Voeg een vleugje karamelsiroop toe.' },
-        { id: '402', categoryId: '4', name: 'Vanille', description: 'Voeg een vleugje vanillesiroop toe.' },
-        { id: '403', categoryId: '4', name: 'Aarbei', description: 'Voeg een vleugje aardbeiensiroop toe.' },
-        { id: '404', categoryId: '4', name: 'Hazelnoot', description: 'Voeg een vleugje hazelnootsiroop toe.' },
-        { id: '405', categoryId: '4', name: 'Slagroom', description: 'Een flinke toef verse slagroom.' },
-        { id: '501', categoryId: '5', name: 'Volle Koemelk', description: 'De klassieke, romige keuze.' },
-        { id: '502', categoryId: '5', name: 'Havermelk', description: 'Plantaardig, mild en romig.' },
-        { id: '503', categoryId: '5', name: 'Sojamelk', description: 'Plantaardig en vol van smaak.' },
-        { id: '504', categoryId: '5', name: 'Kokosmelk', description: 'Plantaardig met een tropisch vleugje.' },
-      ]);
-    }
+    let cancelled = false;
+    const load = async () => {
+      let menu: MenuData = DEFAULT_MENU;
+      try {
+        menu = (await fetchMenu()) ?? DEFAULT_MENU;
+      } catch (error) {
+        console.error('Menu laden is mislukt:', error);
+        if (hasLoaded.current) return;
+      }
+      if (cancelled) return;
+      hasLoaded.current = true;
+      setCategories(menu.categories);
+      setItems(menu.items);
+      setActiveCategory((current) => (
+        menu.categories.some((category) => category.id === current) ? current : (menu.categories[0]?.id ?? '')
+      ));
+      setIsLoading(false);
+    };
+    void load();
+    const unsubscribe = subscribeToMenu(() => { void load(); });
+    return () => {
+      cancelled = true;
+      unsubscribe();
+    };
   }, []);
 
   const filteredItems = items.filter(item => item.categoryId === activeCategory);
