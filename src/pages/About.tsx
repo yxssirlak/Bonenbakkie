@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import { Coffee } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 
 const About: React.FC = () => {
@@ -112,8 +111,8 @@ const About: React.FC = () => {
             <div className="absolute inset-0 rounded-[2.5rem] transform rotate-3 bg-[#d4cab4]/20 blur-lg"></div>
             <div className="relative glass-card p-2 border border-white/10 bg-white/5">
               <div className="h-[36rem] rounded-[2rem] flex items-center justify-center bg-[#140a07]/50 overflow-hidden">
+                <img src="/bonenbakkie-overons.jpeg" className="w-full h-full object-cover" />
                 {/* TIP: Super leuk om hier later een foto van jullie twee in te zetten! Bijv: <img src="/foto-quinn-renske.jpg" className="w-full h-full object-cover" /> */}
-                <Coffee className="w-32 h-32 text-[#d4cab4] opacity-80" />
               </div>
             </div>
           </div>
